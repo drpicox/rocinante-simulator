@@ -21,11 +21,11 @@ export function useVisibility(zoomLevel, planetPositions) {
     const maxDist = zoomLevel.maxDistance
 
     // Determine which categories to show
-    const showPlanets = maxDist >= 0.3  // Hide planets in very close zoom
+    const showPlanets = maxDist >= 0.3 && maxDist < 100000  // Hide planets in very close zoom and at interstellar distances
     const showMoons = maxDist <= 2.0    // Only show moons when zoomed in
-    const showDwarfPlanets = maxDist >= 5.0
+    const showDwarfPlanets = maxDist >= 5.0 && maxDist < 100000
     const showStars = maxDist >= 200000  // About 3 light years
-    const showOuterObjects = maxDist >= 1000
+    const showOuterObjects = maxDist >= 1000 && maxDist < 100000
 
     // Filter planets by visibility
     let visiblePlanets = []

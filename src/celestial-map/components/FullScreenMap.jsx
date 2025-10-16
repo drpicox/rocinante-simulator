@@ -216,10 +216,10 @@ export function FullScreenMap({
           const r = auToPixels(planet.distanceAU, zoom.currentLevel, viewportSize)
           if (r > viewportSize / 2 || r < 0) return null
 
-          // Special handling for Earth (at origin)
-          const angleRad = planet.name === 'Earth' ? 0 : (planet.angle * Math.PI) / 180
-          const x = planet.name === 'Earth' ? cx : cx + r * Math.cos(angleRad)
-          const y = planet.name === 'Earth' ? cy : cy + r * Math.sin(angleRad)
+          // Calculate position from angle and distance
+          const angleRad = (planet.angle * Math.PI) / 180
+          const x = cx + r * Math.cos(angleRad)
+          const y = cy + r * Math.sin(angleRad)
 
           const isInRange = planet.distanceAU <= maxRangeAU
           const isSelected = selectedDestination === planet.name
@@ -234,6 +234,20 @@ export function FullScreenMap({
               className="cursor-pointer"
               style={{ transition: 'all 0.3s' }}
             >
+              {/* Highlight Earth as origin for journeys */}
+              {planet.name === 'Earth' && (
+                <line
+                  x1={cx}
+                  y1={cy}
+                  x2={x}
+                  y2={y}
+                  stroke="#4A9EFF"
+                  strokeWidth="2"
+                  strokeDasharray="4,4"
+                  opacity="0.4"
+                />
+              )}
+
               {isSelected && (
                 <>
                   <circle
@@ -299,6 +313,67 @@ export function FullScreenMap({
             </g>
           )
         })}
+
+        {/* Moon (if in appropriate zoom) */}
+        {visibility.showMoons && visibility.visiblePlanets.some(p => p.name === 'Earth') && (() => {
+          const earth = visibility.visiblePlanets.find(p => p.name === 'Earth')
+          if (!earth || !earth.moons || earth.moons.length === 0) return null
+
+          const earthR = auToPixels(earth.distanceAU, zoom.currentLevel, viewportSize)
+          const earthAngleRad = (earth.angle * Math.PI) / 180
+          const earthX = cx + earthR * Math.cos(earthAngleRad)
+          const earthY = cy + earthR * Math.sin(earthAngleRad)
+
+          const moon = earth.moons[0]
+          // Simple circular orbit for the moon around Earth
+          const currentTime = new Date().getTime()
+          const moonAngle = (currentTime / (moon.orbitalPeriod * 86400000)) * 2 * Math.PI
+          const moonOrbitRadius = auToPixels(moon.semiMajorAxis, zoom.currentLevel, viewportSize)
+
+          const moonX = earthX + moonOrbitRadius * Math.cos(moonAngle)
+          const moonY = earthY + moonOrbitRadius * Math.sin(moonAngle)
+          const moonSize = Math.max(4, 8 + zoom.currentLevel.minObjectSize)
+
+          return (
+            <g key="moon">
+              {/* Moon orbit around Earth */}
+              <circle
+                cx={earthX}
+                cy={earthY}
+                r={moonOrbitRadius}
+                fill="none"
+                stroke="#888888"
+                strokeWidth="1"
+                strokeDasharray="2,2"
+                opacity="0.3"
+              />
+
+              {/* Moon */}
+              <circle
+                cx={moonX}
+                cy={moonY}
+                r={moonSize}
+                fill={moon.color}
+                stroke="#FFFFFF"
+                strokeWidth="1"
+                opacity="0.9"
+              />
+
+              {visibility.showLabels.moons && (
+                <text
+                  x={moonX}
+                  y={moonY - moonSize - 6}
+                  textAnchor="middle"
+                  fill={moon.color}
+                  fontSize="12"
+                  fontWeight="600"
+                >
+                  {moon.name}
+                </text>
+              )}
+            </g>
+          )
+        })()}
 
         {/* Stars (if in stellar view) */}
         {visibility.visibleStars.map((star, idx) => {
