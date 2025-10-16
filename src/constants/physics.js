@@ -38,6 +38,51 @@ export const DEFAULT_WET_MASS_TONS = 3000
 export const DEFAULT_ACCELERATION_G = 0.3
 export const DEFAULT_FUSION_EFFICIENCY = 0.4  // 0.4% (typical for D-T fusion)
 export const DEFAULT_PROPULSIVE_EFFICIENCY = 50  // 50%
+export const DEFAULT_ENGINE_TYPE = 'fusion'
+
+// Engine types and their efficiency ranges
+export const ENGINE_TYPES = {
+  fusion: {
+    id: 'fusion',
+    name: 'Fusion (Epstein Drive)',
+    description: 'Deuterium-Tritium or D-He³ fusion reactions',
+    massEnergyEfficiency: {
+      min: 0.1,
+      max: 1.0,
+      step: 0.05,
+      default: 0.4,
+      unit: '%'
+    },
+    propulsiveEfficiency: {
+      min: 10,
+      max: 100,
+      step: 5,
+      default: 50,
+      unit: '%'
+    },
+    helperText: 'D-T fusion: ~0.4% | D-He³: ~0.7% | Theoretical max: ~1%'
+  },
+  antimatter: {
+    id: 'antimatter',
+    name: 'Matter-Antimatter',
+    description: 'Matter-antimatter annihilation (E=mc²)',
+    massEnergyEfficiency: {
+      min: 1,
+      max: 100,
+      step: 1,
+      default: 50,
+      unit: '%'
+    },
+    propulsiveEfficiency: {
+      min: 10,
+      max: 100,
+      step: 5,
+      default: 90,
+      unit: '%'
+    },
+    helperText: 'Theoretical max: 100% | Practical with containment losses: 50-90%'
+  }
+}
 
 // Ship presets for different mission profiles
 export const SHIP_PRESETS = {
@@ -45,6 +90,7 @@ export const SHIP_PRESETS = {
     id: 'rocinante',
     name: 'Rocinante (Solar System)',
     description: 'Corvette-class light frigate optimized for inner and mid solar system travel',
+    engineType: 'fusion',
     dryMass: 1000,
     wetMass: 3000,
     acceleration: 0.3,
@@ -54,13 +100,26 @@ export const SHIP_PRESETS = {
   },
   canterbury: {
     id: 'canterbury',
-    name: 'Canterbury (Stellar)',
-    description: 'Heavy ice hauler with massive fuel capacity for interstellar missions',
+    name: 'Canterbury (Fusion Stellar)',
+    description: 'Massive ice hauler with fusion drives for deep space missions',
+    engineType: 'fusion',
     dryMass: 10000,
-    wetMass: 500000,
+    wetMass: 1000000000,
     acceleration: 0.1,
     fusionEfficiency: 0.7,
     propulsiveEfficiency: 70,
-    maxRange: '~15,000 AU'
+    maxRange: '~200,000 AU'
+  },
+  nauvoo: {
+    id: 'nauvoo',
+    name: 'Nauvoo (Antimatter)',
+    description: 'Generation ship with antimatter drives for interstellar colonization',
+    engineType: 'antimatter',
+    dryMass: 50000,
+    wetMass: 10000000,
+    acceleration: 0.05,
+    fusionEfficiency: 50,
+    propulsiveEfficiency: 90,
+    maxRange: '~3 light years'
   }
 }

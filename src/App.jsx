@@ -20,6 +20,7 @@ import {
   DEFAULT_ACCELERATION_G,
   DEFAULT_FUSION_EFFICIENCY,
   DEFAULT_PROPULSIVE_EFFICIENCY,
+  DEFAULT_ENGINE_TYPE,
   TONS_TO_KG
 } from './constants/physics'
 
@@ -38,7 +39,8 @@ function App() {
     wetMass: DEFAULT_WET_MASS_TONS,
     acceleration: DEFAULT_ACCELERATION_G,
     fusionEfficiency: DEFAULT_FUSION_EFFICIENCY,
-    propulsiveEfficiency: DEFAULT_PROPULSIVE_EFFICIENCY
+    propulsiveEfficiency: DEFAULT_PROPULSIVE_EFFICIENCY,
+    engineType: DEFAULT_ENGINE_TYPE
   })
 
   // Calculate fuel mass for display

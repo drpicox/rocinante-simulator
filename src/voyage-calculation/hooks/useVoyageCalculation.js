@@ -32,6 +32,7 @@ export function useVoyageCalculation(initialParams) {
   const [accelerationUI, setAccelerationUI] = useState(initialParams.acceleration)
   const [fusionEfficiencyUI, setFusionEfficiencyUI] = useState(initialParams.fusionEfficiency)
   const [propulsiveEfficiencyUI, setPropulsiveEfficiencyUI] = useState(initialParams.propulsiveEfficiency)
+  const [engineTypeUI, setEngineTypeUI] = useState(initialParams.engineType)
 
   // Debounced calculation state (updates after delay)
   const [dryMass, setDryMass] = useState(initialParams.dryMass)
@@ -39,6 +40,7 @@ export function useVoyageCalculation(initialParams) {
   const [acceleration, setAcceleration] = useState(initialParams.acceleration)
   const [fusionEfficiency, setFusionEfficiency] = useState(initialParams.fusionEfficiency)
   const [propulsiveEfficiency, setPropulsiveEfficiency] = useState(initialParams.propulsiveEfficiency)
+  const [engineType, setEngineType] = useState(initialParams.engineType)
 
   // Debounce effect - update calculation values after 300ms of no changes
   useEffect(() => {
@@ -48,10 +50,11 @@ export function useVoyageCalculation(initialParams) {
       setAcceleration(accelerationUI)
       setFusionEfficiency(fusionEfficiencyUI)
       setPropulsiveEfficiency(propulsiveEfficiencyUI)
+      setEngineType(engineTypeUI)
     }, 300)
 
     return () => clearTimeout(timer)
-  }, [dryMassUI, wetMassUI, accelerationUI, fusionEfficiencyUI, propulsiveEfficiencyUI])
+  }, [dryMassUI, wetMassUI, accelerationUI, fusionEfficiencyUI, propulsiveEfficiencyUI, engineTypeUI])
 
   // Main calculations
   const results = useMemo(() => {
@@ -128,11 +131,13 @@ export function useVoyageCalculation(initialParams) {
       accelerationUI,
       fusionEfficiencyUI,
       propulsiveEfficiencyUI,
+      engineTypeUI,
       setDryMassUI,
       setWetMassUI,
       setAccelerationUI,
       setFusionEfficiencyUI,
-      setPropulsiveEfficiencyUI
+      setPropulsiveEfficiencyUI,
+      setEngineTypeUI
     },
 
     // Calculation parameters (debounced)
@@ -141,7 +146,8 @@ export function useVoyageCalculation(initialParams) {
       wetMass,
       acceleration,
       fusionEfficiency,
-      propulsiveEfficiency
+      propulsiveEfficiency,
+      engineType
     },
 
     // Calculation results
