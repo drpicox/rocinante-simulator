@@ -103,38 +103,38 @@ export function FullScreenMap({
                 <div>
                   <div className="text-slate-400">Distance</div>
                   <div className="font-semibold text-white">
-                    {selectedJourney.distance ? formatDistance(selectedJourney.distance, selectedJourney.distance > 10000) : 'N/A'}
+                    {selectedJourney.distance != null ? formatDistance(selectedJourney.distance, selectedJourney.distance > 10000) : 'N/A'}
                   </div>
                 </div>
                 <div>
                   <div className="text-slate-400">Earth Time</div>
                   <div className="font-semibold text-emerald-300">
-                    {selectedJourney.totalDays ? formatTime(selectedJourney.totalDays) : 'N/A'}
+                    {selectedJourney.totalDays != null ? formatTime(selectedJourney.totalDays) : 'N/A'}
                   </div>
                 </div>
                 <div>
                   <div className="text-slate-400">Ship Time</div>
                   <div className="font-semibold text-cyan-300">
-                    {selectedJourney.properDays ? formatTime(selectedJourney.properDays) : 'N/A'}
+                    {selectedJourney.properDays != null ? formatTime(selectedJourney.properDays) : 'N/A'}
                   </div>
                 </div>
                 <div>
                   <div className="text-slate-400">Max Speed</div>
                   <div className="font-semibold text-red-300">
-                    {selectedJourney.vMax ? formatSpeed(selectedJourney.vMax) : 'N/A'}
+                    {selectedJourney.vMax != null ? formatSpeed(selectedJourney.vMax) : 'N/A'}
                   </div>
                 </div>
                 <div>
                   <div className="text-slate-400">Fuel Used</div>
                   <div className="font-semibold text-orange-300">
-                    {selectedJourney.fuelPercent ? formatPercent(selectedJourney.fuelPercent) : 'N/A'}
+                    {selectedJourney.fuelPercent != null ? formatPercent(selectedJourney.fuelPercent) : 'N/A'}
                   </div>
                 </div>
                 {selectedJourney.coastPhase && (
                   <div>
                     <div className="text-slate-400">Coast</div>
                     <div className="font-semibold text-yellow-300">
-                      {selectedJourney.coastDays ? formatTime(selectedJourney.coastDays) : 'N/A'}
+                      {selectedJourney.coastDays != null ? formatTime(selectedJourney.coastDays) : 'N/A'}
                     </div>
                   </div>
                 )}
