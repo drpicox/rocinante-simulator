@@ -13,6 +13,7 @@ import { FullScreenMap } from './celestial-map/components/FullScreenMap'
 import { FloatingPanel } from './ui/components/FloatingPanel'
 import { usePlanetPositions } from './celestial-map/hooks/usePlanetPositions'
 import { NEARBY_STARS } from './celestial-map/data/stars'
+import { formatDistance, formatSpeed, formatTime } from './ui/utils/formatters'
 import {
   DEFAULT_DRY_MASS_TONS,
   DEFAULT_WET_MASS_TONS,
@@ -227,9 +228,11 @@ function App() {
         <div className="text-xs text-slate-400 mb-1">Quick Stats</div>
         <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
           <div className="text-slate-500">Max Range:</div>
-          <div className="font-semibold text-cyan-300">{results.distAU.toFixed(1)} AU</div>
+          <div className="font-semibold text-cyan-300">{formatDistance(results.distAU, false)}</div>
           <div className="text-slate-500">Max Speed:</div>
-          <div className="font-semibold text-red-300">{results.vMaxKms.toFixed(0)} km/s</div>
+          <div className="font-semibold text-red-300">{formatSpeed(results.vMaxKms)}</div>
+          <div className="text-slate-500">Max Burn:</div>
+          <div className="font-semibold text-emerald-300">{formatTime(results.totalDays)}</div>
           <div className="text-slate-500">Fuel:</div>
           <div className="font-semibold text-orange-300">{fuelMass.toFixed(0)} tons</div>
         </div>

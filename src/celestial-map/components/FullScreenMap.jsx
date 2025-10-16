@@ -9,6 +9,7 @@ import { ZoomIn, ZoomOut, Target, AlertTriangle } from 'lucide-react'
 import { useZoom, auToPixels } from '../hooks/useZoom'
 import { useVisibility } from '../hooks/useVisibility'
 import { usePlanetPositions } from '../hooks/usePlanetPositions'
+import { formatTime, formatDistance, formatSpeed, formatPercent } from '../../ui/utils/formatters'
 
 export function FullScreenMap({
   maxRangeAU,
@@ -102,38 +103,38 @@ export function FullScreenMap({
                 <div>
                   <div className="text-slate-400">Distance</div>
                   <div className="font-semibold text-white">
-                    {selectedJourney.distance ? selectedJourney.distance.toFixed(2) : 'N/A'} AU
+                    {selectedJourney.distance ? formatDistance(selectedJourney.distance, selectedJourney.distance > 10000) : 'N/A'}
                   </div>
                 </div>
                 <div>
                   <div className="text-slate-400">Earth Time</div>
                   <div className="font-semibold text-emerald-300">
-                    {selectedJourney.totalDays ? selectedJourney.totalDays.toFixed(1) : 'N/A'} days
+                    {selectedJourney.totalDays ? formatTime(selectedJourney.totalDays) : 'N/A'}
                   </div>
                 </div>
                 <div>
                   <div className="text-slate-400">Ship Time</div>
                   <div className="font-semibold text-cyan-300">
-                    {selectedJourney.properDays ? selectedJourney.properDays.toFixed(1) : 'N/A'} days
+                    {selectedJourney.properDays ? formatTime(selectedJourney.properDays) : 'N/A'}
                   </div>
                 </div>
                 <div>
                   <div className="text-slate-400">Max Speed</div>
                   <div className="font-semibold text-red-300">
-                    {selectedJourney.vMax ? selectedJourney.vMax.toFixed(0) : 'N/A'} km/s
+                    {selectedJourney.vMax ? formatSpeed(selectedJourney.vMax) : 'N/A'}
                   </div>
                 </div>
                 <div>
                   <div className="text-slate-400">Fuel Used</div>
                   <div className="font-semibold text-orange-300">
-                    {selectedJourney.fuelPercent ? selectedJourney.fuelPercent.toFixed(0) : 'N/A'}%
+                    {selectedJourney.fuelPercent ? formatPercent(selectedJourney.fuelPercent) : 'N/A'}
                   </div>
                 </div>
                 {selectedJourney.coastPhase && (
                   <div>
                     <div className="text-slate-400">Coast</div>
                     <div className="font-semibold text-yellow-300">
-                      {selectedJourney.coastDays ? selectedJourney.coastDays.toFixed(0) : 'N/A'} days
+                      {selectedJourney.coastDays ? formatTime(selectedJourney.coastDays) : 'N/A'}
                     </div>
                   </div>
                 )}

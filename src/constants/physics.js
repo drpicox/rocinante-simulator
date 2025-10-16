@@ -38,3 +38,29 @@ export const DEFAULT_WET_MASS_TONS = 3000
 export const DEFAULT_ACCELERATION_G = 0.3
 export const DEFAULT_FUSION_EFFICIENCY = 0.4  // 0.4% (typical for D-T fusion)
 export const DEFAULT_PROPULSIVE_EFFICIENCY = 50  // 50%
+
+// Ship presets for different mission profiles
+export const SHIP_PRESETS = {
+  rocinante: {
+    id: 'rocinante',
+    name: 'Rocinante (Solar System)',
+    description: 'Corvette-class light frigate optimized for inner and mid solar system travel',
+    dryMass: 1000,
+    wetMass: 3000,
+    acceleration: 0.3,
+    fusionEfficiency: 0.4,
+    propulsiveEfficiency: 50,
+    maxRange: '~3.4 AU'
+  },
+  canterbury: {
+    id: 'canterbury',
+    name: 'Canterbury (Stellar)',
+    description: 'Heavy ice hauler with massive fuel capacity for interstellar missions',
+    dryMass: 10000,
+    wetMass: 500000,
+    acceleration: 0.1,
+    fusionEfficiency: 0.7,
+    propulsiveEfficiency: 70,
+    maxRange: '~15,000 AU'
+  }
+}
