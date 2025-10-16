@@ -35,7 +35,7 @@ export function useVisibility(zoomLevel, planetPositions) {
         if (planet.name === 'Earth') return true
 
         // Filter by distance
-        return planet.distance <= maxDist
+        return planet.distanceAU <= maxDist
       })
     }
 
