@@ -4,7 +4,7 @@
  * Collapsible panel for configuring ship parameters
  */
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Rocket, Fuel, Zap, Ship, Atom } from 'lucide-react'
 import { CollapsiblePanel } from '../../ui/components/CollapsiblePanel'
 import { SHIP_PRESETS, ENGINE_TYPES } from '../../constants/physics'
@@ -35,12 +35,26 @@ function ParameterSlider({ label, value, onChange, min, max, step, unit, helperT
     onChange(newRealValue)
   }
 
+  // Format value for display
+  const formatValue = (val) => {
+    // For very small values (< 0.01), use scientific notation
+    if (val < 0.01 && val > 0) {
+      return val.toExponential(2)
+    }
+    // For values >= 1, show 1 decimal place
+    if (val >= 1) {
+      return val.toFixed(1).replace(/\.?0+$/, '')
+    }
+    // For values between 0.01 and 1, show up to 2 decimal places
+    return val.toFixed(2).replace(/\.?0+$/, '')
+  }
+
   return (
     <div className="space-y-2">
       <div className="flex justify-between items-center">
         <label className="text-sm font-medium text-slate-200">{label}</label>
         <span className="text-lg font-bold text-blue-400">
-          {value.toLocaleString()}{unit}
+          {formatValue(value)}{unit}
         </span>
       </div>
       <input
@@ -81,6 +95,13 @@ export function ShipConfiguration({ uiState, fuelMass }) {
 
   // Get current engine type configuration
   const currentEngineType = ENGINE_TYPES[engineTypeUI]
+
+  // Set default acceleration when engine type changes
+  useEffect(() => {
+    if (currentEngineType?.defaultAcceleration) {
+      setAccelerationUI(currentEngineType.defaultAcceleration)
+    }
+  }, [engineTypeUI, currentEngineType, setAccelerationUI])
 
   // Handle preset selection
   const handlePresetSelect = (presetId) => {
@@ -185,11 +206,12 @@ export function ShipConfiguration({ uiState, fuelMass }) {
             label="Acceleration"
             value={accelerationUI}
             onChange={setAccelerationUI}
-            min={0.1}
-            max={1.0}
-            step={0.05}
+            min={0.000001}
+            max={10}
+            step={0.000001}
             unit="g"
-            helperText="Constant acceleration (0.3g typical for Epstein drive)"
+            helperText="Constant acceleration (logarithmic scale)"
+            logarithmic={true}
           />
 
           {/* Fuel Load Display */}

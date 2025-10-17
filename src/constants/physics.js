@@ -42,6 +42,69 @@ export const DEFAULT_ENGINE_TYPE = 'fusion'
 
 // Engine types and their efficiency ranges
 export const ENGINE_TYPES = {
+  chemical: {
+    id: 'chemical',
+    name: 'Chemical (H₂O₂)',
+    description: 'Hydrogen peroxide decomposition rockets',
+    massEnergyEfficiency: {
+      min: 0.000000001,
+      max: 0.00000001,
+      step: 0.000000001,
+      default: 0.000000005,
+      unit: '%'
+    },
+    propulsiveEfficiency: {
+      min: 30,
+      max: 70,
+      step: 5,
+      default: 40,
+      unit: '%'
+    },
+    defaultAcceleration: 0.05,
+    helperText: 'Very low mass-energy conversion, high thrust-to-weight ratio'
+  },
+  ion: {
+    id: 'ion',
+    name: 'Ion Drive',
+    description: 'Electric propulsion with ion acceleration',
+    massEnergyEfficiency: {
+      min: 0.0000001,
+      max: 0.000001,
+      step: 0.0000001,
+      default: 0.0000005,
+      unit: '%'
+    },
+    propulsiveEfficiency: {
+      min: 60,
+      max: 95,
+      step: 5,
+      default: 80,
+      unit: '%'
+    },
+    defaultAcceleration: 0.000001,
+    helperText: 'Extremely high efficiency, very low thrust (realistic: ~0.000001g)'
+  },
+  fission: {
+    id: 'fission',
+    name: 'Nuclear Fission',
+    description: 'Nuclear fission thermal/pulse propulsion (e.g., NERVA, Orion)',
+    massEnergyEfficiency: {
+      min: 0.01,
+      max: 0.1,
+      step: 0.01,
+      default: 0.08,
+      unit: '%'
+    },
+    propulsiveEfficiency: {
+      min: 40,
+      max: 80,
+      step: 5,
+      default: 60,
+      unit: '%'
+    },
+    defaultAcceleration: 0.2,
+    helperText: 'U-235 fission: ~0.08% | Less efficient than fusion'
+  },
   fusion: {
     id: 'fusion',
     name: 'Fusion (Epstein Drive)',
@@ -60,6 +123,7 @@ export const ENGINE_TYPES = {
       default: 50,
       unit: '%'
     },
+    defaultAcceleration: 0.3,
     helperText: 'D-T fusion: ~0.4% | D-He³: ~0.7% | Theoretical max: ~1%'
   },
   antimatter: {
@@ -80,6 +144,7 @@ export const ENGINE_TYPES = {
       default: 90,
       unit: '%'
     },
+    defaultAcceleration: 0.5,
     helperText: 'Theoretical max: 100% | Practical with containment losses: 50-90%'
   }
 }
