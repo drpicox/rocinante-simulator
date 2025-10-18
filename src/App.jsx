@@ -2,7 +2,7 @@ import { Canvas } from '@react-three/fiber'
 import { OrbitControls, Sphere } from '@react-three/drei'
 import { useSelector, useDispatch } from 'react-redux'
 import { select, deselect } from './features/space/spaceSlice'
-import { planets, stars, moons } from './data/spaceData'
+import { planets, stars } from './data/spaceData'
 import { Planet } from './components/Planet'
 import { Star } from './components/Star'
 import { Moon } from './components/Moon'
@@ -58,7 +58,7 @@ function SolarSystem({ onSelect }) {
                     labelsVisible={false}
                   />
                   {/* Render moons as children of their planet */}
-                  {moons[planet.name]?.map((moon) => (
+                  {planet.moons?.map((moon) => (
                     <Moon
                       key={moon.name}
                       size={moon.size * 1.5}
@@ -118,12 +118,12 @@ function App() {
     }
 
     // Check if it's a moon
-    for (const [planetName, planetMoons] of Object.entries(moons)) {
-      const moon = planetMoons.find(m => m.name === name)
+    for (const planet of planets) {
+      const moon = planet.moons?.find(m => m.name === name)
       if (moon) return {
         name: moon.name,
         type: 'Natural Satellite',
-        distance: `${moon.distance} AU from ${planetName}`,
+        distance: `${moon.distance} AU from ${planet.name}`,
         description: moon.facts
       }
     }

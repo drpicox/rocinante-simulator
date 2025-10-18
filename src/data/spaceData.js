@@ -1,27 +1,28 @@
 // Solar System Planets (distances in AU, sizes relative)
 export const planets = [
-  { name: 'Mercury', distance: 0.39, size: 0.38, color: '#8c7853' },
-  { name: 'Venus', distance: 0.72, size: 0.95, color: '#ffc649' },
-  { name: 'Earth', distance: 1.0, size: 1.0, color: '#6b93d6' },
-  { name: 'Mars', distance: 1.52, size: 0.53, color: '#c1440e' },
-  { name: 'Jupiter', distance: 5.2, size: 11.2, color: '#d8ca9d' },
-  { name: 'Saturn', distance: 9.5, size: 9.4, color: '#fab27b' },
-  { name: 'Uranus', distance: 19.2, size: 4.0, color: '#4fd0e7' },
-  { name: 'Neptune', distance: 30.1, size: 3.9, color: '#4b70dd' },
+  { name: 'Mercury', distance: 0.39, size: 0.38, color: '#8c7853', moons: [] },
+  { name: 'Venus', distance: 0.72, size: 0.95, color: '#ffc649', moons: [] },
+  {
+    name: 'Earth',
+    distance: 1.0,
+    size: 1.0,
+    color: '#6b93d6',
+    moons: [
+      {
+        name: 'Moon',
+        distance: 0.00257, // AU (384,400 km)
+        size: 0.1, // Relative to Earth
+        color: '#c0c0c0',
+        facts: 'Earth\'s only natural satellite. Causes tides and stabilizes Earth\'s axial tilt. Formed 4.5 billion years ago from a giant impact.'
+      }
+    ]
+  },
+  { name: 'Mars', distance: 1.52, size: 0.53, color: '#c1440e', moons: [] },
+  { name: 'Jupiter', distance: 5.2, size: 11.2, color: '#d8ca9d', moons: [] },
+  { name: 'Saturn', distance: 9.5, size: 9.4, color: '#fab27b', moons: [] },
+  { name: 'Uranus', distance: 19.2, size: 4.0, color: '#4fd0e7', moons: [] },
+  { name: 'Neptune', distance: 30.1, size: 3.9, color: '#4b70dd', moons: [] }
 ];
-
-// Moons data
-export const moons = {
-  Earth: [
-    {
-      name: 'Moon',
-      distance: 0.00357, // AU (384,400 km)
-      size: 0.1, // Relative to Earth
-      color: '#f0f0f0',
-      facts: 'Earth\'s only natural satellite. Causes tides and stabilizes Earth\'s axial tilt. Formed 4.5 billion years ago from a giant impact.'
-    }
-  ]
-};
 
 // 30 Closest Stars to the Sun (distances in light years, positions in 3D space)
 // Using real astronomical data with exoplanets, proper motion, and interesting facts
