@@ -23,7 +23,7 @@ function App() {
   const details = selected ? getDetails(selected) : null
 
   return (
-    <div style={{ height: '100vh' }}>
+    <div style={{ height: '100vh', width: '100vw', margin: 0, padding: 0 }}>
       <Canvas camera={{ position: [0, 0, 50], fov: 75 }}>
         <ambientLight intensity={0.1} />
         <pointLight position={[0, 0, 0]} intensity={1} />
@@ -57,26 +57,36 @@ function App() {
           />
         ))}
       </Canvas>
-      <div style={{ position: 'absolute', top: 10, left: 10, color: 'white' }}>
-        <h1>Rocinante Simulator - Space Map</h1>
-        <p>Use mouse to orbit, zoom, and pan. Click on objects for details.</p>
-      </div>
       {details && (
         <div style={{
           position: 'absolute',
-          top: 10,
-          right: 10,
-          background: 'rgba(0,0,0,0.8)',
+          bottom: 20,
+          left: 20,
+          background: 'rgba(0, 0, 0, 0.85)',
           color: 'white',
-          padding: '10px',
-          borderRadius: '5px',
-          maxWidth: '300px'
+          padding: '20px',
+          borderRadius: '8px',
+          maxWidth: '300px',
+          backdropFilter: 'blur(10px)',
+          border: '1px solid rgba(255, 255, 255, 0.1)'
         }}>
-          <h3>{details.name}</h3>
-          <p><strong>Type:</strong> {details.type}</p>
-          <p><strong>Distance:</strong> {details.distance}</p>
-          <p>{details.description}</p>
-          <button onClick={() => dispatch(deselect())}>Close</button>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+            <h3 style={{ margin: 0 }}>{details.name}</h3>
+            <button
+              onClick={() => dispatch(deselect())}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: 'white',
+                fontSize: '20px',
+                cursor: 'pointer',
+                padding: '0 5px'
+              }}
+            >×</button>
+          </div>
+          <p style={{ margin: '5px 0' }}><strong>Type:</strong> {details.type}</p>
+          <p style={{ margin: '5px 0' }}><strong>Distance:</strong> {details.distance}</p>
+          <p style={{ margin: '10px 0 0 0' }}>{details.description}</p>
         </div>
       )}
     </div>
