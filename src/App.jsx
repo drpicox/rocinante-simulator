@@ -67,7 +67,7 @@ function SolarSystem({ onSelect }) {
                       onClick={() => onSelect(moon.name)}
                       labelsVisible={false}
                       orbitRadius={moon.distance * 150}
-                      orbitSpeed={1}
+                      orbitSpeed={0.3}
                       planetRef={bodyRef}
                     />
                   ))}

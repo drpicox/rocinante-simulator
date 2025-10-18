@@ -28,7 +28,11 @@ export function Moon({ size, color, name, onClick, labelsVisible = false, orbitR
         onPointerOver={(e) => { e.stopPropagation(); setHovered(true) }}
         onPointerOut={() => setHovered(false)}
       >
-        <meshStandardMaterial color={color} />
+        <meshStandardMaterial
+          color={color}
+          emissive={color}
+          emissiveIntensity={0.4}
+        />
       </Sphere>
       {(labelsVisible || hovered) && (
         <Html center style={{ pointerEvents: 'none' }}>
@@ -45,4 +49,3 @@ export function Moon({ size, color, name, onClick, labelsVisible = false, orbitR
     </group>
   )
 }
-
