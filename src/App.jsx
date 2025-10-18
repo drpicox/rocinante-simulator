@@ -6,6 +6,7 @@ import { planets, stars } from './data/spaceData'
 import { Planet } from './components/Planet'
 import { Star } from './components/Star'
 import { OrbitRing } from './components/OrbitRing'
+import { CelestialBody } from './components/CelestialBody'
 import { EffectComposer, Bloom } from '@react-three/postprocessing'
 import './App.css'
 
@@ -48,15 +49,18 @@ function App() {
 
         {/* Planets */}
         {planets.map((planet) => (
-          <Planet
-            key={planet.name}
-            position={[planet.distance * 10, 0, 0]}
-            size={planet.size}
-            color={planet.color}
-            name={planet.name}
-            onClick={() => dispatch(select(planet.name))}
-            labelsVisible={false}
-          />
+          <CelestialBody key={planet.name} orbitRadius={planet.distance * 10} orbitSpeed={1 / planet.distance}>
+            {(bodyRef) => (
+              <Planet
+                ref={bodyRef}
+                size={planet.size}
+                color={planet.color}
+                name={planet.name}
+                onClick={() => dispatch(select(planet.name))}
+                labelsVisible={false}
+              />
+            )}
+          </CelestialBody>
         ))}
 
         {/* Nearby Stars */}

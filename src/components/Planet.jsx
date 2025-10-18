@@ -1,11 +1,11 @@
 import { Sphere, Html, useCursor } from '@react-three/drei'
-import { useState } from 'react'
+import { useState, forwardRef } from 'react'
 
-export function Planet({ position, size, color, name, onClick, labelsVisible = true }) {
+export const Planet = forwardRef(({ position, size, color, name, onClick, labelsVisible = true }, ref) => {
   const [hovered, setHovered] = useState(false)
   useCursor(hovered)
   return (
-    <group position={position}>
+    <group position={position} ref={ref}>
       <Sphere
         args={[size * 0.1, 24, 24]}
         onClick={onClick}
@@ -28,4 +28,4 @@ export function Planet({ position, size, color, name, onClick, labelsVisible = t
       )}
     </group>
   )
-}
+})
