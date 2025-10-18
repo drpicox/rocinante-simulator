@@ -111,7 +111,7 @@ function App() {
 
   return (
     <div style={{ height: '100vh', width: '100vw', margin: 0, padding: 0 }}>
-      <Canvas camera={{ position: [0, 0, 60], fov: 60, far: 200000, near: 0.1 }}>
+      <Canvas camera={{ position: [15, 8, 20], fov: 60, far: 200000, near: 0.1 }}>
         {/* Background starfield - custom component that stays far away */}
         <Starfield count={5000} />
 
@@ -124,6 +124,7 @@ function App() {
           dampingFactor={0.05}
           minDistance={2}
           maxDistance={50000}
+          target={[0, 0, 0]}
         />
 
         {/* Solar System - switches between detailed and simple view */}
