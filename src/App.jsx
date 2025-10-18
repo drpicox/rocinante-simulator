@@ -74,7 +74,7 @@ function App() {
           <Star
             key={star.name}
             position={[star.x * 2000, star.y * 2000, star.z * 2000]}
-            size={8}
+            size={1}
             color={star.color}
             name={star.name}
             onClick={() => dispatch(select(star.name))}

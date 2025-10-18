@@ -1,24 +1,29 @@
 import { Sphere, Html, useCursor } from '@react-three/drei'
-import { useState, useMemo } from 'react'
-import { useThree } from '@react-three/fiber'
+import { useState } from 'react'
+import { useThree, useFrame } from '@react-three/fiber'
 
 export function Star({ position, size = 0.05, color, name, onClick, labelsVisible = false, minVisibleDistance = 1000 }) {
   const [hovered, setHovered] = useState(false)
+  const [isVisible, setIsVisible] = useState(false)
+  const [scaledSize, setScaledSize] = useState(size)
   const { camera } = useThree()
   useCursor(hovered)
 
-  // Calculate if star should be visible based on camera distance from origin
-  const isVisible = useMemo(() => {
+  // Update visibility and size on every frame based on camera distance
+  useFrame(() => {
     const cameraDistance = camera.position.length()
-    return cameraDistance >= minVisibleDistance
-  }, [camera.position, minVisibleDistance])
+    const shouldBeVisible = cameraDistance >= minVisibleDistance
 
-  // Scale the star based on camera distance for better visibility
-  const scaledSize = useMemo(() => {
-    const cameraDistance = camera.position.length()
-    const scaleFactor = Math.max(1, cameraDistance / 1000)
-    return size * scaleFactor
-  }, [camera.position, size])
+    if (shouldBeVisible !== isVisible) {
+      setIsVisible(shouldBeVisible)
+    }
+
+    // Scale stars much more aggressively so they're as big as the solar system when zoomed out
+    const newScaledSize = size * Math.max(1, cameraDistance / 100)
+    if (Math.abs(newScaledSize - scaledSize) > 0.1) {
+      setScaledSize(newScaledSize)
+    }
+  })
 
   if (!isVisible) return null
 
