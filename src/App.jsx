@@ -9,7 +9,69 @@ import { OrbitRing } from './components/OrbitRing'
 import { CelestialBody } from './components/CelestialBody'
 import { Starfield } from './components/Starfield'
 import { EffectComposer, Bloom } from '@react-three/postprocessing'
+import { useState } from 'react'
+import { useFrame, useThree } from '@react-three/fiber'
 import './App.css'
+
+function SolarSystem({ onSelect }) {
+  const [showDetailed, setShowDetailed] = useState(true)
+  const { camera } = useThree()
+
+  // Check camera distance and switch between detailed and simple view
+  useFrame(() => {
+    const cameraDistance = camera.position.length()
+    const shouldShowDetailed = cameraDistance < 8000 // Increased from 3000 to 8000
+    if (shouldShowDetailed !== showDetailed) {
+      setShowDetailed(shouldShowDetailed)
+    }
+  })
+
+  if (showDetailed) {
+    // Detailed view: Sun, planets, and orbits
+    return (
+      <>
+        {/* Sun */}
+        <Sphere args={[0.8, 32, 32]} position={[0, 0, 0]} onClick={() => onSelect('Sun')}>
+          <meshStandardMaterial emissive="#ffdd44" emissiveIntensity={1.2} color="#ffcc33" />
+        </Sphere>
+
+        {/* Orbits */}
+        {planets.map((planet) => (
+          <OrbitRing key={`${planet.name}-orbit`} radius={planet.distance * 10} />
+        ))}
+
+        {/* Planets */}
+        {planets.map((planet) => (
+          <CelestialBody key={planet.name} orbitRadius={planet.distance * 10} orbitSpeed={1 / planet.distance}>
+            {(bodyRef) => (
+              <Planet
+                ref={bodyRef}
+                size={planet.size}
+                color={planet.color}
+                name={planet.name}
+                onClick={() => onSelect(planet.name)}
+                labelsVisible={false}
+              />
+            )}
+          </CelestialBody>
+        ))}
+      </>
+    )
+  } else {
+    // Simple view: Just "Sol" as a star
+    return (
+      <Star
+        position={[0, 0, 0]}
+        size={8}
+        color="#fff3cd"
+        name="Sol (Our Sun)"
+        onClick={() => onSelect('Sun')}
+        labelsVisible={false}
+        minVisibleDistance={0}
+      />
+    )
+  }
+}
 
 function App() {
   const selected = useSelector((state) => state.space.selected)
@@ -43,43 +105,20 @@ function App() {
           maxDistance={50000}
         />
 
-        {/* Sun */}
-        <Sphere args={[0.8, 32, 32]} position={[0, 0, 0]} onClick={() => dispatch(select('Sun'))}>
-          <meshStandardMaterial emissive="#ffdd44" emissiveIntensity={1.2} color="#ffcc33" />
-        </Sphere>
-
-        {/* Orbits */}
-        {planets.map((planet) => (
-          <OrbitRing key={`${planet.name}-orbit`} radius={planet.distance * 10} />
-        ))}
-
-        {/* Planets */}
-        {planets.map((planet) => (
-          <CelestialBody key={planet.name} orbitRadius={planet.distance * 10} orbitSpeed={1 / planet.distance}>
-            {(bodyRef) => (
-              <Planet
-                ref={bodyRef}
-                size={planet.size}
-                color={planet.color}
-                name={planet.name}
-                onClick={() => dispatch(select(planet.name))}
-                labelsVisible={false}
-              />
-            )}
-          </CelestialBody>
-        ))}
+        {/* Solar System - switches between detailed and simple view */}
+        <SolarSystem onSelect={(name) => dispatch(select(name))} />
 
         {/* Nearby Stars - appear when zoomed out */}
         {stars.map((star) => (
           <Star
             key={star.name}
             position={[star.x * 2000, star.y * 2000, star.z * 2000]}
-            size={1}
+            size={3}
             color={star.color}
             name={star.name}
             onClick={() => dispatch(select(star.name))}
             labelsVisible={false}
-            minVisibleDistance={800}
+            minVisibleDistance={0}
           />
         ))}
 
