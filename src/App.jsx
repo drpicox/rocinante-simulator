@@ -42,7 +42,7 @@ function SolarSystem({ onSelect }) {
 
         {/* Planets */}
         {planets.map((planet) => (
-          <CelestialBody key={planet.name} orbitRadius={planet.distance * 10} orbitSpeed={1 / planet.distance}>
+          <CelestialBody key={planet.name} orbitRadius={planet.distance * 10} orbitSpeed={0.1 / planet.distance}>
             {(bodyRef) => (
               <Planet
                 ref={bodyRef}
