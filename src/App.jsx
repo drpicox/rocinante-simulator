@@ -73,8 +73,8 @@ function App() {
         {stars.map((star) => (
           <Star
             key={star.name}
-            position={[star.x * 500, star.y * 500, star.z * 500]}
-            size={2}
+            position={[star.x * 2000, star.y * 2000, star.z * 2000]}
+            size={8}
             color={star.color}
             name={star.name}
             onClick={() => dispatch(select(star.name))}
