@@ -1,10 +1,12 @@
 import { Canvas } from '@react-three/fiber'
-import { OrbitControls, Sphere } from '@react-three/drei'
+import { OrbitControls, Sphere, Stars } from '@react-three/drei'
 import { useSelector, useDispatch } from 'react-redux'
 import { select, deselect } from './features/space/spaceSlice'
 import { planets, stars } from './data/spaceData'
 import { Planet } from './components/Planet'
 import { Star } from './components/Star'
+import { OrbitRing } from './components/OrbitRing'
+import { EffectComposer, Bloom } from '@react-three/postprocessing'
 import './App.css'
 
 function App() {
@@ -24,15 +26,25 @@ function App() {
 
   return (
     <div style={{ height: '100vh', width: '100vw', margin: 0, padding: 0 }}>
-      <Canvas camera={{ position: [0, 0, 50], fov: 75 }}>
-        <ambientLight intensity={0.1} />
-        <pointLight position={[0, 0, 0]} intensity={1} />
-        <OrbitControls />
+      <Canvas camera={{ position: [0, 0, 60], fov: 60 }}>
+        {/* Background starfield */}
+        <Stars radius={300} depth={60} count={8000} factor={4} saturation={0} fade speed={1} />
+
+        {/* Lights */}
+        <ambientLight intensity={0.05} />
+        <pointLight position={[0, 0, 0]} intensity={2} />
+
+        <OrbitControls enableDamping dampingFactor={0.05} />
 
         {/* Sun */}
-        <Sphere args={[0.5, 16, 16]} position={[0, 0, 0]} onClick={() => dispatch(select('Sun'))}>
-          <meshStandardMaterial color="#ffdd44" />
+        <Sphere args={[0.8, 32, 32]} position={[0, 0, 0]} onClick={() => dispatch(select('Sun'))}>
+          <meshStandardMaterial emissive="#ffdd44" emissiveIntensity={1.2} color="#ffcc33" />
         </Sphere>
+
+        {/* Orbits */}
+        {planets.map((planet) => (
+          <OrbitRing key={`${planet.name}-orbit`} radius={planet.distance * 10} />
+        ))}
 
         {/* Planets */}
         {planets.map((planet) => (
@@ -43,10 +55,11 @@ function App() {
             color={planet.color}
             name={planet.name}
             onClick={() => dispatch(select(planet.name))}
+            labelsVisible={false}
           />
         ))}
 
-        {/* Stars */}
+        {/* Nearby Stars */}
         {stars.map((star) => (
           <Star
             key={star.name}
@@ -54,9 +67,16 @@ function App() {
             color={star.color}
             name={star.name}
             onClick={() => dispatch(select(star.name))}
+            labelsVisible={false}
           />
         ))}
+
+        {/* Postprocessing effects */}
+        <EffectComposer>
+          <Bloom intensity={1.2} luminanceThreshold={0.2} luminanceSmoothing={0.025} mipmapBlur />
+        </EffectComposer>
       </Canvas>
+
       {details && (
         <div style={{
           position: 'absolute',
@@ -82,6 +102,7 @@ function App() {
                 cursor: 'pointer',
                 padding: '0 5px'
               }}
+              aria-label="Close details"
             >×</button>
           </div>
           <p style={{ margin: '5px 0' }}><strong>Type:</strong> {details.type}</p>

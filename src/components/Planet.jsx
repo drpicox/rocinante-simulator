@@ -1,9 +1,31 @@
-import { Sphere } from '@react-three/drei'
+import { Sphere, Html, useCursor } from '@react-three/drei'
+import { useState } from 'react'
 
-export function Planet({ position, size, color, name, onClick }) {
+export function Planet({ position, size, color, name, onClick, labelsVisible = true }) {
+  const [hovered, setHovered] = useState(false)
+  useCursor(hovered)
   return (
-    <Sphere args={[size * 0.1, 16, 16]} position={position} onClick={onClick}>
-      <meshStandardMaterial color={color} />
-    </Sphere>
+    <group position={position}>
+      <Sphere
+        args={[size * 0.1, 24, 24]}
+        onClick={onClick}
+        onPointerOver={(e) => { e.stopPropagation(); setHovered(true) }}
+        onPointerOut={() => setHovered(false)}
+      >
+        <meshStandardMaterial color={color} />
+      </Sphere>
+      {(labelsVisible || hovered) && (
+        <Html center style={{ pointerEvents: 'none' }}>
+          <div style={{
+            padding: '2px 6px',
+            background: 'rgba(0,0,0,0.6)',
+            color: 'white',
+            fontSize: 12,
+            borderRadius: 4,
+            whiteSpace: 'nowrap',
+          }}>{name}</div>
+        </Html>
+      )}
+    </group>
   )
 }
