@@ -7,12 +7,12 @@ export const Planet = forwardRef(({ position, size, color, name, onClick, labels
   return (
     <group position={position} ref={ref}>
       <Sphere
-        args={[size * 0.1, 24, 24]}
+        args={[size * 0.2, 24, 24]}
         onClick={onClick}
         onPointerOver={(e) => { e.stopPropagation(); setHovered(true) }}
         onPointerOut={() => setHovered(false)}
       >
-        <meshStandardMaterial color={color} />
+        <meshBasicMaterial color={color} />
       </Sphere>
       {(labelsVisible || hovered) && (
         <Html center style={{ pointerEvents: 'none' }}>
