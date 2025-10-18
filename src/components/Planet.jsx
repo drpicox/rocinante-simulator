@@ -38,7 +38,7 @@ export const Planet = forwardRef(({ position, size, color, name, onClick, labels
           name={moon.name}
           onClick={moon.onClick}
           labelsVisible={false}
-          orbitRadius={moon.distance * 150}
+          orbitRadius={moon.distance * 250}
           orbitSpeed={0.3}
           planetRef={ref}
         />
