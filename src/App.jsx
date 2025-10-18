@@ -1,5 +1,5 @@
 import { Canvas } from '@react-three/fiber'
-import { OrbitControls, Sphere, Stars } from '@react-three/drei'
+import { OrbitControls, Sphere } from '@react-three/drei'
 import { useSelector, useDispatch } from 'react-redux'
 import { select, deselect } from './features/space/spaceSlice'
 import { planets, stars } from './data/spaceData'
@@ -7,6 +7,7 @@ import { Planet } from './components/Planet'
 import { Star } from './components/Star'
 import { OrbitRing } from './components/OrbitRing'
 import { CelestialBody } from './components/CelestialBody'
+import { Starfield } from './components/Starfield'
 import { EffectComposer, Bloom } from '@react-three/postprocessing'
 import './App.css'
 
@@ -27,15 +28,20 @@ function App() {
 
   return (
     <div style={{ height: '100vh', width: '100vw', margin: 0, padding: 0 }}>
-      <Canvas camera={{ position: [0, 0, 60], fov: 60 }}>
-        {/* Background starfield */}
-        <Stars radius={300} depth={60} count={8000} factor={4} saturation={0} fade speed={1} />
+      <Canvas camera={{ position: [0, 0, 60], fov: 60, far: 200000, near: 0.1 }}>
+        {/* Background starfield - custom component that stays far away */}
+        <Starfield count={5000} />
 
         {/* Lights */}
         <ambientLight intensity={0.05} />
         <pointLight position={[0, 0, 0]} intensity={2} />
 
-        <OrbitControls enableDamping dampingFactor={0.05} />
+        <OrbitControls
+          enableDamping
+          dampingFactor={0.05}
+          minDistance={2}
+          maxDistance={20000}
+        />
 
         {/* Sun */}
         <Sphere args={[0.8, 32, 32]} position={[0, 0, 0]} onClick={() => dispatch(select('Sun'))}>
