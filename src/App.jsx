@@ -20,7 +20,7 @@ function App() {
     const planet = planets.find(p => p.name === name)
     if (planet) return { name: planet.name, type: 'Planet', distance: `${planet.distance} AU from Sun`, description: `A planet in our solar system.` }
     const star = stars.find(s => s.name === name)
-    if (star) return { name: star.name, type: 'Star', distance: `${star.distance} light years from Sun`, description: `A nearby star.` }
+    if (star) return { name: star.name, type: star.type, distance: `${star.distance} light years from Sun`, description: `A nearby star.` }
     return null
   }
 
@@ -40,7 +40,7 @@ function App() {
           enableDamping
           dampingFactor={0.05}
           minDistance={2}
-          maxDistance={20000}
+          maxDistance={50000}
         />
 
         {/* Sun */}
@@ -69,15 +69,17 @@ function App() {
           </CelestialBody>
         ))}
 
-        {/* Nearby Stars */}
+        {/* Nearby Stars - appear when zoomed out */}
         {stars.map((star) => (
           <Star
             key={star.name}
-            position={[star.x * 100, star.y * 100, star.z * 100]}
+            position={[star.x * 500, star.y * 500, star.z * 500]}
+            size={2}
             color={star.color}
             name={star.name}
             onClick={() => dispatch(select(star.name))}
             labelsVisible={false}
+            minVisibleDistance={800}
           />
         ))}
 

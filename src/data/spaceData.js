@@ -10,11 +10,37 @@ export const planets = [
   { name: 'Neptune', distance: 30.1, size: 3.9, color: '#4b70dd' },
 ];
 
-// Closest Stars (distances in light years, positions approximated)
+// 30 Closest Stars to the Sun (distances in light years, positions in 3D space)
+// Using real astronomical data for distance and approximate positions
 export const stars = [
-  { name: 'Proxima Centauri', distance: 4.24, x: 1, y: 0, z: 0, color: '#ffeb3b' },
-  { name: 'Barnard\'s Star', distance: 5.96, x: -2, y: 1, z: 1, color: '#ff9800' },
-  { name: 'Wolf 359', distance: 7.86, x: 3, y: -1, z: -1, color: '#f44336' },
-  { name: 'Lalande 21185', distance: 8.29, x: 0, y: 2, z: 2, color: '#9c27b0' },
-  { name: 'Sirius', distance: 8.58, x: -1, y: -2, z: 0, color: '#2196f3' },
+  { name: 'Proxima Centauri', distance: 4.24, x: 1.3, y: -0.8, z: -3.8, color: '#ff6b6b', type: 'Red Dwarf' },
+  { name: 'Alpha Centauri A', distance: 4.37, x: 1.2, y: -0.7, z: -4.0, color: '#fff3cd', type: 'G-type' },
+  { name: 'Alpha Centauri B', distance: 4.37, x: 1.3, y: -0.8, z: -4.0, color: '#ffd700', type: 'K-type' },
+  { name: 'Barnard\'s Star', distance: 5.96, x: -1.8, y: 4.5, z: -3.0, color: '#ff8c42', type: 'Red Dwarf' },
+  { name: 'Wolf 359', distance: 7.86, x: 5.2, y: 3.8, z: 4.2, color: '#ff4757', type: 'Red Dwarf' },
+  { name: 'Lalande 21185', distance: 8.29, x: -2.5, y: 6.8, z: 3.5, color: '#ff6348', type: 'Red Dwarf' },
+  { name: 'Sirius A', distance: 8.58, x: -2.1, y: -6.5, z: -5.0, color: '#e3f2fd', type: 'A-type' },
+  { name: 'Sirius B', distance: 8.58, x: -2.0, y: -6.6, z: -5.0, color: '#bbdefb', type: 'White Dwarf' },
+  { name: 'Luyten 726-8 A', distance: 8.73, x: 7.5, y: -3.2, z: 2.8, color: '#ff5252', type: 'Red Dwarf' },
+  { name: 'Luyten 726-8 B', distance: 8.73, x: 7.6, y: -3.1, z: 2.9, color: '#ff6b6b', type: 'Red Dwarf' },
+  { name: 'Ross 154', distance: 9.69, x: -4.8, y: -6.2, z: 5.5, color: '#ff6b6b', type: 'Red Dwarf' },
+  { name: 'Ross 248', distance: 10.32, x: 8.2, y: 5.5, z: -3.0, color: '#ff5252', type: 'Red Dwarf' },
+  { name: 'Epsilon Eridani', distance: 10.52, x: -3.5, y: -8.8, z: -4.2, color: '#ffd93d', type: 'K-type' },
+  { name: 'Lacaille 9352', distance: 10.74, x: -6.5, y: -7.2, z: 4.0, color: '#ff6348', type: 'Red Dwarf' },
+  { name: 'Ross 128', distance: 10.94, x: 9.8, y: -4.5, z: 1.2, color: '#ff4757', type: 'Red Dwarf' },
+  { name: 'EZ Aquarii A', distance: 11.27, x: -8.5, y: 7.0, z: 3.5, color: '#ff5252', type: 'Red Dwarf' },
+  { name: '61 Cygni A', distance: 11.36, x: 7.2, y: 8.5, z: -2.0, color: '#ffbe76', type: 'K-type' },
+  { name: '61 Cygni B', distance: 11.36, x: 7.3, y: 8.6, z: -2.1, color: '#ffa07a', type: 'K-type' },
+  { name: 'Procyon A', distance: 11.46, x: -10.2, y: -4.5, z: 2.8, color: '#fffacd', type: 'F-type' },
+  { name: 'Procyon B', distance: 11.46, x: -10.3, y: -4.4, z: 2.9, color: '#e0e0e0', type: 'White Dwarf' },
+  { name: 'Struve 2398 A', distance: 11.52, x: 9.5, y: -6.0, z: 3.2, color: '#ff6b6b', type: 'Red Dwarf' },
+  { name: 'Groombridge 34 A', distance: 11.62, x: 8.8, y: 3.5, z: 6.8, color: '#ff5252', type: 'Red Dwarf' },
+  { name: 'Epsilon Ind', distance: 11.87, x: -5.2, y: -9.5, z: -4.5, color: '#ffbe76', type: 'K-type' },
+  { name: 'Tau Ceti', distance: 11.89, x: -4.8, y: -10.2, z: -3.0, color: '#fff9e6', type: 'G-type' },
+  { name: 'YZ Ceti', distance: 12.13, x: -11.5, y: 3.8, z: 2.5, color: '#ff4757', type: 'Red Dwarf' },
+  { name: 'Luyten\'s Star', distance: 12.37, x: 10.8, y: -5.2, z: 3.5, color: '#ff6348', type: 'Red Dwarf' },
+  { name: 'Kapteyn\'s Star', distance: 12.78, x: -7.5, y: -9.8, z: 4.2, color: '#ff8c42', type: 'Red Subdwarf' },
+  { name: 'Lacaille 8760', distance: 12.87, x: -6.8, y: -10.5, z: 3.8, color: '#ffbe76', type: 'K-type' },
+  { name: 'Kruger 60 A', distance: 13.15, x: 11.2, y: 6.5, z: -3.8, color: '#ff5252', type: 'Red Dwarf' },
+  { name: 'Ross 614 A', distance: 13.35, x: -8.2, y: 10.0, z: 4.5, color: '#ff6b6b', type: 'Red Dwarf' },
 ];
