@@ -48,36 +48,24 @@ function SolarSystem({ onSelect }) {
             {(bodyRef) => {
               planetRefs.current[planet.name] = bodyRef
               return (
-                <>
-                  <Planet
-                    ref={bodyRef}
-                    size={planet.size}
-                    color={planet.color}
-                    name={planet.name}
-                    onClick={() => onSelect(planet.name)}
-                    labelsVisible={false}
-                  />
-                  {/* Render moons as children of their planet */}
-                  {planet.moons?.map((moon) => (
-                    <Moon
-                      key={moon.name}
-                      size={moon.size * 1.5}
-                      color={moon.color}
-                      name={moon.name}
-                      onClick={() => onSelect(moon.name)}
-                      labelsVisible={false}
-                      orbitRadius={moon.distance * 150}
-                      orbitSpeed={0.3}
-                      planetRef={bodyRef}
-                    />
-                  ))}
-                </>
+                <Planet
+                  ref={bodyRef}
+                  size={planet.size}
+                  color={planet.color}
+                  name={planet.name}
+                  onClick={() => onSelect(planet.name)}
+                  labelsVisible={false}
+                  moons={planet.moons?.map(moon => ({
+                    ...moon,
+                    onClick: () => onSelect(moon.name)
+                  }))}
+                />
               )
             }}
           </CelestialBody>
         ))}
 
-        {/* Remove the separate Moons section since they're now rendered with planets */}
+        {/* Remove the separate Moons section since they're now rendered by planets */}
       </>
     )
   } else {

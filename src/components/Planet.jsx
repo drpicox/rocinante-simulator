@@ -1,9 +1,11 @@
 import { Sphere, Html, useCursor } from '@react-three/drei'
 import { useState, forwardRef } from 'react'
+import { Moon } from './Moon'
 
-export const Planet = forwardRef(({ position, size, color, name, onClick, labelsVisible = true }, ref) => {
+export const Planet = forwardRef(({ position, size, color, name, onClick, labelsVisible = true, moons = [] }, ref) => {
   const [hovered, setHovered] = useState(false)
   useCursor(hovered)
+
   return (
     <group position={position} ref={ref}>
       <Sphere
@@ -26,6 +28,21 @@ export const Planet = forwardRef(({ position, size, color, name, onClick, labels
           }}>{name}</div>
         </Html>
       )}
+
+      {/* Render moons belonging to this planet */}
+      {moons.map((moon) => (
+        <Moon
+          key={moon.name}
+          size={moon.size * 1.5}
+          color={moon.color}
+          name={moon.name}
+          onClick={moon.onClick}
+          labelsVisible={false}
+          orbitRadius={moon.distance * 150}
+          orbitSpeed={0.3}
+          planetRef={ref}
+        />
+      ))}
     </group>
   )
 })
