@@ -2,20 +2,22 @@ import { Canvas } from '@react-three/fiber'
 import { OrbitControls, Sphere } from '@react-three/drei'
 import { useSelector, useDispatch } from 'react-redux'
 import { select, deselect } from './features/space/spaceSlice'
-import { planets, stars } from './data/spaceData'
+import { planets, stars, moons } from './data/spaceData'
 import { Planet } from './components/Planet'
 import { Star } from './components/Star'
+import { Moon } from './components/Moon'
 import { OrbitRing } from './components/OrbitRing'
 import { CelestialBody } from './components/CelestialBody'
 import { Starfield } from './components/Starfield'
 import { EffectComposer, Bloom } from '@react-three/postprocessing'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import './App.css'
 
 function SolarSystem({ onSelect }) {
   const [showDetailed, setShowDetailed] = useState(true)
   const { camera } = useThree()
+  const planetRefs = useRef({})
 
   // Check camera distance and switch between detailed and simple view
   useFrame(() => {
@@ -43,18 +45,39 @@ function SolarSystem({ onSelect }) {
         {/* Planets */}
         {planets.map((planet) => (
           <CelestialBody key={planet.name} orbitRadius={planet.distance * 10} orbitSpeed={0.1 / planet.distance}>
-            {(bodyRef) => (
-              <Planet
-                ref={bodyRef}
-                size={planet.size}
-                color={planet.color}
-                name={planet.name}
-                onClick={() => onSelect(planet.name)}
-                labelsVisible={false}
-              />
-            )}
+            {(bodyRef) => {
+              planetRefs.current[planet.name] = bodyRef
+              return (
+                <>
+                  <Planet
+                    ref={bodyRef}
+                    size={planet.size}
+                    color={planet.color}
+                    name={planet.name}
+                    onClick={() => onSelect(planet.name)}
+                    labelsVisible={false}
+                  />
+                  {/* Render moons as children of their planet */}
+                  {moons[planet.name]?.map((moon) => (
+                    <Moon
+                      key={moon.name}
+                      size={moon.size * 1.5}
+                      color={moon.color}
+                      name={moon.name}
+                      onClick={() => onSelect(moon.name)}
+                      labelsVisible={false}
+                      orbitRadius={moon.distance * 150}
+                      orbitSpeed={1}
+                      planetRef={bodyRef}
+                    />
+                  ))}
+                </>
+              )
+            }}
           </CelestialBody>
         ))}
+
+        {/* Remove the separate Moons section since they're now rendered with planets */}
       </>
     )
   } else {
@@ -93,6 +116,18 @@ function App() {
       distance: `${planet.distance} AU from Sun`,
       description: `A planet in our solar system.`
     }
+
+    // Check if it's a moon
+    for (const [planetName, planetMoons] of Object.entries(moons)) {
+      const moon = planetMoons.find(m => m.name === name)
+      if (moon) return {
+        name: moon.name,
+        type: 'Natural Satellite',
+        distance: `${moon.distance} AU from ${planetName}`,
+        description: moon.facts
+      }
+    }
+
     const star = stars.find(s => s.name === name)
     if (star) return {
       name: star.name,

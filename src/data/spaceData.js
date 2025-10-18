@@ -10,6 +10,19 @@ export const planets = [
   { name: 'Neptune', distance: 30.1, size: 3.9, color: '#4b70dd' },
 ];
 
+// Moons data
+export const moons = {
+  Earth: [
+    {
+      name: 'Moon',
+      distance: 0.00357, // AU (384,400 km)
+      size: 0.1, // Relative to Earth
+      color: '#f0f0f0',
+      facts: 'Earth\'s only natural satellite. Causes tides and stabilizes Earth\'s axial tilt. Formed 4.5 billion years ago from a giant impact.'
+    }
+  ]
+};
+
 // 30 Closest Stars to the Sun (distances in light years, positions in 3D space)
 // Using real astronomical data with exoplanets, proper motion, and interesting facts
 export const stars = [
