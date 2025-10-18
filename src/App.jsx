@@ -78,11 +78,32 @@ function App() {
   const dispatch = useDispatch()
 
   const getDetails = (name) => {
-    if (name === 'Sun') return { name: 'Sun', type: 'Star', distance: '0 AU', description: 'The center of our solar system.' }
+    if (name === 'Sun' || name === 'Sol (Our Sun)') return {
+      name: 'Sun',
+      type: 'G-type Star',
+      distance: '0 AU',
+      description: 'Our home star! Contains 99.86% of the solar system\'s mass.',
+      exoplanets: 8,
+      motion: null
+    }
     const planet = planets.find(p => p.name === name)
-    if (planet) return { name: planet.name, type: 'Planet', distance: `${planet.distance} AU from Sun`, description: `A planet in our solar system.` }
+    if (planet) return {
+      name: planet.name,
+      type: 'Planet',
+      distance: `${planet.distance} AU from Sun`,
+      description: `A planet in our solar system.`
+    }
     const star = stars.find(s => s.name === name)
-    if (star) return { name: star.name, type: star.type, distance: `${star.distance} light years from Sun`, description: `A nearby star.` }
+    if (star) return {
+      name: star.name,
+      type: star.type,
+      distance: `${star.distance} light years from Sun`,
+      exoplanets: star.exoplanets,
+      habitableZonePlanets: star.habitableZonePlanets,
+      motion: star.motion,
+      closestApproach: star.closestApproach,
+      description: star.facts
+    }
     return null
   }
 
@@ -137,7 +158,7 @@ function App() {
           color: 'white',
           padding: '20px',
           borderRadius: '8px',
-          maxWidth: '300px',
+          maxWidth: '350px',
           backdropFilter: 'blur(10px)',
           border: '1px solid rgba(255, 255, 255, 0.1)'
         }}>
@@ -158,7 +179,34 @@ function App() {
           </div>
           <p style={{ margin: '5px 0' }}><strong>Type:</strong> {details.type}</p>
           <p style={{ margin: '5px 0' }}><strong>Distance:</strong> {details.distance}</p>
-          <p style={{ margin: '10px 0 0 0' }}>{details.description}</p>
+
+          {details.exoplanets !== undefined && (
+            <>
+              <p style={{ margin: '5px 0' }}>
+                <strong>Exoplanets:</strong> {details.exoplanets}
+                {details.habitableZonePlanets > 0 && (
+                  <span style={{ color: '#4caf50', marginLeft: '8px' }}>
+                    🌍 {details.habitableZonePlanets} in habitable zone!
+                  </span>
+                )}
+              </p>
+              {details.motion && (
+                <p style={{ margin: '5px 0' }}>
+                  <strong>Motion:</strong>{' '}
+                  <span style={{ color: details.motion === 'approaching' ? '#64b5f6' : '#ff8a65' }}>
+                    {details.motion === 'approaching' ? '→ Approaching' : '← Receding'}
+                  </span>
+                </p>
+              )}
+              {details.closestApproach && details.closestApproach !== 'moving away' && (
+                <p style={{ margin: '5px 0', fontSize: '0.9em', color: '#ffeb3b' }}>
+                  <strong>Closest approach:</strong> {details.closestApproach}
+                </p>
+              )}
+            </>
+          )}
+
+          <p style={{ margin: '10px 0 0 0', lineHeight: '1.4' }}>{details.description}</p>
         </div>
       )}
     </div>
