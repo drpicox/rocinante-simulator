@@ -19,8 +19,9 @@ import {
 
 // Engine presets: efficiency is in percent (%), acceleration in g's
 const ENGINE_PRESETS = [
-  { key: 'h2o2-chem', name: 'H₂O₂ Chemical', efficiency: 0.00000008, acceleration: 1, icon: Droplet, category: 'chemical' },
-  { key: 'h2-o2-chem', name: 'H₂/O₂ Chemical', efficiency: 0.00000008, acceleration: 1.5, icon: Droplet, category: 'chemical' },
+  { key: 'ch4-o2-chem', name: 'CH₄/O₂ (Methane, Raptor)', efficiency: 0.00000010, acceleration: 1.2, icon: Droplet, category: 'chemical' },
+  { key: 'h2-o2-chem', name: 'H₂/O₂ Chemical', efficiency: 0.00000012, acceleration: 1.5, icon: Droplet, category: 'chemical' },
+  { key: 'h2o2-chem', name: 'H₂O₂ Chemical', efficiency: 0.00000005, acceleration: 1, icon: Droplet, category: 'chemical' },
   { key: 'solar-ion', name: 'Solar Ion', efficiency: 0.0001, acceleration: 0.00002, icon: Zap, category: 'electric' },
   { key: 'orion', name: 'Orion (Fission Bombs)', efficiency: 0.0005, acceleration: 1.5, icon: Flame, category: 'nuclear' },
   { key: 'nuclear-ion', name: 'Nuclear Ion', efficiency: 0.0008, acceleration: 0.00002, icon: Zap, category: 'electric' },
@@ -557,11 +558,14 @@ export default function ShipPanel() {
                     Custom Configuration
                   </option>
                   <optgroup label="━━━ Chemical Propulsion ━━━" style={{ background: '#1a1a2e', color: '#5eead4' }}>
-                    <option value="h2o2-chem" style={{ background: '#1a1a2e', color: 'white' }}>
-                      H₂O₂ Chemical
+                    <option value="ch4-o2-chem" style={{ background: '#1a1a2e', color: 'white' }}>
+                      CH₄/O₂ (Methane, Raptor)
                     </option>
                     <option value="h2-o2-chem" style={{ background: '#1a1a2e', color: 'white' }}>
                       H₂/O₂ Chemical
+                    </option>
+                    <option value="h2o2-chem" style={{ background: '#1a1a2e', color: 'white' }}>
+                      H₂O₂ Chemical
                     </option>
                   </optgroup>
                   <optgroup label="━━━ Electric Propulsion ━━━" style={{ background: '#1a1a2e', color: '#5eead4' }}>
@@ -762,7 +766,7 @@ export default function ShipPanel() {
             label="Mass-Energy Efficiency"
             unit="%"
             value={efficiency}
-            min={0.00000008}
+            min={0.00000005}
             max={100}
             step="any"
             onChange={(v) => dispatch(setEfficiency(v))}

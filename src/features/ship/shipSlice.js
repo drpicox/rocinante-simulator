@@ -24,7 +24,7 @@ const shipSlice = createSlice({
     },
     setEfficiency(state, action) {
       const v = Number(action.payload)
-      state.efficiency = isNaN(v) ? state.efficiency : clamp(v, 0.00000008, 100)
+      state.efficiency = isNaN(v) ? state.efficiency : clamp(v, 0.00000005, 100)
     },
     setAcceleration(state, action) {
       const v = Number(action.payload)
