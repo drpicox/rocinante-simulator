@@ -1,7 +1,7 @@
 // filepath: /Volumes/Projects/claude/rocinante-simulator/src/components/ShipPanel.jsx
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { setMass, setFuel, setEfficiency, setAcceleration, resetShip } from '../features/ship/shipSlice'
+import { setMass, setFuel, setEfficiency, setAcceleration } from '../features/ship/shipSlice'
 import {
   Rocket,
   Droplet,
@@ -183,25 +183,8 @@ export default function ShipPanel() {
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
             transition: 'font-size 0.3s ease'
-          }}>Ship Configuration</h3>
+          }}>{selectedShipKey !== 'Ship Configuration' ? `${selectedShip?.name}` : ''}</h3>
         </div>
-        <button
-          onClick={(e) => { e.stopPropagation(); dispatch(resetShip()) }}
-          style={{
-            background: 'rgba(45, 212, 191, 0.18)',
-            border: '1px solid rgba(45, 212, 191, 0.35)',
-            borderRadius: '6px',
-            color: '#99f6e4',
-            fontSize: '12px',
-            cursor: 'pointer',
-            padding: '6px 10px',
-            transition: 'all 0.2s ease',
-            fontWeight: 600
-          }}
-          onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(45, 212, 191, 0.3)' }}
-          onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(45, 212, 191, 0.18)' }}
-          aria-label="Reset ship configuration"
-        >Reset</button>
       </button>
 
       <div style={{
