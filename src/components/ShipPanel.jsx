@@ -46,8 +46,8 @@ const SHIP_PRESETS = [
     key: 'rocinante',
     name: 'Rocinante',
     icon: Rocket,
-    mass: 25000, // tons
-    fuel: 5000,  // tons
+    mass: 5000, // tons
+    fuel: 25000,  // tons
     engineKey: 'epstein'
   },
   {

@@ -5,11 +5,13 @@ import { clearDestination, selectDestination } from '../features/destination/des
 import { planets, stars } from '../data/spaceData'
 import { selectOrigin } from '../features/origin/originSlice'
 import { selectTravelDistance, computeDistance } from '../features/travel/travelSlice'
+import { calculateTravel, formatTime, formatMass } from '../utils/travel'
 
 export default function DestinationPanel() {
   const destination = useSelector(selectDestination)
   const origin = useSelector(selectOrigin)
   const tripDistance = useSelector(selectTravelDistance)
+  const ship = useSelector((state) => state.ship)
   const dispatch = useDispatch()
   const [isExpanded, setIsExpanded] = useState(true)
 
@@ -72,11 +74,23 @@ export default function DestinationPanel() {
   }
 
   let tripDisplay = null
+  let travelInfo = null
   if (tripDistance) {
     const useLy = tripDistance.ly > 0.01
     tripDisplay = useLy
       ? `${formatSig(tripDistance.ly)} ly`
       : `${formatSig(tripDistance.au)} AU`
+
+    // Calculate travel information
+    const AU = 149597870700 // 1 AU in meters
+    const distanceMeters = tripDistance.au * AU
+    travelInfo = calculateTravel(
+      distanceMeters,
+      ship.mass,
+      ship.fuel,
+      ship.efficiency,
+      ship.acceleration
+    )
   }
 
   const togglePanel = () => {
@@ -271,6 +285,59 @@ export default function DestinationPanel() {
             }}>
               {description}
             </p>
+
+            {/* Travel Information */}
+            {travelInfo && (
+              <div style={{
+                marginTop: '12px',
+                padding: '12px',
+                background: 'rgba(236, 72, 153, 0.08)',
+                borderRadius: '8px',
+                border: '1px solid rgba(236, 72, 153, 0.15)',
+              }}>
+                <h4 style={{
+                  margin: '0 0 8px 0',
+                  fontSize: '15px',
+                  fontWeight: '600',
+                  color: '#f9a8d4'
+                }}>
+                  🚀 Travel Profile
+                </h4>
+                <div style={{ fontSize: '13px' }}>
+                  <p style={{ margin: '4px 0' }}>
+                    <strong style={{ color: '#fbb6ce' }}>Observer time:</strong>{' '}
+                    <span style={{ color: '#fce7f3' }}>{formatTime(travelInfo.observerTime)}</span>
+                  </p>
+                  <p style={{ margin: '4px 0' }}>
+                    <strong style={{ color: '#fbb6ce' }}>Ship time:</strong>{' '}
+                    <span style={{ color: '#fce7f3' }}>{formatTime(travelInfo.shipTime)}</span>
+                  </p>
+                  <p style={{ margin: '4px 0' }}>
+                    <strong style={{ color: '#fbb6ce' }}>Fuel consumed:</strong>{' '}
+                    <span style={{ color: '#fce7f3' }}>{formatMass(travelInfo.fuelConsumed)}</span>
+                  </p>
+                  {!travelInfo.hasEnoughFuel && travelInfo.coastTime > 0 && (
+                    <>
+                      <p style={{ margin: '4px 0' }}>
+                        <strong style={{ color: '#fbb6ce' }}>Coast time:</strong>{' '}
+                        <span style={{ color: '#fce7f3' }}>{formatTime(travelInfo.coastTime)}</span>
+                      </p>
+                      <p style={{
+                        margin: '8px 0 0 0',
+                        fontSize: '0.85em',
+                        color: '#fbbf24',
+                        padding: '6px',
+                        background: 'rgba(251, 191, 36, 0.1)',
+                        borderRadius: '4px',
+                        borderLeft: '2px solid #fbbf24'
+                      }}>
+                        ⚠️ Insufficient fuel for constant acceleration
+                      </p>
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
