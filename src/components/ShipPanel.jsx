@@ -3,12 +3,57 @@ import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setMass, setFuel, setEfficiency, setAcceleration, resetShip } from '../features/ship/shipSlice'
 
+// Engine presets: efficiency is in percent (%), acceleration in g's
+const ENGINE_PRESETS = [
+  { key: 'h2o2-chem', name: 'H2O2 Chemical', efficiency: 0.00000008, acceleration: 1 },
+  { key: 'h2-o2-chem', name: 'H2/O2 Chemical', efficiency: 0.00000008, acceleration: 1.5 },
+  { key: 'solar-ion', name: 'Solar Ion', efficiency: 0.0001, acceleration: 0.00002 },
+  { key: 'orion', name: 'Orion (Fission Bombs)', efficiency: 0.0005, acceleration: 1.5 },
+  { key: 'nuclear-ion', name: 'Nuclear Ion', efficiency: 0.0008, acceleration: 0.00002 },
+  { key: 'vasimr', name: 'Plasma (VASIMR)', efficiency: 0.0008, acceleration: 0.0001 },
+  { key: 'ntr', name: 'Nuclear Thermal (NTR)', efficiency: 0.02, acceleration: 0.3 },
+  { key: 'dt-fusion', name: 'D-T Fusion', efficiency: 0.1, acceleration: 0.1 },
+  { key: 'dt-fusion-perfect', name: 'D-T Fusion (Perfect)', efficiency: 0.4, acceleration: 0.1 },
+  { key: 'dhe3', name: 'D-He3 Fusion', efficiency: 0.2, acceleration: 0.2 },
+  { key: 'dhe3-perfect', name: 'D-He3 Fusion (Perfect)', efficiency: 0.7, acceleration: 0.2 },
+  { key: 'epstein', name: 'Epstein Fusion Drive', efficiency: 0.3, acceleration: 0.3 },
+  { key: 'antimatter', name: 'Antimatter', efficiency: 20, acceleration: 1 },
+  { key: 'antimatter-perfect', name: 'Antimatter (Perfect)', efficiency: 100, acceleration: 1 },
+]
+
+const findPresetKey = (eff, acc) => {
+  // Try exact match first
+  for (const p of ENGINE_PRESETS) {
+    if (p.efficiency === eff && p.acceleration === acc) return p.key
+  }
+  // Then tolerance match (accounts for rounding/clamping)
+  const approxEqual = (a, b) => {
+    const diff = Math.abs(a - b)
+    const denom = Math.max(1e-12, Math.abs(b))
+    return diff <= 1e-12 || diff / denom <= 1e-6
+  }
+  for (const p of ENGINE_PRESETS) {
+    if (approxEqual(p.efficiency, eff) && approxEqual(p.acceleration, acc)) return p.key
+  }
+  return 'custom'
+}
+
 export default function ShipPanel() {
   const dispatch = useDispatch()
   const { mass, fuel, efficiency, acceleration } = useSelector((state) => state.ship)
   const [isExpanded, setIsExpanded] = useState(true)
 
   const headerGradient = 'linear-gradient(135deg, #34d399, #06b6d4)'
+
+  const selectedPresetKey = findPresetKey(Number(efficiency), Number(acceleration))
+
+  const applyPreset = (key) => {
+    const preset = ENGINE_PRESETS.find(p => p.key === key)
+    if (!preset) return
+    // Dispatch both updates; reducers will clamp to valid ranges if needed
+    dispatch(setEfficiency(preset.efficiency))
+    dispatch(setAcceleration(preset.acceleration))
+  }
 
   return (
     <div style={{
@@ -115,11 +160,52 @@ export default function ShipPanel() {
             accent="rgba(45, 212, 191, 0.5)"
             discrete
           />
+
+          {/* Engine preset selector */}
+          <label style={{ display: 'grid', gap: 6 }}>
+            <span style={{ fontSize: 12, color: '#99f6e4', letterSpacing: 0.3 }}>Engine Preset</span>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              padding: 8,
+              borderRadius: 8,
+              background: 'rgba(0,0,0,0.25)',
+              border: '1px solid rgba(45, 212, 191, 0.28)'
+            }}>
+              <select
+                value={selectedPresetKey}
+                onChange={(e) => applyPreset(e.target.value)}
+                style={{
+                  flex: 1,
+                  background: 'transparent',
+                  border: 'none',
+                  color: 'white',
+                  outline: 'none',
+                  fontSize: 14,
+                  appearance: 'none',
+                  WebkitAppearance: 'none'
+                }}
+                aria-label="Engine preset selector"
+              >
+                <option value="custom" style={{ color: 'black' }}>Custom</option>
+                {ENGINE_PRESETS.map(p => (
+                  <option key={p.key} value={p.key} style={{ color: 'black' }}>
+                    {p.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)' }}>
+              Selecting a preset updates Mass-Energy Efficiency (%) and Acceleration (gs).
+            </span>
+          </label>
+
           <Field
             label="Mass-Energy Efficiency"
             unit="%"
             value={efficiency}
-            min={0.0000001}
+            min={0.00000008}
             max={100}
             step="any"
             onChange={(v) => dispatch(setEfficiency(v))}
