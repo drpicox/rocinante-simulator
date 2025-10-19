@@ -8,6 +8,7 @@ import { SolarSystem } from './components/SolarSystem'
 import { Starfield } from './components/Starfield'
 import { EffectComposer, Bloom } from '@react-three/postprocessing'
 import './App.css'
+import DetailsPanel from './components/DetailsPanel'
 
 
 function App() {
@@ -99,66 +100,7 @@ function App() {
         </EffectComposer>
       </Canvas>
 
-      {details && (
-        <div style={{
-          position: 'absolute',
-          bottom: 20,
-          left: 20,
-          background: 'rgba(0, 0, 0, 0.85)',
-          color: 'white',
-          padding: '20px',
-          borderRadius: '8px',
-          maxWidth: '350px',
-          backdropFilter: 'blur(10px)',
-          border: '1px solid rgba(255, 255, 255, 0.1)'
-        }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-            <h3 style={{ margin: 0 }}>{details.name}</h3>
-            <button
-              onClick={() => dispatch(deselect())}
-              style={{
-                background: 'transparent',
-                border: 'none',
-                color: 'white',
-                fontSize: '20px',
-                cursor: 'pointer',
-                padding: '0 5px'
-              }}
-              aria-label="Close details"
-            >×</button>
-          </div>
-          <p style={{ margin: '5px 0' }}><strong>Type:</strong> {details.type}</p>
-          <p style={{ margin: '5px 0' }}><strong>Distance:</strong> {details.distance}</p>
-
-          {details.exoplanets !== undefined && (
-            <>
-              <p style={{ margin: '5px 0' }}>
-                <strong>Exoplanets:</strong> {details.exoplanets}
-                {details.habitableZonePlanets > 0 && (
-                  <span style={{ color: '#4caf50', marginLeft: '8px' }}>
-                    🌍 {details.habitableZonePlanets} in habitable zone!
-                  </span>
-                )}
-              </p>
-              {details.motion && (
-                <p style={{ margin: '5px 0' }}>
-                  <strong>Motion:</strong>{' '}
-                  <span style={{ color: details.motion === 'approaching' ? '#64b5f6' : '#ff8a65' }}>
-                    {details.motion === 'approaching' ? '→ Approaching' : '← Receding'}
-                  </span>
-                </p>
-              )}
-              {details.closestApproach && details.closestApproach !== 'moving away' && (
-                <p style={{ margin: '5px 0', fontSize: '0.9em', color: '#ffeb3b' }}>
-                  <strong>Closest approach:</strong> {details.closestApproach}
-                </p>
-              )}
-            </>
-          )}
-
-          <p style={{ margin: '10px 0 0 0', lineHeight: '1.4' }}>{details.description}</p>
-        </div>
-      )}
+      <DetailsPanel details={details} onClose={() => dispatch(deselect())} />
     </div>
   )
 }
