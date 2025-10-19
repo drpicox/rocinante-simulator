@@ -11,6 +11,7 @@ import './App.css'
 import DestinationPanel from './components/DestinationPanel'
 import ShipPanel from './components/ShipPanel'
 import TravelLine from './components/TravelLine'
+import RangeSphere from './components/RangeSphere'
 
 
 function App() {
@@ -53,6 +54,9 @@ function App() {
 
         {/* Travel line from origin to destination */}
         <TravelLine />
+
+        {/* Maximum range sphere from origin */}
+        <RangeSphere />
 
         {/* Postprocessing effects */}
         <EffectComposer>
