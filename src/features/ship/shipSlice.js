@@ -6,6 +6,7 @@ const initialState = {
   fuel: 5000, // tons
   efficiency: 72, // percent
   acceleration: 0.3, // g's
+  showRange: true, // show range sphere by default
 }
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max)
@@ -30,11 +31,14 @@ const shipSlice = createSlice({
       const v = Number(action.payload)
       state.acceleration = isNaN(v) ? state.acceleration : clamp(v, 1e-6, 10)
     },
+    setShowRange(state, action) {
+      state.showRange = Boolean(action.payload)
+    },
     resetShip() {
       return initialState
     }
   }
 })
 
-export const { setMass, setFuel, setEfficiency, setAcceleration, resetShip } = shipSlice.actions
+export const { setMass, setFuel, setEfficiency, setAcceleration, setShowRange, resetShip } = shipSlice.actions
 export default shipSlice.reducer

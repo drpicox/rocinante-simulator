@@ -1,7 +1,8 @@
 // filepath: /Volumes/Projects/claude/rocinante-simulator/src/components/ShipPanel.jsx
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { setMass, setFuel, setEfficiency, setAcceleration } from '../features/ship/shipSlice'
+import { setMass, setFuel, setEfficiency, setAcceleration, setShowRange } from '../features/ship/shipSlice'
+import { calculateMaxRange, formatRange } from '../utils/range'
 import {
   Rocket,
   Droplet,
@@ -14,7 +15,10 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
-  Ship
+  Ship,
+  CircleDot,
+  Eye,
+  EyeOff
 } from 'lucide-react'
 
 // Engine presets: efficiency is in percent (%), acceleration in g's
@@ -75,7 +79,7 @@ const findPresetKey = (eff, acc) => {
 
 export default function ShipPanel() {
   const dispatch = useDispatch()
-  const { mass, fuel, efficiency, acceleration } = useSelector((state) => state.ship)
+  const { mass, fuel, efficiency, acceleration, showRange } = useSelector((state) => state.ship)
   const [isExpanded, setIsExpanded] = useState(true)
 
   const headerGradient = 'linear-gradient(135deg, #34d399, #06b6d4)'
@@ -127,6 +131,15 @@ export default function ShipPanel() {
     idx = (idx + delta + keys.length) % keys.length
     applyShipPreset(keys[idx])
   }
+
+  // Calculate max range based on current ship parameters
+  const maxRangeMeters = useMemo(() => {
+    return calculateMaxRange(mass, fuel, efficiency, acceleration)
+  }, [mass, fuel, efficiency, acceleration])
+
+  const formattedRange = useMemo(() => {
+    return formatRange(maxRangeMeters)
+  }, [maxRangeMeters])
 
   return (
     <div style={{
@@ -190,8 +203,9 @@ export default function ShipPanel() {
       <div style={{
         maxHeight: isExpanded ? '600px' : 0,
         opacity: isExpanded ? 1 : 0,
-        overflow: 'hidden',
-        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
+        overflow: isExpanded ? 'auto' : 'hidden',
+        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+        paddingRight: isExpanded ? '4px' : 0
       }}>
         <div style={{ display: 'grid', gap: '12px' }}>
           {/* Ship preset selector */}
@@ -767,6 +781,73 @@ export default function ShipPanel() {
             accent="rgba(59, 130, 246, 0.5)"
             discrete
           />
+
+          {/* Maximum Range Display with visibility toggle */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: 8,
+            padding: '10px 12px',
+            borderRadius: 8,
+            background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.12), rgba(16, 185, 129, 0.12))',
+            border: '1px solid rgba(45, 212, 191, 0.4)',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1 }}>
+              <CircleDot size={16} strokeWidth={2.5} style={{ color: '#5eead4', flexShrink: 0 }} />
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <span style={{
+                  fontSize: 10,
+                  color: '#99f6e4',
+                  letterSpacing: 0.5,
+                  fontWeight: 600,
+                  textTransform: 'uppercase',
+                }}>
+                  Max Range
+                </span>
+                <span style={{
+                  fontSize: 16,
+                  color: '#5eead4',
+                  fontWeight: 700,
+                  letterSpacing: 0.3,
+                }}>
+                  {formattedRange}
+                </span>
+              </div>
+            </div>
+            <button
+              onClick={() => dispatch(setShowRange(!showRange))}
+              title={showRange ? "Hide range sphere" : "Show range sphere"}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: 32,
+                height: 32,
+                borderRadius: 6,
+                background: showRange ? 'rgba(45, 212, 191, 0.25)' : 'rgba(255, 255, 255, 0.1)',
+                border: showRange ? '2px solid rgba(45, 212, 191, 0.6)' : '2px solid rgba(255, 255, 255, 0.2)',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                flexShrink: 0
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = showRange ? 'rgba(45, 212, 191, 0.35)' : 'rgba(255, 255, 255, 0.15)'
+                e.currentTarget.style.borderColor = showRange ? 'rgba(45, 212, 191, 0.8)' : 'rgba(255, 255, 255, 0.3)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = showRange ? 'rgba(45, 212, 191, 0.25)' : 'rgba(255, 255, 255, 0.1)'
+                e.currentTarget.style.borderColor = showRange ? 'rgba(45, 212, 191, 0.6)' : 'rgba(255, 255, 255, 0.2)'
+              }}
+              aria-label={showRange ? "Hide range sphere" : "Show range sphere"}
+            >
+              {showRange ? (
+                <Eye size={18} strokeWidth={2.5} style={{ color: '#34d399' }} />
+              ) : (
+                <EyeOff size={18} strokeWidth={2.5} style={{ color: '#ffffff', opacity: 0.7 }} />
+              )}
+            </button>
+          </div>
         </div>
 
         <div style={{

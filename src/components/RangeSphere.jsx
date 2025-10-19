@@ -43,7 +43,7 @@ export function RangeSphere() {
     }
   })
 
-  if (!origin?.name || maxRange <= 0) return null
+  if (!origin?.name || maxRange <= 0 || !ship.showRange) return null
 
   return (
     <mesh ref={meshRef}>
