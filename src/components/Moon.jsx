@@ -2,7 +2,7 @@ import { Sphere, Html, useCursor } from '@react-three/drei'
 import { useState, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import OriginIndicator from './OriginIndicator'
-import { useIsOrigin, useOriginClick } from '../utils/origin'
+import { useIsOrigin, useOriginClick } from '../features/origin/hooks.js'
 
 export function Moon({ size, color, name, onClick, labelsVisible = false, orbitRadius, orbitSpeed, planetRef }) {
   const [hovered, setHovered] = useState(false)
