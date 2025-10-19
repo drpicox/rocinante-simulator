@@ -335,6 +335,36 @@ export default function DestinationPanel() {
                       </p>
                     </>
                   )}
+                  <p style={{
+                    margin: '8px 0 0 0',
+                    fontSize: '11px',
+                    color: 'rgba(167, 139, 250, 0.6)',
+                    textAlign: 'right',
+                    fontStyle: 'italic'
+                  }}>
+                    Calculations based on{' '}
+                    <a
+                      href="https://math.ucr.edu/home/baez/physics/Relativity/SR/Rocket/rocket.html"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        color: '#a78bfa',
+                        textDecoration: 'none',
+                        borderBottom: '1px dotted rgba(167, 139, 250, 0.4)',
+                        transition: 'all 0.2s ease'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.color = '#c4b5fd'
+                        e.currentTarget.style.borderBottomStyle = 'solid'
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.color = '#a78bfa'
+                        e.currentTarget.style.borderBottomStyle = 'dotted'
+                      }}
+                    >
+                      relativistic rocket physics
+                    </a>
+                  </p>
                 </div>
               </div>
             )}
