@@ -1,11 +1,11 @@
 // filepath: /Volumes/Projects/claude/rocinante-simulator/src/components/DetailsPanel.jsx
 import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { deselect } from '../features/space/spaceSlice'
+import { clearDestination, selectDestination } from '../features/destination/destinationSlice'
 import { planets, stars } from '../data/spaceData'
 
 export default function DetailsPanel() {
-  const selected = useSelector((state) => state.space.selected)
+  const destination = useSelector(selectDestination)
   const dispatch = useDispatch()
   const [isExpanded, setIsExpanded] = useState(true)
 
@@ -51,7 +51,7 @@ export default function DetailsPanel() {
     return null
   }
 
-  const details = selected ? getDetails(selected) : null
+  const details = destination ? getDetails(destination) : null
   const hasContent = !!details
 
   const togglePanel = () => {
@@ -116,14 +116,14 @@ export default function DetailsPanel() {
             backgroundClip: 'text',
             transition: 'font-size 0.3s ease'
           }}>
-            {hasContent ? name : 'Object Details'}
+            {hasContent ? name : 'Target'}
           </h3>
         </div>
         {hasContent && (
           <button
             onClick={(e) => {
               e.stopPropagation()
-              dispatch(deselect())
+              dispatch(clearDestination())
             }}
             style={{
               background: 'rgba(139, 92, 246, 0.2)',

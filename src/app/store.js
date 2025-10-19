@@ -1,13 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit'
 import counterReducer from '../features/counter/counterSlice'
-import spaceReducer from '../features/space/spaceSlice'
+import destinationReducer from '../features/destination/destinationSlice'
 import originReducer from '../features/origin/originSlice'
 import shipReducer from '../features/ship/shipSlice'
 
 export const store = configureStore({
   reducer: {
     counter: counterReducer,
-    space: spaceReducer,
+    destination: destinationReducer,
     origin: originReducer,
     ship: shipReducer,
   },

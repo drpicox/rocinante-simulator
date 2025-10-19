@@ -183,7 +183,7 @@ export default function ShipPanel() {
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
             transition: 'font-size 0.3s ease'
-          }}>{selectedShipKey !== 'Ship Configuration' ? `${selectedShip?.name}` : ''}</h3>
+          }}>{selectedShip?.name ? `${selectedShip?.name}` : 'Ship Configuration'}</h3>
         </div>
       </button>
 

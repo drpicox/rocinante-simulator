@@ -1,7 +1,7 @@
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import { useDispatch } from 'react-redux'
-import { select } from './features/space/spaceSlice'
+import { setDestination } from './features/destination/destinationSlice'
 import { stars } from './data/spaceData'
 import { Star } from './components/Star'
 import { SolarSystem } from './components/SolarSystem'
@@ -34,7 +34,7 @@ function App() {
         />
 
         {/* Solar System - switches between detailed and simple view */}
-        <SolarSystem onSelect={(name) => dispatch(select(name))} />
+        <SolarSystem onSelect={(name) => dispatch(setDestination(name))} />
 
         {/* Nearby Stars - appear when zoomed out */}
         {stars.map((star) => (
@@ -44,7 +44,7 @@ function App() {
             size={3}
             color={star.color}
             name={star.name}
-            onClick={() => dispatch(select(star.name))}
+            onClick={() => dispatch(setDestination(star.name))}
             labelsVisible={false}
             minVisibleDistance={0}
           />
