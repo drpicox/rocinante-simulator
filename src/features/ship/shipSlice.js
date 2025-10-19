@@ -16,11 +16,11 @@ const shipSlice = createSlice({
   reducers: {
     setMass(state, action) {
       const v = Number(action.payload)
-      state.mass = isNaN(v) ? state.mass : clamp(v, 0, 1_000_000)
+      state.mass = isNaN(v) ? state.mass : clamp(v, 1, 1_000_000_000)
     },
     setFuel(state, action) {
       const v = Number(action.payload)
-      state.fuel = isNaN(v) ? state.fuel : clamp(v, 0, 1_000_000)
+      state.fuel = isNaN(v) ? state.fuel : clamp(v, 1, 1_000_000_000)
     },
     setEfficiency(state, action) {
       const v = Number(action.payload)

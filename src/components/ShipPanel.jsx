@@ -97,8 +97,8 @@ export default function ShipPanel() {
             label="Mass"
             unit="tons"
             value={mass}
-            min={0}
-            max={1000000}
+            min={1}
+            max={1000000000}
             step={1}
             onChange={(v) => dispatch(setMass(v))}
             accent="rgba(45, 212, 191, 0.5)"
@@ -108,8 +108,8 @@ export default function ShipPanel() {
             label="Fuel"
             unit="tons"
             value={fuel}
-            min={0}
-            max={1000000}
+            min={1}
+            max={1000000000}
             step={1}
             onChange={(v) => dispatch(setFuel(v))}
             accent="rgba(45, 212, 191, 0.5)"
