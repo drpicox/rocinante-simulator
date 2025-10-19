@@ -2,23 +2,34 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setMass, setFuel, setEfficiency, setAcceleration, resetShip } from '../features/ship/shipSlice'
+import {
+  Rocket,
+  Droplet,
+  Zap,
+  Atom,
+  Sparkles,
+  Star,
+  Flame,
+  Settings,
+  ChevronDown
+} from 'lucide-react'
 
 // Engine presets: efficiency is in percent (%), acceleration in g's
 const ENGINE_PRESETS = [
-  { key: 'h2o2-chem', name: 'H2O2 Chemical', efficiency: 0.00000008, acceleration: 1 },
-  { key: 'h2-o2-chem', name: 'H2/O2 Chemical', efficiency: 0.00000008, acceleration: 1.5 },
-  { key: 'solar-ion', name: 'Solar Ion', efficiency: 0.0001, acceleration: 0.00002 },
-  { key: 'orion', name: 'Orion (Fission Bombs)', efficiency: 0.0005, acceleration: 1.5 },
-  { key: 'nuclear-ion', name: 'Nuclear Ion', efficiency: 0.0008, acceleration: 0.00002 },
-  { key: 'vasimr', name: 'Plasma (VASIMR)', efficiency: 0.0008, acceleration: 0.0001 },
-  { key: 'ntr', name: 'Nuclear Thermal (NTR)', efficiency: 0.02, acceleration: 0.3 },
-  { key: 'dt-fusion', name: 'D-T Fusion', efficiency: 0.1, acceleration: 0.1 },
-  { key: 'dt-fusion-perfect', name: 'D-T Fusion (Perfect)', efficiency: 0.4, acceleration: 0.1 },
-  { key: 'dhe3', name: 'D-He3 Fusion', efficiency: 0.2, acceleration: 0.2 },
-  { key: 'dhe3-perfect', name: 'D-He3 Fusion (Perfect)', efficiency: 0.7, acceleration: 0.2 },
-  { key: 'epstein', name: 'Epstein Fusion Drive', efficiency: 0.3, acceleration: 0.3 },
-  { key: 'antimatter', name: 'Antimatter', efficiency: 20, acceleration: 1 },
-  { key: 'antimatter-perfect', name: 'Antimatter (Perfect)', efficiency: 100, acceleration: 1 },
+  { key: 'h2o2-chem', name: 'H₂O₂ Chemical', efficiency: 0.00000008, acceleration: 1, icon: Droplet, category: 'chemical' },
+  { key: 'h2-o2-chem', name: 'H₂/O₂ Chemical', efficiency: 0.00000008, acceleration: 1.5, icon: Droplet, category: 'chemical' },
+  { key: 'solar-ion', name: 'Solar Ion', efficiency: 0.0001, acceleration: 0.00002, icon: Zap, category: 'electric' },
+  { key: 'orion', name: 'Orion (Fission Bombs)', efficiency: 0.0005, acceleration: 1.5, icon: Flame, category: 'nuclear' },
+  { key: 'nuclear-ion', name: 'Nuclear Ion', efficiency: 0.0008, acceleration: 0.00002, icon: Zap, category: 'electric' },
+  { key: 'vasimr', name: 'Plasma (VASIMR)', efficiency: 0.0008, acceleration: 0.0001, icon: Zap, category: 'electric' },
+  { key: 'ntr', name: 'Nuclear Thermal (NTR)', efficiency: 0.02, acceleration: 0.3, icon: Atom, category: 'nuclear' },
+  { key: 'dt-fusion', name: 'D-T Fusion', efficiency: 0.1, acceleration: 0.1, icon: Atom, category: 'fusion' },
+  { key: 'dt-fusion-perfect', name: 'D-T Fusion (Perfect)', efficiency: 0.4, acceleration: 0.1, icon: Sparkles, category: 'fusion' },
+  { key: 'dhe3', name: 'D-He³ Fusion', efficiency: 0.2, acceleration: 0.2, icon: Atom, category: 'fusion' },
+  { key: 'dhe3-perfect', name: 'D-He³ Fusion (Perfect)', efficiency: 0.7, acceleration: 0.2, icon: Sparkles, category: 'fusion' },
+  { key: 'epstein', name: 'Epstein Fusion Drive', efficiency: 0.3, acceleration: 0.3, icon: Rocket, category: 'fusion' },
+  { key: 'antimatter', name: 'Antimatter', efficiency: 20, acceleration: 1, icon: Star, category: 'exotic' },
+  { key: 'antimatter-perfect', name: 'Antimatter (Perfect)', efficiency: 100, acceleration: 1, icon: Sparkles, category: 'exotic' },
 ]
 
 const findPresetKey = (eff, acc) => {
@@ -46,6 +57,8 @@ export default function ShipPanel() {
   const headerGradient = 'linear-gradient(135deg, #34d399, #06b6d4)'
 
   const selectedPresetKey = findPresetKey(Number(efficiency), Number(acceleration))
+  const selectedPreset = ENGINE_PRESETS.find(p => p.key === selectedPresetKey)
+  const SelectedIcon = selectedPreset?.icon || Settings
 
   const applyPreset = (key) => {
     const preset = ENGINE_PRESETS.find(p => p.key === key)
@@ -168,22 +181,44 @@ export default function ShipPanel() {
               color: '#99f6e4',
               letterSpacing: 0.5,
               fontWeight: 600,
-              textTransform: 'uppercase'
+              textTransform: 'uppercase',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6
             }}>
-              🚀 Engine
+              <Rocket size={14} strokeWidth={2.5} />
+              Engine Type
             </span>
             <div style={{
               position: 'relative',
               display: 'flex',
               alignItems: 'center',
-              gap: 8,
-              padding: '10px 12px',
+              gap: 10,
+              padding: '12px 14px',
               borderRadius: 8,
-              background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.08), rgba(16, 185, 129, 0.08))',
-              border: '1px solid rgba(45, 212, 191, 0.35)',
-              boxShadow: '0 2px 8px rgba(45, 212, 191, 0.1)',
-              transition: 'all 0.2s ease'
-            }}>
+              background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.12), rgba(16, 185, 129, 0.12))',
+              border: '1px solid rgba(45, 212, 191, 0.4)',
+              boxShadow: '0 2px 12px rgba(45, 212, 191, 0.15)',
+              transition: 'all 0.2s ease',
+              cursor: 'pointer'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'linear-gradient(135deg, rgba(6, 182, 212, 0.18), rgba(16, 185, 129, 0.18))'
+              e.currentTarget.style.borderColor = 'rgba(45, 212, 191, 0.5)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'linear-gradient(135deg, rgba(6, 182, 212, 0.12), rgba(16, 185, 129, 0.12))'
+              e.currentTarget.style.borderColor = 'rgba(45, 212, 191, 0.4)'
+            }}
+            >
+              <SelectedIcon
+                size={18}
+                strokeWidth={2}
+                style={{
+                  color: selectedPresetKey === 'custom' ? 'rgba(255,255,255,0.5)' : '#5eead4',
+                  flexShrink: 0
+                }}
+              />
               <select
                 value={selectedPresetKey}
                 onChange={(e) => applyPreset(e.target.value)}
@@ -199,7 +234,7 @@ export default function ShipPanel() {
                   appearance: 'none',
                   WebkitAppearance: 'none',
                   MozAppearance: 'none',
-                  paddingRight: 20
+                  paddingRight: 24
                 }}
                 aria-label="Engine preset selector"
               >
@@ -208,75 +243,73 @@ export default function ShipPanel() {
                   color: 'rgba(255,255,255,0.7)',
                   fontStyle: 'italic'
                 }}>
-                  ⚙️ Custom Configuration
+                  Custom Configuration
                 </option>
                 <optgroup label="━━━ Chemical Propulsion ━━━" style={{ background: '#1a1a2e', color: '#5eead4' }}>
-                  <option value="h2o2-chem" style={{ background: '#1a1a2e', color: 'white', paddingLeft: 8 }}>
-                    💧 H₂O₂ Chemical
+                  <option value="h2o2-chem" style={{ background: '#1a1a2e', color: 'white' }}>
+                    H₂O₂ Chemical
                   </option>
-                  <option value="h2-o2-chem" style={{ background: '#1a1a2e', color: 'white', paddingLeft: 8 }}>
-                    💧 H₂/O₂ Chemical
+                  <option value="h2-o2-chem" style={{ background: '#1a1a2e', color: 'white' }}>
+                    H₂/O₂ Chemical
                   </option>
                 </optgroup>
                 <optgroup label="━━━ Electric Propulsion ━━━" style={{ background: '#1a1a2e', color: '#5eead4' }}>
-                  <option value="solar-ion" style={{ background: '#1a1a2e', color: 'white', paddingLeft: 8 }}>
-                    ⚡ Solar Ion
+                  <option value="solar-ion" style={{ background: '#1a1a2e', color: 'white' }}>
+                    Solar Ion
                   </option>
-                  <option value="nuclear-ion" style={{ background: '#1a1a2e', color: 'white', paddingLeft: 8 }}>
-                    ⚡ Nuclear Ion
+                  <option value="nuclear-ion" style={{ background: '#1a1a2e', color: 'white' }}>
+                    Nuclear Ion
                   </option>
-                  <option value="vasimr" style={{ background: '#1a1a2e', color: 'white', paddingLeft: 8 }}>
-                    ⚡ Plasma (VASIMR)
+                  <option value="vasimr" style={{ background: '#1a1a2e', color: 'white' }}>
+                    Plasma (VASIMR)
                   </option>
                 </optgroup>
                 <optgroup label="━━━ Nuclear Propulsion ━━━" style={{ background: '#1a1a2e', color: '#5eead4' }}>
-                  <option value="orion" style={{ background: '#1a1a2e', color: 'white', paddingLeft: 8 }}>
-                    💥 Orion (Fission Bombs)
+                  <option value="orion" style={{ background: '#1a1a2e', color: 'white' }}>
+                    Orion (Fission Bombs)
                   </option>
-                  <option value="ntr" style={{ background: '#1a1a2e', color: 'white', paddingLeft: 8 }}>
-                    ☢️ Nuclear Thermal (NTR)
+                  <option value="ntr" style={{ background: '#1a1a2e', color: 'white' }}>
+                    Nuclear Thermal (NTR)
                   </option>
                 </optgroup>
                 <optgroup label="━━━ Fusion Drives ━━━" style={{ background: '#1a1a2e', color: '#5eead4' }}>
-                  <option value="dt-fusion" style={{ background: '#1a1a2e', color: 'white', paddingLeft: 8 }}>
-                    ⚛️ D-T Fusion
+                  <option value="dt-fusion" style={{ background: '#1a1a2e', color: 'white' }}>
+                    D-T Fusion
                   </option>
-                  <option value="dt-fusion-perfect" style={{ background: '#1a1a2e', color: 'white', paddingLeft: 8 }}>
-                    ✨ D-T Fusion (Perfect)
+                  <option value="dt-fusion-perfect" style={{ background: '#1a1a2e', color: 'white' }}>
+                    D-T Fusion (Perfect)
                   </option>
-                  <option value="dhe3" style={{ background: '#1a1a2e', color: 'white', paddingLeft: 8 }}>
-                    ⚛️ D-He³ Fusion
+                  <option value="dhe3" style={{ background: '#1a1a2e', color: 'white' }}>
+                    D-He³ Fusion
                   </option>
-                  <option value="dhe3-perfect" style={{ background: '#1a1a2e', color: 'white', paddingLeft: 8 }}>
-                    ✨ D-He³ Fusion (Perfect)
+                  <option value="dhe3-perfect" style={{ background: '#1a1a2e', color: 'white' }}>
+                    D-He³ Fusion (Perfect)
                   </option>
-                  <option value="epstein" style={{ background: '#1a1a2e', color: '#34d399', paddingLeft: 8, fontWeight: 600 }}>
-                    🌟 Epstein Fusion Drive
+                  <option value="epstein" style={{ background: '#1a1a2e', color: '#34d399', fontWeight: 600 }}>
+                    Epstein Fusion Drive
                   </option>
                 </optgroup>
                 <optgroup label="━━━ Exotic Propulsion ━━━" style={{ background: '#1a1a2e', color: '#5eead4' }}>
-                  <option value="antimatter" style={{ background: '#1a1a2e', color: '#fbbf24', paddingLeft: 8, fontWeight: 600 }}>
-                    ⭐ Antimatter
+                  <option value="antimatter" style={{ background: '#1a1a2e', color: '#fbbf24', fontWeight: 600 }}>
+                    Antimatter
                   </option>
-                  <option value="antimatter-perfect" style={{ background: '#1a1a2e', color: '#f59e0b', paddingLeft: 8, fontWeight: 600 }}>
-                    💫 Antimatter (Perfect)
+                  <option value="antimatter-perfect" style={{ background: '#1a1a2e', color: '#f59e0b', fontWeight: 600 }}>
+                    Antimatter (Perfect)
                   </option>
                 </optgroup>
               </select>
-              {/* Dropdown arrow */}
-              <span style={{
-                position: 'absolute',
-                right: 12,
-                top: '50%',
-                transform: 'translateY(-50%)',
-                pointerEvents: 'none',
-                color: '#5eead4',
-                fontSize: 12
-              }}>▼</span>
+              <ChevronDown
+                size={16}
+                strokeWidth={2.5}
+                style={{
+                  color: '#5eead4',
+                  flexShrink: 0
+                }}
+              />
             </div>
             {selectedPresetKey !== 'custom' && (
               <div style={{
-                padding: '6px 10px',
+                padding: '8px 12px',
                 background: 'rgba(94, 234, 212, 0.1)',
                 borderRadius: 6,
                 border: '1px solid rgba(94, 234, 212, 0.25)',
@@ -284,25 +317,37 @@ export default function ShipPanel() {
                 color: '#99f6e4',
                 display: 'flex',
                 justifyContent: 'space-between',
-                alignItems: 'center'
+                alignItems: 'center',
+                gap: 12
               }}>
-                <span>
-                  <strong style={{ color: '#5eead4' }}>η:</strong> {ENGINE_PRESETS.find(p => p.key === selectedPresetKey)?.efficiency}%
-                </span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <Sparkles size={12} style={{ color: '#5eead4' }} />
+                  <span>
+                    <strong style={{ color: '#5eead4' }}>Efficiency:</strong> {selectedPreset?.efficiency}%
+                  </span>
+                </div>
                 <span style={{ color: 'rgba(255,255,255,0.3)' }}>•</span>
-                <span>
-                  <strong style={{ color: '#5eead4' }}>a:</strong> {ENGINE_PRESETS.find(p => p.key === selectedPresetKey)?.acceleration}g
-                </span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <Rocket size={12} style={{ color: '#5eead4' }} />
+                  <span>
+                    <strong style={{ color: '#5eead4' }}>Accel:</strong> {selectedPreset?.acceleration}g
+                  </span>
+                </div>
               </div>
             )}
             {selectedPresetKey === 'custom' && (
-              <span style={{
+              <div style={{
                 fontSize: 11,
                 color: 'rgba(255,255,255,0.5)',
-                fontStyle: 'italic'
+                fontStyle: 'italic',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                padding: '4px 0'
               }}>
-                💡 Adjust sliders below to configure your custom engine
-              </span>
+                <Settings size={12} style={{ color: 'rgba(255,255,255,0.5)' }} />
+                Adjust sliders below to configure your custom engine
+              </div>
             )}
           </label>
 
