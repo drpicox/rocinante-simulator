@@ -1,19 +1,61 @@
 // filepath: /Volumes/Projects/claude/rocinante-simulator/src/components/DetailsPanel.jsx
 import React from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { deselect } from '../features/space/spaceSlice'
+import { planets, stars } from '../data/spaceData'
 
-export default function DetailsPanel({ details, onClose }) {
+export default function DetailsPanel() {
+  const selected = useSelector((state) => state.space.selected)
+  const dispatch = useDispatch()
+
+  if (!selected) return null
+
+  const getDetails = (name) => {
+    if (name === 'Sun' || name === 'Sol (Our Sun)') return {
+      name: 'Sun',
+      type: 'G-type Star',
+      distance: '0 AU',
+      description: 'Our home star! Contains 99.86% of the solar system\'s mass.',
+      exoplanets: 8,
+      motion: null
+    }
+    const planet = planets.find(p => p.name === name)
+    if (planet) return {
+      name: planet.name,
+      type: 'Planet',
+      distance: `${planet.distance} AU from Sun`,
+      description: `A planet in our solar system.`
+    }
+
+    // Check if it's a moon
+    for (const planet of planets) {
+      const moon = planet.moons?.find(m => m.name === name)
+      if (moon) return {
+        name: moon.name,
+        type: 'Natural Satellite',
+        distance: `${moon.distance} AU from ${planet.name}`,
+        description: moon.facts
+      }
+    }
+
+    const star = stars.find(s => s.name === name)
+    if (star) return {
+      name: star.name,
+      type: star.type,
+      distance: `${star.distance} light years from Sun`,
+      exoplanets: star.exoplanets,
+      habitableZonePlanets: star.habitableZonePlanets,
+      motion: star.motion,
+      closestApproach: star.closestApproach,
+      description: star.facts
+    }
+    return null
+  }
+
+  const details = getDetails(selected)
   if (!details) return null
 
-  const {
-    name,
-    type,
-    distance,
-    description,
-    exoplanets,
-    habitableZonePlanets,
-    motion,
-    closestApproach,
-  } = details
+  const { name, type, distance, description, exoplanets, habitableZonePlanets, motion, closestApproach } = details
 
   return (
     <div style={{
@@ -31,7 +73,7 @@ export default function DetailsPanel({ details, onClose }) {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
         <h3 style={{ margin: 0 }}>{name}</h3>
         <button
-          onClick={onClose}
+          onClick={() => dispatch(deselect())}
           style={{
             background: 'transparent',
             border: 'none',
@@ -77,4 +119,3 @@ export default function DetailsPanel({ details, onClose }) {
     </div>
   )
 }
-

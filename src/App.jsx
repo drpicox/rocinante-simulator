@@ -1,8 +1,8 @@
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
-import { useSelector, useDispatch } from 'react-redux'
-import { select, deselect } from './features/space/spaceSlice'
-import { planets, stars } from './data/spaceData'
+import { useDispatch } from 'react-redux'
+import { select } from './features/space/spaceSlice'
+import { stars } from './data/spaceData'
 import { Star } from './components/Star'
 import { SolarSystem } from './components/SolarSystem'
 import { Starfield } from './components/Starfield'
@@ -12,52 +12,7 @@ import DetailsPanel from './components/DetailsPanel'
 
 
 function App() {
-  const selected = useSelector((state) => state.space.selected)
   const dispatch = useDispatch()
-
-  const getDetails = (name) => {
-    if (name === 'Sun' || name === 'Sol (Our Sun)') return {
-      name: 'Sun',
-      type: 'G-type Star',
-      distance: '0 AU',
-      description: 'Our home star! Contains 99.86% of the solar system\'s mass.',
-      exoplanets: 8,
-      motion: null
-    }
-    const planet = planets.find(p => p.name === name)
-    if (planet) return {
-      name: planet.name,
-      type: 'Planet',
-      distance: `${planet.distance} AU from Sun`,
-      description: `A planet in our solar system.`
-    }
-
-    // Check if it's a moon
-    for (const planet of planets) {
-      const moon = planet.moons?.find(m => m.name === name)
-      if (moon) return {
-        name: moon.name,
-        type: 'Natural Satellite',
-        distance: `${moon.distance} AU from ${planet.name}`,
-        description: moon.facts
-      }
-    }
-
-    const star = stars.find(s => s.name === name)
-    if (star) return {
-      name: star.name,
-      type: star.type,
-      distance: `${star.distance} light years from Sun`,
-      exoplanets: star.exoplanets,
-      habitableZonePlanets: star.habitableZonePlanets,
-      motion: star.motion,
-      closestApproach: star.closestApproach,
-      description: star.facts
-    }
-    return null
-  }
-
-  const details = selected ? getDetails(selected) : null
 
   return (
     <div style={{ height: '100vh', width: '100vw', margin: 0, padding: 0 }}>
@@ -100,7 +55,7 @@ function App() {
         </EffectComposer>
       </Canvas>
 
-      <DetailsPanel details={details} onClose={() => dispatch(deselect())} />
+      <DetailsPanel />
     </div>
   )
 }
