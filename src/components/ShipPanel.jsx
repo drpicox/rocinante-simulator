@@ -35,7 +35,7 @@ const ENGINE_PRESETS = [
   { key: 'dt-fusion-perfect', name: 'D-T Fusion (Perfect)', efficiency: 0.4, acceleration: 0.1, icon: Sparkles, category: 'fusion' },
   { key: 'dhe3', name: 'D-He³ Fusion', efficiency: 0.2, acceleration: 0.2, icon: Atom, category: 'fusion' },
   { key: 'dhe3-perfect', name: 'D-He³ Fusion (Perfect)', efficiency: 0.7, acceleration: 0.2, icon: Sparkles, category: 'fusion' },
-  { key: 'epstein', name: 'Epstein Fusion Drive', efficiency: 0.3, acceleration: 0.3, icon: Rocket, category: 'fusion' },
+  { key: 'epstein', name: 'Epstein Fusion Drive', efficiency: 0.7, acceleration: 0.3, icon: Rocket, category: 'fusion' },
   { key: 'antimatter', name: 'Antimatter', efficiency: 20, acceleration: 1, icon: Star, category: 'exotic' },
   { key: 'antimatter-perfect', name: 'Antimatter (Perfect)', efficiency: 100, acceleration: 1, icon: Sparkles, category: 'exotic' },
 ]
