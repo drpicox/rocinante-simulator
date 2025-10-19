@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { clearDestination, selectDestination } from '../features/destination/destinationSlice'
 import { planets, stars } from '../data/spaceData'
 
-export default function DetailsPanel() {
+export default function DestinationPanel() {
   const destination = useSelector(selectDestination)
   const dispatch = useDispatch()
   const [isExpanded, setIsExpanded] = useState(true)
