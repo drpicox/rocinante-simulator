@@ -101,6 +101,7 @@ export default function ShipPanel() {
             step={1}
             onChange={(v) => dispatch(setMass(v))}
             accent="rgba(45, 212, 191, 0.5)"
+            discrete
           />
           <Field
             label="Fuel"
@@ -111,6 +112,7 @@ export default function ShipPanel() {
             step={1}
             onChange={(v) => dispatch(setFuel(v))}
             accent="rgba(45, 212, 191, 0.5)"
+            discrete
           />
           <Field
             label="Mass-Energy Efficiency"
@@ -150,7 +152,41 @@ export default function ShipPanel() {
   )
 }
 
-function Field({ label, unit, value, min, max, step, onChange, accent }) {
+function Field({ label, unit, value, min, max, step, onChange, accent, discrete = false }) {
+  // Helpers for discrete, quasi-logarithmic steps like: 0, 1..9, 10..90, 100..900, ... up to max
+  const generateLogSteps = (minVal, maxVal, includeZero = true) => {
+    const vals = []
+    if (includeZero && minVal <= 0) vals.push(0)
+    const minPos = Math.max(1, Math.ceil(minVal))
+    const maxPos = Math.floor(maxVal)
+    if (maxPos < 1) return vals.length ? vals : [0]
+    const minExp = Math.floor(Math.log10(minPos))
+    const maxExp = Math.floor(Math.log10(maxPos))
+    for (let k = minExp; k <= maxExp; k++) {
+      const base = Math.pow(10, k)
+      for (let n = 1; n <= 9; n++) {
+        const v = n * base
+        if (v >= minPos && v <= maxPos) vals.push(v)
+      }
+    }
+    // Deduplicate and sort, just in case
+    return Array.from(new Set(vals)).sort((a, b) => a - b)
+  }
+
+  const nearestIndex = (arr, v) => {
+    if (!arr || arr.length === 0) return 0
+    let idx = 0
+    let best = Infinity
+    for (let i = 0; i < arr.length; i++) {
+      const d = Math.abs(arr[i] - v)
+      if (d < best) { best = d; idx = i }
+    }
+    return idx
+  }
+
+  const allowedValues = discrete ? generateLogSteps(min, max, true) : null
+  const sliderIndex = discrete ? nearestIndex(allowedValues, Number(value)) : null
+
   return (
     <label style={{ display: 'grid', gap: 6 }}>
       <span style={{
@@ -196,20 +232,37 @@ function Field({ label, unit, value, min, max, step, onChange, accent }) {
         }}>{unit}</span>
       </div>
 
-      <input
-        type="range"
-        value={Number(value)}
-        min={min}
-        max={max}
-        step={step}
-        onChange={(e) => onChange(e.target.value)}
-        style={{
-          width: '100%',
-          accentColor: '#34d399',
-          filter: 'drop-shadow(0 0 6px rgba(45, 212, 191, 0.25))'
-        }}
-        aria-label={`${label} slider`}
-      />
+      {discrete ? (
+        <input
+          type="range"
+          value={sliderIndex}
+          min={0}
+          max={allowedValues.length - 1}
+          step={1}
+          onChange={(e) => onChange(allowedValues[Number(e.target.value)])}
+          style={{
+            width: '100%',
+            accentColor: '#34d399',
+            filter: 'drop-shadow(0 0 6px rgba(45, 212, 191, 0.25))'
+          }}
+          aria-label={`${label} slider (discrete)`}
+        />
+      ) : (
+        <input
+          type="range"
+          value={Number(value)}
+          min={min}
+          max={max}
+          step={step}
+          onChange={(e) => onChange(e.target.value)}
+          style={{
+            width: '100%',
+            accentColor: '#34d399',
+            filter: 'drop-shadow(0 0 6px rgba(45, 212, 191, 0.25))'
+          }}
+          aria-label={`${label} slider`}
+        />
+      )}
     </label>
   )
 }
