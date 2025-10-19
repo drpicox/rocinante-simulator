@@ -1,25 +1,14 @@
-import { Sphere, Html, useCursor, Billboard } from '@react-three/drei'
+import { Sphere, Html, useCursor } from '@react-three/drei'
 import { useState, forwardRef } from 'react'
 import { Moon } from './Moon'
-import { useDispatch, useSelector } from 'react-redux'
-import { selectOrigin, setOrigin } from '../features/origin/originSlice'
-import { AdditiveBlending, DoubleSide } from 'three'
+import OriginIndicator from './OriginIndicator'
+import { useIsOrigin, useOriginClick } from '../utils/origin'
 
 export const Planet = forwardRef(({ position, size, color, name, onClick, labelsVisible = true, moons = [] }, ref) => {
   const [hovered, setHovered] = useState(false)
   useCursor(hovered)
-  const dispatch = useDispatch()
-  const origin = useSelector(selectOrigin)
-  const isOrigin = origin?.name === name
-
-  const handleClick = (e) => {
-    e.stopPropagation()
-    if (e.shiftKey) {
-      dispatch(setOrigin({ name, kind: 'planet' }))
-      return
-    }
-    onClick && onClick()
-  }
+  const isOrigin = useIsOrigin(name)
+  const handleClick = useOriginClick(name, 'planet', onClick)
 
   const radius = size * 0.2
 
@@ -35,32 +24,7 @@ export const Planet = forwardRef(({ position, size, color, name, onClick, labels
       </Sphere>
 
       {isOrigin && (
-        <>
-          {/* Soft glow sphere */}
-          <mesh>
-            <sphereGeometry args={[radius * 1.4, 24, 24]} />
-            <meshBasicMaterial
-              color="#4caf50"
-              transparent
-              opacity={0.22}
-              depthWrite={false}
-              blending={AdditiveBlending}
-            />
-          </mesh>
-          {/* Camera-facing ring */}
-          <Billboard>
-            <mesh>
-              <ringGeometry args={[radius * 1.15, radius * 1.45, 48]} />
-              <meshBasicMaterial
-                color="#4caf50"
-                transparent
-                opacity={0.6}
-                side={DoubleSide}
-                depthWrite={false}
-              />
-            </mesh>
-          </Billboard>
-        </>
+        <OriginIndicator base={radius} labelMarginTop={18} />
       )}
 
       {(labelsVisible || hovered) && (
@@ -73,21 +37,6 @@ export const Planet = forwardRef(({ position, size, color, name, onClick, labels
             borderRadius: 4,
             whiteSpace: 'nowrap',
           }}>{name}</div>
-        </Html>
-      )}
-
-      {isOrigin && (
-        <Html center style={{ pointerEvents: 'none' }}>
-          <div style={{
-            marginTop: 18,
-            padding: '2px 6px',
-            background: 'rgba(76, 175, 80, 0.9)',
-            color: 'white',
-            fontSize: 10,
-            borderRadius: 4,
-            whiteSpace: 'nowrap',
-            boxShadow: '0 0 6px rgba(76,175,80,0.7)'
-          }}>Origin</div>
         </Html>
       )}
 
