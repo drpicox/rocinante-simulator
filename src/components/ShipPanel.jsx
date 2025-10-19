@@ -11,7 +11,9 @@ import {
   Star,
   Flame,
   Settings,
-  ChevronDown
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react'
 
 // Engine presets: efficiency is in percent (%), acceleration in g's
@@ -66,6 +68,16 @@ export default function ShipPanel() {
     // Dispatch both updates; reducers will clamp to valid ranges if needed
     dispatch(setEfficiency(preset.efficiency))
     dispatch(setAcceleration(preset.acceleration))
+  }
+
+  // Cycle through presets with wrap-around
+  const cyclePreset = (delta) => {
+    const keys = ENGINE_PRESETS.map(p => p.key)
+    let idx = keys.indexOf(selectedPresetKey)
+    // If custom, go to first on next, last on prev
+    if (idx === -1) idx = delta > 0 ? -1 : 0
+    idx = (idx + delta + keys.length) % keys.length
+    applyPreset(keys[idx])
   }
 
   return (
@@ -189,163 +201,267 @@ export default function ShipPanel() {
               <Rocket size={14} strokeWidth={2.5} />
               Engine Type
             </span>
-            <div style={{
-              position: 'relative',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 10,
-              padding: '12px 14px',
-              borderRadius: 8,
-              background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.12), rgba(16, 185, 129, 0.12))',
-              border: '1px solid rgba(45, 212, 191, 0.4)',
-              boxShadow: '0 2px 12px rgba(45, 212, 191, 0.15)',
-              transition: 'all 0.2s ease',
-              cursor: 'pointer'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'linear-gradient(135deg, rgba(6, 182, 212, 0.18), rgba(16, 185, 129, 0.18))'
-              e.currentTarget.style.borderColor = 'rgba(45, 212, 191, 0.5)'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'linear-gradient(135deg, rgba(6, 182, 212, 0.12), rgba(16, 185, 129, 0.12))'
-              e.currentTarget.style.borderColor = 'rgba(45, 212, 191, 0.4)'
-            }}
-            >
-              <SelectedIcon
-                size={18}
-                strokeWidth={2}
-                style={{
-                  color: selectedPresetKey === 'custom' ? 'rgba(255,255,255,0.5)' : '#5eead4',
-                  flexShrink: 0
-                }}
-              />
-              <select
-                value={selectedPresetKey}
-                onChange={(e) => applyPreset(e.target.value)}
-                style={{
-                  flex: 1,
-                  background: 'transparent',
-                  border: 'none',
-                  color: selectedPresetKey === 'custom' ? 'rgba(255,255,255,0.7)' : '#5eead4',
-                  outline: 'none',
-                  fontSize: 14,
-                  fontWeight: selectedPresetKey === 'custom' ? 400 : 600,
-                  cursor: 'pointer',
-                  appearance: 'none',
-                  WebkitAppearance: 'none',
-                  MozAppearance: 'none',
-                  paddingRight: 24
-                }}
-                aria-label="Engine preset selector"
+            <div style={{ display: 'flex', gap: 6, alignItems: 'stretch' }}>
+              {/* Selector container */}
+              <div style={{
+                position: 'relative',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                padding: '10px 12px',
+                borderRadius: 8,
+                background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.12), rgba(16, 185, 129, 0.12))',
+                border: '1px solid rgba(45, 212, 191, 0.4)',
+                boxShadow: '0 2px 12px rgba(45, 212, 191, 0.15)',
+                transition: 'all 0.2s ease',
+                cursor: 'pointer',
+                flex: 1
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'linear-gradient(135deg, rgba(6, 182, 212, 0.18), rgba(16, 185, 129, 0.18))'
+                e.currentTarget.style.borderColor = 'rgba(45, 212, 191, 0.5)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'linear-gradient(135deg, rgba(6, 182, 212, 0.12), rgba(16, 185, 129, 0.12))'
+                e.currentTarget.style.borderColor = 'rgba(45, 212, 191, 0.4)'
+              }}
+              onWheel={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                cyclePreset(e.deltaY > 0 ? 1 : -1)
+              }}
               >
-                <option value="custom" style={{
-                  background: '#1a1a2e',
-                  color: 'rgba(255,255,255,0.7)',
-                  fontStyle: 'italic'
-                }}>
-                  Custom Configuration
-                </option>
-                <optgroup label="━━━ Chemical Propulsion ━━━" style={{ background: '#1a1a2e', color: '#5eead4' }}>
-                  <option value="h2o2-chem" style={{ background: '#1a1a2e', color: 'white' }}>
-                    H₂O₂ Chemical
+                <SelectedIcon
+                  size={16}
+                  strokeWidth={2}
+                  style={{
+                    color: selectedPresetKey === 'custom' ? 'rgba(255,255,255,0.5)' : '#5eead4',
+                    flexShrink: 0
+                  }}
+                />
+                <select
+                  value={selectedPresetKey}
+                  onChange={(e) => applyPreset(e.target.value)}
+                  style={{
+                    flex: 1,
+                    background: 'transparent',
+                    border: 'none',
+                    color: selectedPresetKey === 'custom' ? 'rgba(255,255,255,0.7)' : '#5eead4',
+                    outline: 'none',
+                    fontSize: 13,
+                    fontWeight: selectedPresetKey === 'custom' ? 400 : 600,
+                    cursor: 'pointer',
+                    appearance: 'none',
+                    WebkitAppearance: 'none',
+                    MozAppearance: 'none',
+                    paddingRight: 0
+                  }}
+                  aria-label="Engine preset selector"
+                >
+                  <option value="custom" style={{
+                    background: '#1a1a2e',
+                    color: 'rgba(255,255,255,0.7)',
+                    fontStyle: 'italic'
+                  }}>
+                    Custom Configuration
                   </option>
-                  <option value="h2-o2-chem" style={{ background: '#1a1a2e', color: 'white' }}>
-                    H₂/O₂ Chemical
-                  </option>
-                </optgroup>
-                <optgroup label="━━━ Electric Propulsion ━━━" style={{ background: '#1a1a2e', color: '#5eead4' }}>
-                  <option value="solar-ion" style={{ background: '#1a1a2e', color: 'white' }}>
-                    Solar Ion
-                  </option>
-                  <option value="nuclear-ion" style={{ background: '#1a1a2e', color: 'white' }}>
-                    Nuclear Ion
-                  </option>
-                  <option value="vasimr" style={{ background: '#1a1a2e', color: 'white' }}>
-                    Plasma (VASIMR)
-                  </option>
-                </optgroup>
-                <optgroup label="━━━ Nuclear Propulsion ━━━" style={{ background: '#1a1a2e', color: '#5eead4' }}>
-                  <option value="orion" style={{ background: '#1a1a2e', color: 'white' }}>
-                    Orion (Fission Bombs)
-                  </option>
-                  <option value="ntr" style={{ background: '#1a1a2e', color: 'white' }}>
-                    Nuclear Thermal (NTR)
-                  </option>
-                </optgroup>
-                <optgroup label="━━━ Fusion Drives ━━━" style={{ background: '#1a1a2e', color: '#5eead4' }}>
-                  <option value="dt-fusion" style={{ background: '#1a1a2e', color: 'white' }}>
-                    D-T Fusion
-                  </option>
-                  <option value="dt-fusion-perfect" style={{ background: '#1a1a2e', color: 'white' }}>
-                    D-T Fusion (Perfect)
-                  </option>
-                  <option value="dhe3" style={{ background: '#1a1a2e', color: 'white' }}>
-                    D-He³ Fusion
-                  </option>
-                  <option value="dhe3-perfect" style={{ background: '#1a1a2e', color: 'white' }}>
-                    D-He³ Fusion (Perfect)
-                  </option>
-                  <option value="epstein" style={{ background: '#1a1a2e', color: '#34d399', fontWeight: 600 }}>
-                    Epstein Fusion Drive
-                  </option>
-                </optgroup>
-                <optgroup label="━━━ Exotic Propulsion ━━━" style={{ background: '#1a1a2e', color: '#5eead4' }}>
-                  <option value="antimatter" style={{ background: '#1a1a2e', color: '#fbbf24', fontWeight: 600 }}>
-                    Antimatter
-                  </option>
-                  <option value="antimatter-perfect" style={{ background: '#1a1a2e', color: '#f59e0b', fontWeight: 600 }}>
-                    Antimatter (Perfect)
-                  </option>
-                </optgroup>
-              </select>
-              <ChevronDown
-                size={16}
-                strokeWidth={2.5}
-                style={{
-                  color: '#5eead4',
-                  flexShrink: 0
-                }}
-              />
+                  <optgroup label="━━━ Chemical Propulsion ━━━" style={{ background: '#1a1a2e', color: '#5eead4' }}>
+                    <option value="h2o2-chem" style={{ background: '#1a1a2e', color: 'white' }}>
+                      H₂O₂ Chemical
+                    </option>
+                    <option value="h2-o2-chem" style={{ background: '#1a1a2e', color: 'white' }}>
+                      H₂/O₂ Chemical
+                    </option>
+                  </optgroup>
+                  <optgroup label="━━━ Electric Propulsion ━━━" style={{ background: '#1a1a2e', color: '#5eead4' }}>
+                    <option value="solar-ion" style={{ background: '#1a1a2e', color: 'white' }}>
+                      Solar Ion
+                    </option>
+                    <option value="nuclear-ion" style={{ background: '#1a1a2e', color: 'white' }}>
+                      Nuclear Ion
+                    </option>
+                    <option value="vasimr" style={{ background: '#1a1a2e', color: 'white' }}>
+                      Plasma (VASIMR)
+                    </option>
+                  </optgroup>
+                  <optgroup label="━━━ Nuclear Propulsion ━━━" style={{ background: '#1a1a2e', color: '#5eead4' }}>
+                    <option value="orion" style={{ background: '#1a1a2e', color: 'white' }}>
+                      Orion (Fission Bombs)
+                    </option>
+                    <option value="ntr" style={{ background: '#1a1a2e', color: 'white' }}>
+                      Nuclear Thermal (NTR)
+                    </option>
+                  </optgroup>
+                  <optgroup label="━━━ Fusion Drives ━━━" style={{ background: '#1a1a2e', color: '#5eead4' }}>
+                    <option value="dt-fusion" style={{ background: '#1a1a2e', color: 'white' }}>
+                      D-T Fusion
+                    </option>
+                    <option value="dt-fusion-perfect" style={{ background: '#1a1a2e', color: 'white' }}>
+                      D-T Fusion (Perfect)
+                    </option>
+                    <option value="dhe3" style={{ background: '#1a1a2e', color: 'white' }}>
+                      D-He³ Fusion
+                    </option>
+                    <option value="dhe3-perfect" style={{ background: '#1a1a2e', color: 'white' }}>
+                      D-He³ Fusion (Perfect)
+                    </option>
+                    <option value="epstein" style={{ background: '#1a1a2e', color: '#34d399', fontWeight: 600 }}>
+                      Epstein Fusion Drive
+                    </option>
+                  </optgroup>
+                  <optgroup label="━━━ Exotic Propulsion ━━━" style={{ background: '#1a1a2e', color: '#5eead4' }}>
+                    <option value="antimatter" style={{ background: '#1a1a2e', color: '#fbbf24', fontWeight: 600 }}>
+                      Antimatter
+                    </option>
+                    <option value="antimatter-perfect" style={{ background: '#1a1a2e', color: '#f59e0b', fontWeight: 600 }}>
+                      Antimatter (Perfect)
+                    </option>
+                  </optgroup>
+                </select>
+
+                <ChevronDown
+                  size={14}
+                  strokeWidth={2.5}
+                  style={{
+                    color: '#5eead4',
+                    flexShrink: 0
+                  }}
+                />
+              </div>
+
+              {/* Split button - Up/Down */}
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 1,
+                flexShrink: 0
+              }}>
+                {/* Up button */}
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); cyclePreset(-1) }}
+                  disabled={selectedPresetKey === ENGINE_PRESETS[0].key}
+                  title="Previous engine"
+                  aria-label="Previous engine preset"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: 28,
+                    height: 19,
+                    borderRadius: '4px 4px 0 0',
+                    background: selectedPresetKey === ENGINE_PRESETS[0].key
+                      ? 'rgba(45, 212, 191, 0.05)'
+                      : 'rgba(45, 212, 191, 0.15)',
+                    border: '1px solid rgba(45, 212, 191, 0.3)',
+                    borderBottom: 'none',
+                    color: selectedPresetKey === ENGINE_PRESETS[0].key
+                      ? 'rgba(153, 246, 228, 0.3)'
+                      : '#99f6e4',
+                    cursor: selectedPresetKey === ENGINE_PRESETS[0].key ? 'not-allowed' : 'pointer',
+                    transition: 'all 0.2s ease',
+                    padding: 0,
+                    opacity: selectedPresetKey === ENGINE_PRESETS[0].key ? 0.4 : 1
+                  }}
+                  onMouseEnter={(e) => {
+                    if (selectedPresetKey !== ENGINE_PRESETS[0].key) {
+                      e.currentTarget.style.background = 'rgba(45, 212, 191, 0.3)'
+                      e.currentTarget.style.color = '#5eead4'
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (selectedPresetKey !== ENGINE_PRESETS[0].key) {
+                      e.currentTarget.style.background = 'rgba(45, 212, 191, 0.15)'
+                      e.currentTarget.style.color = '#99f6e4'
+                    }
+                  }}
+                >
+                  <ChevronLeft size={12} strokeWidth={2.5} style={{ pointerEvents: 'none', transform: 'rotate(90deg)' }} />
+                </button>
+
+                {/* Down button */}
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); cyclePreset(1) }}
+                  disabled={selectedPresetKey === ENGINE_PRESETS[ENGINE_PRESETS.length - 1].key}
+                  title="Next engine"
+                  aria-label="Next engine preset"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: 28,
+                    height: 19,
+                    borderRadius: '0 0 4px 4px',
+                    background: selectedPresetKey === ENGINE_PRESETS[ENGINE_PRESETS.length - 1].key
+                      ? 'rgba(45, 212, 191, 0.05)'
+                      : 'rgba(45, 212, 191, 0.15)',
+                    border: '1px solid rgba(45, 212, 191, 0.3)',
+                    borderTop: 'none',
+                    color: selectedPresetKey === ENGINE_PRESETS[ENGINE_PRESETS.length - 1].key
+                      ? 'rgba(153, 246, 228, 0.3)'
+                      : '#99f6e4',
+                    cursor: selectedPresetKey === ENGINE_PRESETS[ENGINE_PRESETS.length - 1].key ? 'not-allowed' : 'pointer',
+                    transition: 'all 0.2s ease',
+                    padding: 0,
+                    opacity: selectedPresetKey === ENGINE_PRESETS[ENGINE_PRESETS.length - 1].key ? 0.4 : 1
+                  }}
+                  onMouseEnter={(e) => {
+                    if (selectedPresetKey !== ENGINE_PRESETS[ENGINE_PRESETS.length - 1].key) {
+                      e.currentTarget.style.background = 'rgba(45, 212, 191, 0.3)'
+                      e.currentTarget.style.color = '#5eead4'
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (selectedPresetKey !== ENGINE_PRESETS[ENGINE_PRESETS.length - 1].key) {
+                      e.currentTarget.style.background = 'rgba(45, 212, 191, 0.15)'
+                      e.currentTarget.style.color = '#99f6e4'
+                    }
+                  }}
+                >
+                  <ChevronRight size={12} strokeWidth={2.5} style={{ pointerEvents: 'none', transform: 'rotate(90deg)' }} />
+                </button>
+              </div>
             </div>
             {selectedPresetKey !== 'custom' && (
               <div style={{
-                padding: '8px 12px',
+                padding: '6px 10px',
                 background: 'rgba(94, 234, 212, 0.1)',
                 borderRadius: 6,
                 border: '1px solid rgba(94, 234, 212, 0.25)',
-                fontSize: 11,
+                fontSize: 10,
                 color: '#99f6e4',
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                gap: 12
+                gap: 8
               }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <Sparkles size={12} style={{ color: '#5eead4' }} />
+                <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <Sparkles size={10} style={{ color: '#5eead4' }} />
                   <span>
-                    <strong style={{ color: '#5eead4' }}>Efficiency:</strong> {selectedPreset?.efficiency}%
+                    <strong style={{ color: '#5eead4' }}>η:</strong> {selectedPreset?.efficiency}%
                   </span>
                 </div>
                 <span style={{ color: 'rgba(255,255,255,0.3)' }}>•</span>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <Rocket size={12} style={{ color: '#5eead4' }} />
+                <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <Rocket size={10} style={{ color: '#5eead4' }} />
                   <span>
-                    <strong style={{ color: '#5eead4' }}>Accel:</strong> {selectedPreset?.acceleration}g
+                    <strong style={{ color: '#5eead4' }}>a:</strong> {selectedPreset?.acceleration}g
                   </span>
                 </div>
               </div>
             )}
             {selectedPresetKey === 'custom' && (
               <div style={{
-                fontSize: 11,
+                fontSize: 10,
                 color: 'rgba(255,255,255,0.5)',
                 fontStyle: 'italic',
                 display: 'flex',
                 alignItems: 'center',
-                gap: 6,
-                padding: '4px 0'
+                gap: 4,
+                padding: '2px 0'
               }}>
-                <Settings size={12} style={{ color: 'rgba(255,255,255,0.5)' }} />
+                <Settings size={10} style={{ color: 'rgba(255,255,255,0.5)' }} />
                 Adjust sliders below to configure your custom engine
               </div>
             )}
