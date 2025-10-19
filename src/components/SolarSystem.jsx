@@ -1,4 +1,4 @@
-import { Sphere, Html } from '@react-three/drei'
+import { Sphere, Html, Billboard } from '@react-three/drei'
 import { useState, useRef } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { planets } from '../data/spaceData'
@@ -8,6 +8,7 @@ import { OrbitRing } from './OrbitRing'
 import { CelestialBody } from './CelestialBody'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectOrigin, setOrigin } from '../features/origin/originSlice'
+import { AdditiveBlending, DoubleSide } from 'three'
 
 export function SolarSystem({ onSelect }) {
   const [showDetailed, setShowDetailed] = useState(true)
@@ -42,19 +43,47 @@ export function SolarSystem({ onSelect }) {
           }}>
             <meshStandardMaterial emissive="#ffdd44" emissiveIntensity={1.2} color="#ffcc33" />
           </Sphere>
+
           {isSunOrigin && (
-            <Html center style={{ pointerEvents: 'none' }}>
-              <div style={{
-                marginTop: 18,
-                padding: '2px 6px',
-                background: 'rgba(76, 175, 80, 0.9)',
-                color: 'white',
-                fontSize: 10,
-                borderRadius: 4,
-                whiteSpace: 'nowrap',
-                boxShadow: '0 0 6px rgba(76,175,80,0.7)'
-              }}>Origin</div>
-            </Html>
+            <>
+              {/* Soft glow sphere */}
+              <mesh>
+                <sphereGeometry args={[0.8 * 1.6, 24, 24]} />
+                <meshBasicMaterial
+                  color="#4caf50"
+                  transparent
+                  opacity={0.2}
+                  depthWrite={false}
+                  blending={AdditiveBlending}
+                />
+              </mesh>
+              {/* Camera-facing ring */}
+              <Billboard>
+                <mesh>
+                  <ringGeometry args={[0.8 * 1.2, 0.8 * 1.9, 48]} />
+                  <meshBasicMaterial
+                    color="#4caf50"
+                    transparent
+                    opacity={0.55}
+                    side={DoubleSide}
+                    depthWrite={false}
+                  />
+                </mesh>
+              </Billboard>
+
+              <Html center style={{ pointerEvents: 'none' }}>
+                <div style={{
+                  marginTop: 18,
+                  padding: '2px 6px',
+                  background: 'rgba(76, 175, 80, 0.9)',
+                  color: 'white',
+                  fontSize: 10,
+                  borderRadius: 4,
+                  whiteSpace: 'nowrap',
+                  boxShadow: '0 0 6px rgba(76,175,80,0.7)'
+                }}>Origin</div>
+              </Html>
+            </>
           )}
         </group>
 

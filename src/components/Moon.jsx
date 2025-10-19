@@ -1,8 +1,9 @@
-import { Sphere, Html, useCursor } from '@react-three/drei'
+import { Sphere, Html, useCursor, Billboard } from '@react-three/drei'
 import { useState, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectOrigin, setOrigin } from '../features/origin/originSlice'
+import { AdditiveBlending, DoubleSide } from 'three'
 
 export function Moon({ size, color, name, onClick, labelsVisible = false, orbitRadius, orbitSpeed, planetRef }) {
   const [hovered, setHovered] = useState(false)
@@ -48,6 +49,36 @@ export function Moon({ size, color, name, onClick, labelsVisible = false, orbitR
           emissiveIntensity={0.4}
         />
       </Sphere>
+
+      {isOrigin && (
+        <>
+          {/* Soft glow sphere */}
+          <mesh>
+            <sphereGeometry args={[size * 1.5, 20, 20]} />
+            <meshBasicMaterial
+              color="#4caf50"
+              transparent
+              opacity={0.22}
+              depthWrite={false}
+              blending={AdditiveBlending}
+            />
+          </mesh>
+          {/* Camera-facing ring */}
+          <Billboard>
+            <mesh>
+              <ringGeometry args={[size * 1.2, size * 1.7, 48]} />
+              <meshBasicMaterial
+                color="#4caf50"
+                transparent
+                opacity={0.6}
+                side={DoubleSide}
+                depthWrite={false}
+              />
+            </mesh>
+          </Billboard>
+        </>
+      )}
+
       {(labelsVisible || hovered) && (
         <Html center style={{ pointerEvents: 'none' }}>
           <div style={{

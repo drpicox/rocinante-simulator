@@ -1,9 +1,10 @@
-import { Sphere, Html, useCursor } from '@react-three/drei'
+import { Sphere, Html, useCursor, Billboard } from '@react-three/drei'
 import { useState } from 'react'
 import { useThree, useFrame } from '@react-three/fiber'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectOrigin, setOrigin } from '../features/origin/originSlice'
 import { planets } from '../data/spaceData'
+import { AdditiveBlending, DoubleSide } from 'three'
 
 // Precompute solar system body names (Sun + planets + moons)
 const SOLAR_SYSTEM_NAMES = (() => {
@@ -87,6 +88,36 @@ export function Star({ position, size = 0.05, color, name, onClick, labelsVisibl
       >
         <meshBasicMaterial color={color} />
       </Sphere>
+
+      {isOrigin && (
+        <>
+          {/* Soft glow sphere proportional to apparent size */}
+          <mesh>
+            <sphereGeometry args={[scaledSize * 2.2, 16, 16]} />
+            <meshBasicMaterial
+              color="#4caf50"
+              transparent
+              opacity={0.2}
+              depthWrite={false}
+              blending={AdditiveBlending}
+            />
+          </mesh>
+          {/* Camera-facing ring around the star */}
+          <Billboard>
+            <mesh>
+              <ringGeometry args={[scaledSize * 1.7, scaledSize * 2.6, 48]} />
+              <meshBasicMaterial
+                color="#4caf50"
+                transparent
+                opacity={0.55}
+                side={DoubleSide}
+                depthWrite={false}
+              />
+            </mesh>
+          </Billboard>
+        </>
+      )}
+
       {(labelsVisible || hovered) && (
         <Html center style={{ pointerEvents: 'none' }}>
           <div style={{
