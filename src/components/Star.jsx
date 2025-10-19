@@ -3,6 +3,19 @@ import { useState } from 'react'
 import { useThree, useFrame } from '@react-three/fiber'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectOrigin, setOrigin } from '../features/origin/originSlice'
+import { planets } from '../data/spaceData'
+
+// Precompute solar system body names (Sun + planets + moons)
+const SOLAR_SYSTEM_NAMES = (() => {
+  const names = new Set(['Sun', 'Sol (Our Sun)'])
+  for (const p of planets) {
+    names.add(p.name)
+    if (Array.isArray(p.moons)) {
+      for (const m of p.moons) names.add(m.name)
+    }
+  }
+  return names
+})()
 
 export function Star({ position, size = 0.05, color, name, onClick, labelsVisible = false, minVisibleDistance = 1000 }) {
   const [hovered, setHovered] = useState(false)
@@ -12,7 +25,11 @@ export function Star({ position, size = 0.05, color, name, onClick, labelsVisibl
   useCursor(hovered)
   const dispatch = useDispatch()
   const origin = useSelector(selectOrigin)
-  const isOrigin = origin?.name === name
+
+  // Origin logic: if this star is the Sol proxy, consider any solar-system origin as matching
+  const isOrigin = name === 'Sol (Our Sun)'
+    ? (origin?.name ? SOLAR_SYSTEM_NAMES.has(origin.name) : false)
+    : origin?.name === name
 
   // Update visibility and size on every frame based on camera distance
   useFrame(() => {
