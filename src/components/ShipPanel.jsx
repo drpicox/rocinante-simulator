@@ -15,6 +15,7 @@ export default function ShipPanel() {
       position: 'absolute',
       bottom: 20,
       right: 20,
+      zIndex: 1000,
       background: isExpanded
         ? 'linear-gradient(135deg, rgba(8, 28, 36, 0.95), rgba(9, 50, 44, 0.92))'
         : 'linear-gradient(135deg, rgba(8, 28, 36, 0.85), rgba(9, 50, 44, 0.82))',
@@ -129,11 +130,12 @@ export default function ShipPanel() {
             label="Acceleration"
             unit="gs"
             value={acceleration}
-            min={0}
-            max={100}
-            step={0.01}
+            min={0.000001}
+            max={10}
+            step="any"
             onChange={(v) => dispatch(setAcceleration(v))}
             accent="rgba(59, 130, 246, 0.5)"
+            discrete
           />
         </div>
 

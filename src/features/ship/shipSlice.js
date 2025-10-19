@@ -24,11 +24,11 @@ const shipSlice = createSlice({
     },
     setEfficiency(state, action) {
       const v = Number(action.payload)
-      state.efficiency = isNaN(v) ? state.efficiency : clamp(v, 0, 100)
+      state.efficiency = isNaN(v) ? state.efficiency : clamp(v, 1e-7, 100)
     },
     setAcceleration(state, action) {
       const v = Number(action.payload)
-      state.acceleration = isNaN(v) ? state.acceleration : clamp(v, 0, 100)
+      state.acceleration = isNaN(v) ? state.acceleration : clamp(v, 1e-6, 10)
     },
     resetShip() {
       return initialState
@@ -38,4 +38,3 @@ const shipSlice = createSlice({
 
 export const { setMass, setFuel, setEfficiency, setAcceleration, resetShip } = shipSlice.actions
 export default shipSlice.reducer
-
