@@ -1,4 +1,4 @@
-import { Sphere } from '@react-three/drei'
+import { Sphere, Html } from '@react-three/drei'
 import { useState, useRef } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { planets } from '../data/spaceData'
@@ -6,11 +6,16 @@ import { Planet } from './Planet'
 import { Star } from './Star'
 import { OrbitRing } from './OrbitRing'
 import { CelestialBody } from './CelestialBody'
+import { useDispatch, useSelector } from 'react-redux'
+import { selectOrigin, setOrigin } from '../features/origin/originSlice'
 
 export function SolarSystem({ onSelect }) {
   const [showDetailed, setShowDetailed] = useState(true)
   const { camera } = useThree()
   const planetRefs = useRef({})
+  const dispatch = useDispatch()
+  const origin = useSelector(selectOrigin)
+  const isSunOrigin = origin?.name === 'Sun'
 
   // Check camera distance and switch between detailed and simple view
   useFrame(() => {
@@ -26,9 +31,32 @@ export function SolarSystem({ onSelect }) {
     return (
       <>
         {/* Sun */}
-        <Sphere args={[0.8, 32, 32]} position={[0, 0, 0]} onClick={() => onSelect('Sun')}>
-          <meshStandardMaterial emissive="#ffdd44" emissiveIntensity={1.2} color="#ffcc33" />
-        </Sphere>
+        <group position={[0, 0, 0]}>
+          <Sphere args={[0.8, 32, 32]} onClick={(e) => {
+            e.stopPropagation()
+            if (e.shiftKey) {
+              dispatch(setOrigin({ name: 'Sun', kind: 'star' }))
+            } else {
+              onSelect('Sun')
+            }
+          }}>
+            <meshStandardMaterial emissive="#ffdd44" emissiveIntensity={1.2} color="#ffcc33" />
+          </Sphere>
+          {isSunOrigin && (
+            <Html center style={{ pointerEvents: 'none' }}>
+              <div style={{
+                marginTop: 18,
+                padding: '2px 6px',
+                background: 'rgba(76, 175, 80, 0.9)',
+                color: 'white',
+                fontSize: 10,
+                borderRadius: 4,
+                whiteSpace: 'nowrap',
+                boxShadow: '0 0 6px rgba(76,175,80,0.7)'
+              }}>Origin</div>
+            </Html>
+          )}
+        </group>
 
         {/* Orbits */}
         {planets.map((planet) => (
@@ -74,4 +102,3 @@ export function SolarSystem({ onSelect }) {
     )
   }
 }
-

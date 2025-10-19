@@ -1,11 +1,16 @@
 import { Sphere, Html, useCursor } from '@react-three/drei'
 import { useState, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
+import { useDispatch, useSelector } from 'react-redux'
+import { selectOrigin, setOrigin } from '../features/origin/originSlice'
 
 export function Moon({ size, color, name, onClick, labelsVisible = false, orbitRadius, orbitSpeed, planetRef }) {
   const [hovered, setHovered] = useState(false)
   const moonRef = useRef()
   useCursor(hovered)
+  const dispatch = useDispatch()
+  const origin = useSelector(selectOrigin)
+  const isOrigin = origin?.name === name
 
   useFrame(({ clock }) => {
     if (moonRef.current && planetRef?.current) {
@@ -20,11 +25,20 @@ export function Moon({ size, color, name, onClick, labelsVisible = false, orbitR
     }
   })
 
+  const handleClick = (e) => {
+    e.stopPropagation()
+    if (e.shiftKey) {
+      dispatch(setOrigin({ name, kind: 'moon' }))
+      return
+    }
+    onClick && onClick()
+  }
+
   return (
     <group ref={moonRef}>
       <Sphere
         args={[size, 16, 16]}
-        onClick={onClick}
+        onClick={handleClick}
         onPointerOver={(e) => { e.stopPropagation(); setHovered(true) }}
         onPointerOut={() => setHovered(false)}
       >
@@ -44,6 +58,21 @@ export function Moon({ size, color, name, onClick, labelsVisible = false, orbitR
             borderRadius: 4,
             whiteSpace: 'nowrap',
           }}>{name}</div>
+        </Html>
+      )}
+
+      {isOrigin && (
+        <Html center style={{ pointerEvents: 'none' }}>
+          <div style={{
+            marginTop: 14,
+            padding: '2px 6px',
+            background: 'rgba(76, 175, 80, 0.9)',
+            color: 'white',
+            fontSize: 9,
+            borderRadius: 4,
+            whiteSpace: 'nowrap',
+            boxShadow: '0 0 6px rgba(76,175,80,0.7)'
+          }}>Origin</div>
         </Html>
       )}
     </group>

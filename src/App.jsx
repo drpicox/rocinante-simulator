@@ -1,88 +1,14 @@
 import { Canvas } from '@react-three/fiber'
-import { OrbitControls, Sphere } from '@react-three/drei'
+import { OrbitControls } from '@react-three/drei'
 import { useSelector, useDispatch } from 'react-redux'
 import { select, deselect } from './features/space/spaceSlice'
 import { planets, stars } from './data/spaceData'
-import { Planet } from './components/Planet'
 import { Star } from './components/Star'
-import { Moon } from './components/Moon'
-import { OrbitRing } from './components/OrbitRing'
-import { CelestialBody } from './components/CelestialBody'
+import { SolarSystem } from './components/SolarSystem'
 import { Starfield } from './components/Starfield'
 import { EffectComposer, Bloom } from '@react-three/postprocessing'
-import { useState, useRef } from 'react'
-import { useFrame, useThree } from '@react-three/fiber'
 import './App.css'
 
-function SolarSystem({ onSelect }) {
-  const [showDetailed, setShowDetailed] = useState(true)
-  const { camera } = useThree()
-  const planetRefs = useRef({})
-
-  // Check camera distance and switch between detailed and simple view
-  useFrame(() => {
-    const cameraDistance = camera.position.length()
-    const shouldShowDetailed = cameraDistance < 8000 // Increased from 3000 to 8000
-    if (shouldShowDetailed !== showDetailed) {
-      setShowDetailed(shouldShowDetailed)
-    }
-  })
-
-  if (showDetailed) {
-    // Detailed view: Sun, planets, and orbits
-    return (
-      <>
-        {/* Sun */}
-        <Sphere args={[0.8, 32, 32]} position={[0, 0, 0]} onClick={() => onSelect('Sun')}>
-          <meshStandardMaterial emissive="#ffdd44" emissiveIntensity={1.2} color="#ffcc33" />
-        </Sphere>
-
-        {/* Orbits */}
-        {planets.map((planet) => (
-          <OrbitRing key={`${planet.name}-orbit`} radius={planet.distance * 10} />
-        ))}
-
-        {/* Planets */}
-        {planets.map((planet) => (
-          <CelestialBody key={planet.name} orbitRadius={planet.distance * 10} orbitSpeed={0.1 / planet.distance}>
-            {(bodyRef) => {
-              planetRefs.current[planet.name] = bodyRef
-              return (
-                <Planet
-                  ref={bodyRef}
-                  size={planet.size}
-                  color={planet.color}
-                  name={planet.name}
-                  onClick={() => onSelect(planet.name)}
-                  labelsVisible={false}
-                  moons={planet.moons?.map(moon => ({
-                    ...moon,
-                    onClick: () => onSelect(moon.name)
-                  }))}
-                />
-              )
-            }}
-          </CelestialBody>
-        ))}
-
-        {/* Remove the separate Moons section since they're now rendered by planets */}
-      </>
-    )
-  } else {
-    // Simple view: Just "Sol" as a star
-    return (
-      <Star
-        position={[0, 0, 0]}
-        size={8}
-        color="#fff3cd"
-        name="Sol (Our Sun)"
-        onClick={() => onSelect('Sun')}
-        labelsVisible={false}
-        minVisibleDistance={0}
-      />
-    )
-  }
-}
 
 function App() {
   const selected = useSelector((state) => state.space.selected)
