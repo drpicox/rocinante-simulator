@@ -247,11 +247,6 @@ export default function ShipPanel() {
                 e.currentTarget.style.background = 'linear-gradient(135deg, rgba(6, 182, 212, 0.12), rgba(16, 185, 129, 0.12))'
                 e.currentTarget.style.borderColor = 'rgba(45, 212, 191, 0.4)'
               }}
-              onWheel={(e) => {
-                e.preventDefault()
-                e.stopPropagation()
-                cycleShipPreset(e.deltaY > 0 ? 1 : -1)
-              }}
               >
                 <SelectedShipIcon
                   size={16}
@@ -513,11 +508,6 @@ export default function ShipPanel() {
               onMouseLeave={(e) => {
                 e.currentTarget.style.background = 'linear-gradient(135deg, rgba(6, 182, 212, 0.12), rgba(16, 185, 129, 0.12))'
                 e.currentTarget.style.borderColor = 'rgba(45, 212, 191, 0.4)'
-              }}
-              onWheel={(e) => {
-                e.preventDefault()
-                e.stopPropagation()
-                cyclePreset(e.deltaY > 0 ? 1 : -1)
               }}
               >
                 <SelectedIcon
