@@ -2,12 +2,15 @@ import { Sphere, Html, useCursor } from '@react-three/drei'
 import { useState, forwardRef } from 'react'
 import { Moon } from './Moon'
 import OriginIndicator from './OriginIndicator'
+import DestinationIndicator from './DestinationIndicator'
 import { useIsOrigin, useOriginClick } from '../features/origin/hooks.js'
+import { useIsDestination } from '../features/destination/hooks.js'
 
 export const Planet = forwardRef(({ position, size, color, name, onClick, labelsVisible = true, moons = [] }, ref) => {
   const [hovered, setHovered] = useState(false)
   useCursor(hovered)
   const isOrigin = useIsOrigin(name)
+  const isDestination = useIsDestination(name)
   const handleClick = useOriginClick(name, 'planet', onClick)
 
   const radius = size * 0.2
@@ -25,6 +28,10 @@ export const Planet = forwardRef(({ position, size, color, name, onClick, labels
 
       {isOrigin && (
         <OriginIndicator base={radius} labelMarginTop={18} />
+      )}
+
+      {isDestination && (
+        <DestinationIndicator base={radius} labelMarginTop={18} />
       )}
 
       {(labelsVisible || hovered) && (

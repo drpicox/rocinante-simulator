@@ -7,7 +7,9 @@ import { Star } from './Star'
 import { OrbitRing } from './OrbitRing'
 import { CelestialBody } from './CelestialBody'
 import OriginIndicator from './OriginIndicator'
+import DestinationIndicator from './DestinationIndicator'
 import { useIsOrigin, useOriginClick } from '../utils/origin'
+import { useIsDestination } from '../features/destination/hooks.js'
 
 export function SolarSystem({ onSelect }) {
   const [showDetailed, setShowDetailed] = useState(true)
@@ -15,6 +17,7 @@ export function SolarSystem({ onSelect }) {
   const planetRefs = useRef({})
 
   const isSunOrigin = useIsOrigin('Sun')
+  const isSunDestination = useIsDestination('Sun')
   const handleSunClick = useOriginClick('Sun', 'star', () => onSelect('Sun'))
 
   // Check camera distance and switch between detailed and simple view
@@ -38,6 +41,10 @@ export function SolarSystem({ onSelect }) {
 
           {isSunOrigin && (
             <OriginIndicator base={0.8} labelMarginTop={18} />
+          )}
+
+          {isSunDestination && (
+            <DestinationIndicator base={0.8} labelMarginTop={18} />
           )}
         </group>
 

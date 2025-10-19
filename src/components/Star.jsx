@@ -2,7 +2,9 @@ import { Sphere, Html, useCursor } from '@react-three/drei'
 import { useState } from 'react'
 import { useThree, useFrame } from '@react-three/fiber'
 import OriginIndicator from './OriginIndicator'
+import DestinationIndicator from './DestinationIndicator'
 import { useIsOrigin, useOriginClick } from '../features/origin/hooks.js'
+import { useIsDestination } from '../features/destination/hooks.js'
 
 export function Star({ position, size = 0.05, color, name, onClick, labelsVisible = false, minVisibleDistance = 1000 }) {
   const [hovered, setHovered] = useState(false)
@@ -13,6 +15,7 @@ export function Star({ position, size = 0.05, color, name, onClick, labelsVisibl
 
   // If this star is the Sol proxy, the name-based matcher in isNameInName handles solar-system names
   const isOrigin = useIsOrigin(name)
+  const isDestination = useIsDestination(name)
   const handleClick = useOriginClick(name, 'star', onClick)
 
   // Update visibility and size on every frame based on camera distance
@@ -63,6 +66,16 @@ export function Star({ position, size = 0.05, color, name, onClick, labelsVisibl
 
       {isOrigin && (
         <OriginIndicator
+          base={scaledSize}
+          glowScale={2.2}
+          ringInner={1.7}
+          ringOuter={2.6}
+          labelMarginTop={18}
+        />
+      )}
+
+      {isDestination && (
+        <DestinationIndicator
           base={scaledSize}
           glowScale={2.2}
           ringInner={1.7}

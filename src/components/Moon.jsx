@@ -2,7 +2,9 @@ import { Sphere, Html, useCursor } from '@react-three/drei'
 import { useState, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import OriginIndicator from './OriginIndicator'
+import DestinationIndicator from './DestinationIndicator'
 import { useIsOrigin, useOriginClick } from '../features/origin/hooks.js'
+import { useIsDestination } from '../features/destination/hooks.js'
 
 export function Moon({ size, color, name, onClick, labelsVisible = false, orbitRadius, orbitSpeed, planetRef }) {
   const [hovered, setHovered] = useState(false)
@@ -10,6 +12,7 @@ export function Moon({ size, color, name, onClick, labelsVisible = false, orbitR
   useCursor(hovered)
 
   const isOrigin = useIsOrigin(name)
+  const isDestination = useIsDestination(name)
   const handleClick = useOriginClick(name, 'moon', onClick)
 
   useFrame(({ clock }) => {
@@ -42,6 +45,10 @@ export function Moon({ size, color, name, onClick, labelsVisible = false, orbitR
 
       {isOrigin && (
         <OriginIndicator base={size} labelMarginTop={14} />
+      )}
+
+      {isDestination && (
+        <DestinationIndicator base={size} labelMarginTop={14} />
       )}
 
       {(labelsVisible || hovered) && (
