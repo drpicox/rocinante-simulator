@@ -113,7 +113,7 @@ export default function ShipPanel() {
             accent="rgba(45, 212, 191, 0.5)"
           />
           <Field
-            label="Fuel Efficiency"
+            label="Mass-Energy Efficiency"
             unit="%"
             value={efficiency}
             min={0}
@@ -124,7 +124,7 @@ export default function ShipPanel() {
           />
           <Field
             label="Acceleration"
-            unit="g"
+            unit="gs"
             value={acceleration}
             min={0}
             max={100}
@@ -142,7 +142,7 @@ export default function ShipPanel() {
           border: '1px solid rgba(45, 212, 191, 0.15)'
         }}>
           <p style={{ margin: 0, fontSize: '12px', color: 'rgba(255,255,255,0.75)' }}>
-            Tip: Efficiency is percentage of fuel converted into delta-v. Acceleration is in Earth g's.
+            Tip: Efficiency is the % of fuel mass converted into thrust energy (E = m c^2). 100% ⇒ all fuel mass becomes thrust energy; 50% ⇒ half becomes energy, the rest is discarded.
           </p>
         </div>
       </div>
@@ -213,4 +213,3 @@ function Field({ label, unit, value, min, max, step, onChange, accent }) {
     </label>
   )
 }
-
