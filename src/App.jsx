@@ -10,6 +10,7 @@ import { EffectComposer, Bloom } from '@react-three/postprocessing'
 import './App.css'
 import DestinationPanel from './components/DestinationPanel'
 import ShipPanel from './components/ShipPanel'
+import TravelLine from './components/TravelLine'
 
 
 function App() {
@@ -49,6 +50,9 @@ function App() {
             minVisibleDistance={0}
           />
         ))}
+
+        {/* Travel line from origin to destination */}
+        <TravelLine />
 
         {/* Postprocessing effects */}
         <EffectComposer>
