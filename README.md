@@ -1,16 +1,63 @@
-# React + Vite
+# Rocinante Simulator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A 3D space simulator built with React and Three.js that allows you to explore the solar system and nearby star systems with realistic relativistic rocket physics.
 
-Currently, two official plugins are available:
+## 🚀 Live Demo
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Visit the live application at: **https://drpicox.github.io/rocinante-simulator/**
 
-## React Compiler
+## Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Interactive 3D visualization of the solar system and nearby star systems
+- Realistic relativistic rocket physics calculations
+- Travel time dilation effects (observer time vs ship time)
+- Fuel consumption calculations
+- Click on celestial bodies to view detailed information
+- Visual range indicators and travel lines
+- Configurable ship parameters (mass, fuel, acceleration, efficiency)
 
-## Expanding the ESLint configuration
+## Physics
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+The travel calculations are based on relativistic rocket physics from:
+https://math.ucr.edu/home/baez/physics/Relativity/SR/Rocket/rocket.html
+
+## Development
+
+### Prerequisites
+
+- Node.js 20 or higher
+- npm
+
+### Installation
+
+```bash
+npm install
+```
+
+### Running locally
+
+```bash
+npm run dev
+```
+
+### Building for production
+
+```bash
+npm run build
+```
+
+## Deployment
+
+This project is automatically deployed to GitHub Pages using GitHub Actions. Any push to the `main` branch will trigger a new deployment.
+
+## Technology Stack
+
+- React
+- Three.js / React Three Fiber
+- Redux Toolkit
+- Vite
+- GitHub Pages
+
+## License
+
+MIT
