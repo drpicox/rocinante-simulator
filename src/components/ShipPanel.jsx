@@ -118,11 +118,12 @@ export default function ShipPanel() {
             label="Mass-Energy Efficiency"
             unit="%"
             value={efficiency}
-            min={0}
+            min={0.0000001}
             max={100}
-            step={0.1}
+            step="any"
             onChange={(v) => dispatch(setEfficiency(v))}
             accent="rgba(16, 185, 129, 0.55)"
+            discrete
           />
           <Field
             label="Acceleration"
@@ -153,23 +154,21 @@ export default function ShipPanel() {
 }
 
 function Field({ label, unit, value, min, max, step, onChange, accent, discrete = false }) {
-  // Helpers for discrete, quasi-logarithmic steps like: 0, 1..9, 10..90, 100..900, ... up to max
-  const generateLogSteps = (minVal, maxVal, includeZero = true) => {
+  // Helpers for discrete, quasi-logarithmic steps like: 0, 1..9, 10..90, 100..900, ... including sub-1 decades
+  const generateLogSteps = (minVal, maxVal, includeZero = false) => {
     const vals = []
     if (includeZero && minVal <= 0) vals.push(0)
-    const minPos = Math.max(1, Math.ceil(minVal))
-    const maxPos = Math.floor(maxVal)
-    if (maxPos < 1) return vals.length ? vals : [0]
-    const minExp = Math.floor(Math.log10(minPos))
-    const maxExp = Math.floor(Math.log10(maxPos))
+    const lo = Math.max(minVal, Number.MIN_VALUE)
+    const hi = Math.max(lo, maxVal)
+    const minExp = Math.floor(Math.log10(lo))
+    const maxExp = Math.floor(Math.log10(hi))
     for (let k = minExp; k <= maxExp; k++) {
       const base = Math.pow(10, k)
       for (let n = 1; n <= 9; n++) {
         const v = n * base
-        if (v >= minPos && v <= maxPos) vals.push(v)
+        if (v >= minVal && v <= maxVal) vals.push(+v.toPrecision(12))
       }
     }
-    // Deduplicate and sort, just in case
     return Array.from(new Set(vals)).sort((a, b) => a - b)
   }
 
@@ -184,7 +183,7 @@ function Field({ label, unit, value, min, max, step, onChange, accent, discrete 
     return idx
   }
 
-  const allowedValues = discrete ? generateLogSteps(min, max, true) : null
+  const allowedValues = discrete ? generateLogSteps(min, max, min <= 0) : null
   const sliderIndex = discrete ? nearestIndex(allowedValues, Number(value)) : null
 
   return (
