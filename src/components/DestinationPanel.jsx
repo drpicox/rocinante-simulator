@@ -1,14 +1,24 @@
-// filepath: /Volumes/Projects/claude/rocinante-simulator/src/components/DetailsPanel.jsx
-import React, { useState } from 'react'
+// filepath: /Volumes/Projects/claude/rocinante-simulator/src/components/DestinationPanel.jsx
+import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { clearDestination, selectDestination } from '../features/destination/destinationSlice'
 import { planets, stars } from '../data/spaceData'
+import { selectOrigin } from '../features/origin/originSlice'
+import { selectTravelDistance, computeDistance } from '../features/travel/travelSlice'
 
 export default function DestinationPanel() {
   const destination = useSelector(selectDestination)
+  const origin = useSelector(selectOrigin)
+  const tripDistance = useSelector(selectTravelDistance)
   const dispatch = useDispatch()
   const [isExpanded, setIsExpanded] = useState(true)
 
+  // Recompute travel distance whenever origin or destination changes
+  useEffect(() => {
+    dispatch(computeDistance({ origin: origin?.name, destination }))
+  }, [origin?.name, destination, dispatch])
+
+  // Compute details for the selected object (for panel fields)
   const getDetails = (name) => {
     if (name === 'Sun' || name === 'Sol (Our Sun)') return {
       name: 'Sun',
@@ -53,6 +63,21 @@ export default function DestinationPanel() {
 
   const details = destination ? getDetails(destination) : null
   const hasContent = !!details
+
+  const formatSig = (v) => {
+    if (!isFinite(v)) return '—'
+    if (v === 0) return '0'
+    // Two significant digits max
+    return Number(v.toPrecision(2)).toString()
+  }
+
+  let tripDisplay = null
+  if (tripDistance) {
+    const useLy = tripDistance.ly > 0.01
+    tripDisplay = useLy
+      ? `${formatSig(tripDistance.ly)} ly`
+      : `${formatSig(tripDistance.au)} AU`
+  }
 
   const togglePanel = () => {
     setIsExpanded(!isExpanded)
@@ -180,6 +205,12 @@ export default function DestinationPanel() {
                 <strong style={{ color: '#c4b5fd' }}>Type:</strong>{' '}
                 <span style={{ color: '#e9d5ff' }}>{type}</span>
               </p>
+              {tripDisplay && (
+                <p style={{ margin: '5px 0' }}>
+                  <strong style={{ color: '#c4b5fd' }}>Trip distance:</strong>{' '}
+                  <span style={{ color: '#e9d5ff' }}>{tripDisplay}</span>
+                </p>
+              )}
               <p style={{ margin: '5px 0' }}>
                 <strong style={{ color: '#c4b5fd' }}>Distance:</strong>{' '}
                 <span style={{ color: '#e9d5ff' }}>{distance}</span>

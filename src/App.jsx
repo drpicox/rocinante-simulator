@@ -8,7 +8,7 @@ import { SolarSystem } from './components/SolarSystem'
 import { Starfield } from './components/Starfield'
 import { EffectComposer, Bloom } from '@react-three/postprocessing'
 import './App.css'
-import DestinationPanel from './components/DestinationPanel.jsx'
+import DestinationPanel from './components/DestinationPanel'
 import ShipPanel from './components/ShipPanel'
 
 
