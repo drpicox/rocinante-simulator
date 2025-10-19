@@ -163,15 +163,26 @@ export default function ShipPanel() {
 
           {/* Engine preset selector */}
           <label style={{ display: 'grid', gap: 6 }}>
-            <span style={{ fontSize: 12, color: '#99f6e4', letterSpacing: 0.3 }}>Engine Preset</span>
+            <span style={{
+              fontSize: 12,
+              color: '#99f6e4',
+              letterSpacing: 0.5,
+              fontWeight: 600,
+              textTransform: 'uppercase'
+            }}>
+              🚀 Engine
+            </span>
             <div style={{
+              position: 'relative',
               display: 'flex',
               alignItems: 'center',
               gap: 8,
-              padding: 8,
+              padding: '10px 12px',
               borderRadius: 8,
-              background: 'rgba(0,0,0,0.25)',
-              border: '1px solid rgba(45, 212, 191, 0.28)'
+              background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.08), rgba(16, 185, 129, 0.08))',
+              border: '1px solid rgba(45, 212, 191, 0.35)',
+              boxShadow: '0 2px 8px rgba(45, 212, 191, 0.1)',
+              transition: 'all 0.2s ease'
             }}>
               <select
                 value={selectedPresetKey}
@@ -180,25 +191,119 @@ export default function ShipPanel() {
                   flex: 1,
                   background: 'transparent',
                   border: 'none',
-                  color: 'white',
+                  color: selectedPresetKey === 'custom' ? 'rgba(255,255,255,0.7)' : '#5eead4',
                   outline: 'none',
                   fontSize: 14,
+                  fontWeight: selectedPresetKey === 'custom' ? 400 : 600,
+                  cursor: 'pointer',
                   appearance: 'none',
-                  WebkitAppearance: 'none'
+                  WebkitAppearance: 'none',
+                  MozAppearance: 'none',
+                  paddingRight: 20
                 }}
                 aria-label="Engine preset selector"
               >
-                <option value="custom" style={{ color: 'black' }}>Custom</option>
-                {ENGINE_PRESETS.map(p => (
-                  <option key={p.key} value={p.key} style={{ color: 'black' }}>
-                    {p.name}
+                <option value="custom" style={{
+                  background: '#1a1a2e',
+                  color: 'rgba(255,255,255,0.7)',
+                  fontStyle: 'italic'
+                }}>
+                  ⚙️ Custom Configuration
+                </option>
+                <optgroup label="━━━ Chemical Propulsion ━━━" style={{ background: '#1a1a2e', color: '#5eead4' }}>
+                  <option value="h2o2-chem" style={{ background: '#1a1a2e', color: 'white', paddingLeft: 8 }}>
+                    💧 H₂O₂ Chemical
                   </option>
-                ))}
+                  <option value="h2-o2-chem" style={{ background: '#1a1a2e', color: 'white', paddingLeft: 8 }}>
+                    💧 H₂/O₂ Chemical
+                  </option>
+                </optgroup>
+                <optgroup label="━━━ Electric Propulsion ━━━" style={{ background: '#1a1a2e', color: '#5eead4' }}>
+                  <option value="solar-ion" style={{ background: '#1a1a2e', color: 'white', paddingLeft: 8 }}>
+                    ⚡ Solar Ion
+                  </option>
+                  <option value="nuclear-ion" style={{ background: '#1a1a2e', color: 'white', paddingLeft: 8 }}>
+                    ⚡ Nuclear Ion
+                  </option>
+                  <option value="vasimr" style={{ background: '#1a1a2e', color: 'white', paddingLeft: 8 }}>
+                    ⚡ Plasma (VASIMR)
+                  </option>
+                </optgroup>
+                <optgroup label="━━━ Nuclear Propulsion ━━━" style={{ background: '#1a1a2e', color: '#5eead4' }}>
+                  <option value="orion" style={{ background: '#1a1a2e', color: 'white', paddingLeft: 8 }}>
+                    💥 Orion (Fission Bombs)
+                  </option>
+                  <option value="ntr" style={{ background: '#1a1a2e', color: 'white', paddingLeft: 8 }}>
+                    ☢️ Nuclear Thermal (NTR)
+                  </option>
+                </optgroup>
+                <optgroup label="━━━ Fusion Drives ━━━" style={{ background: '#1a1a2e', color: '#5eead4' }}>
+                  <option value="dt-fusion" style={{ background: '#1a1a2e', color: 'white', paddingLeft: 8 }}>
+                    ⚛️ D-T Fusion
+                  </option>
+                  <option value="dt-fusion-perfect" style={{ background: '#1a1a2e', color: 'white', paddingLeft: 8 }}>
+                    ✨ D-T Fusion (Perfect)
+                  </option>
+                  <option value="dhe3" style={{ background: '#1a1a2e', color: 'white', paddingLeft: 8 }}>
+                    ⚛️ D-He³ Fusion
+                  </option>
+                  <option value="dhe3-perfect" style={{ background: '#1a1a2e', color: 'white', paddingLeft: 8 }}>
+                    ✨ D-He³ Fusion (Perfect)
+                  </option>
+                  <option value="epstein" style={{ background: '#1a1a2e', color: '#34d399', paddingLeft: 8, fontWeight: 600 }}>
+                    🌟 Epstein Fusion Drive
+                  </option>
+                </optgroup>
+                <optgroup label="━━━ Exotic Propulsion ━━━" style={{ background: '#1a1a2e', color: '#5eead4' }}>
+                  <option value="antimatter" style={{ background: '#1a1a2e', color: '#fbbf24', paddingLeft: 8, fontWeight: 600 }}>
+                    ⭐ Antimatter
+                  </option>
+                  <option value="antimatter-perfect" style={{ background: '#1a1a2e', color: '#f59e0b', paddingLeft: 8, fontWeight: 600 }}>
+                    💫 Antimatter (Perfect)
+                  </option>
+                </optgroup>
               </select>
+              {/* Dropdown arrow */}
+              <span style={{
+                position: 'absolute',
+                right: 12,
+                top: '50%',
+                transform: 'translateY(-50%)',
+                pointerEvents: 'none',
+                color: '#5eead4',
+                fontSize: 12
+              }}>▼</span>
             </div>
-            <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)' }}>
-              Selecting a preset updates Mass-Energy Efficiency (%) and Acceleration (gs).
-            </span>
+            {selectedPresetKey !== 'custom' && (
+              <div style={{
+                padding: '6px 10px',
+                background: 'rgba(94, 234, 212, 0.1)',
+                borderRadius: 6,
+                border: '1px solid rgba(94, 234, 212, 0.25)',
+                fontSize: 11,
+                color: '#99f6e4',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center'
+              }}>
+                <span>
+                  <strong style={{ color: '#5eead4' }}>η:</strong> {ENGINE_PRESETS.find(p => p.key === selectedPresetKey)?.efficiency}%
+                </span>
+                <span style={{ color: 'rgba(255,255,255,0.3)' }}>•</span>
+                <span>
+                  <strong style={{ color: '#5eead4' }}>a:</strong> {ENGINE_PRESETS.find(p => p.key === selectedPresetKey)?.acceleration}g
+                </span>
+              </div>
+            )}
+            {selectedPresetKey === 'custom' && (
+              <span style={{
+                fontSize: 11,
+                color: 'rgba(255,255,255,0.5)',
+                fontStyle: 'italic'
+              }}>
+                💡 Adjust sliders below to configure your custom engine
+              </span>
+            )}
           </label>
 
           <Field
