@@ -192,7 +192,7 @@ export default function DestinationPanel() {
       <div style={{
         maxHeight: isExpanded ? '500px' : '0',
         opacity: isExpanded ? 1 : 0,
-        overflow: 'hidden',
+        overflow: isExpanded ? 'auto' : 'hidden',
         transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
         transformOrigin: 'top'
       }}>
