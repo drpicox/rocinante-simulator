@@ -13,7 +13,8 @@ import {
   Settings,
   ChevronDown,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Ship
 } from 'lucide-react'
 
 // Engine presets: efficiency is in percent (%), acceleration in g's
@@ -32,6 +33,26 @@ const ENGINE_PRESETS = [
   { key: 'epstein', name: 'Epstein Fusion Drive', efficiency: 0.3, acceleration: 0.3, icon: Rocket, category: 'fusion' },
   { key: 'antimatter', name: 'Antimatter', efficiency: 20, acceleration: 1, icon: Star, category: 'exotic' },
   { key: 'antimatter-perfect', name: 'Antimatter (Perfect)', efficiency: 100, acceleration: 1, icon: Sparkles, category: 'exotic' },
+]
+
+// Ship presets: when selected, set mass, fuel, and engine preset
+const SHIP_PRESETS = [
+  {
+    key: 'rocinante',
+    name: 'Rocinante',
+    icon: Rocket,
+    mass: 25000, // tons
+    fuel: 5000,  // tons
+    engineKey: 'epstein'
+  },
+  {
+    key: 'canterbury',
+    name: 'Canterbury',
+    icon: Ship,
+    mass: 1500000, // tons (bulk ice hauler)
+    fuel: 200000,  // tons
+    engineKey: 'ntr'
+  }
 ]
 
 const findPresetKey = (eff, acc) => {
@@ -70,6 +91,24 @@ export default function ShipPanel() {
     dispatch(setAcceleration(preset.acceleration))
   }
 
+  // Determine selected ship preset based on mass, fuel, and engine preset match
+  const selectedShipKey = (() => {
+    for (const s of SHIP_PRESETS) {
+      if (mass === s.mass && fuel === s.fuel && selectedPresetKey === s.engineKey) return s.key
+    }
+    return 'custom'
+  })()
+  const selectedShip = SHIP_PRESETS.find(s => s.key === selectedShipKey)
+  const SelectedShipIcon = selectedShip?.icon || Settings
+
+  const applyShipPreset = (key) => {
+    const ship = SHIP_PRESETS.find(s => s.key === key)
+    if (!ship) return
+    dispatch(setMass(ship.mass))
+    dispatch(setFuel(ship.fuel))
+    applyPreset(ship.engineKey)
+  }
+
   // Cycle through presets with wrap-around
   const cyclePreset = (delta) => {
     const keys = ENGINE_PRESETS.map(p => p.key)
@@ -78,6 +117,14 @@ export default function ShipPanel() {
     if (idx === -1) idx = delta > 0 ? -1 : 0
     idx = (idx + delta + keys.length) % keys.length
     applyPreset(keys[idx])
+  }
+
+  const cycleShipPreset = (delta) => {
+    const keys = SHIP_PRESETS.map(s => s.key)
+    let idx = keys.indexOf(selectedShipKey)
+    if (idx === -1) idx = delta > 0 ? -1 : 0
+    idx = (idx + delta + keys.length) % keys.length
+    applyShipPreset(keys[idx])
   }
 
   return (
@@ -163,6 +210,250 @@ export default function ShipPanel() {
         transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
       }}>
         <div style={{ display: 'grid', gap: '12px' }}>
+          {/* Ship preset selector */}
+          <label style={{ display: 'grid', gap: 6 }}>
+            <span style={{
+              fontSize: 12,
+              color: '#99f6e4',
+              letterSpacing: 0.5,
+              fontWeight: 600,
+              textTransform: 'uppercase',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6
+            }}>
+              <SelectedShipIcon size={14} strokeWidth={2.5} />
+              Ship
+            </span>
+            <div style={{ display: 'flex', gap: 6, alignItems: 'stretch' }}>
+              {/* Selector container */}
+              <div style={{
+                position: 'relative',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                padding: '10px 12px',
+                borderRadius: 8,
+                background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.12), rgba(16, 185, 129, 0.12))',
+                border: '1px solid rgba(45, 212, 191, 0.4)',
+                boxShadow: '0 2px 12px rgba(45, 212, 191, 0.15)',
+                transition: 'all 0.2s ease',
+                cursor: 'pointer',
+                flex: 1
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'linear-gradient(135deg, rgba(6, 182, 212, 0.18), rgba(16, 185, 129, 0.18))'
+                e.currentTarget.style.borderColor = 'rgba(45, 212, 191, 0.5)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'linear-gradient(135deg, rgba(6, 182, 212, 0.12), rgba(16, 185, 129, 0.12))'
+                e.currentTarget.style.borderColor = 'rgba(45, 212, 191, 0.4)'
+              }}
+              onWheel={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                cycleShipPreset(e.deltaY > 0 ? 1 : -1)
+              }}
+              >
+                <SelectedShipIcon
+                  size={16}
+                  strokeWidth={2}
+                  style={{
+                    color: selectedShipKey === 'custom' ? 'rgba(255,255,255,0.5)' : '#5eead4',
+                    flexShrink: 0
+                  }}
+                />
+                <select
+                  value={selectedShipKey}
+                  onChange={(e) => applyShipPreset(e.target.value)}
+                  style={{
+                    flex: 1,
+                    background: 'transparent',
+                    border: 'none',
+                    color: selectedShipKey === 'custom' ? 'rgba(255,255,255,0.7)' : '#5eead4',
+                    outline: 'none',
+                    fontSize: 13,
+                    fontWeight: selectedShipKey === 'custom' ? 400 : 600,
+                    cursor: 'pointer',
+                    appearance: 'none',
+                    WebkitAppearance: 'none',
+                    MozAppearance: 'none',
+                    paddingRight: 0
+                  }}
+                  aria-label="Ship preset selector"
+                >
+                  <option value="custom" style={{
+                    background: '#1a1a2e',
+                    color: 'rgba(255,255,255,0.7)',
+                    fontStyle: 'italic'
+                  }}>
+                    Custom Ship
+                  </option>
+                  <optgroup label="━━━ Known Ships ━━━" style={{ background: '#1a1a2e', color: '#5eead4' }}>
+                    <option value="rocinante" style={{ background: '#1a1a2e', color: '#34d399', fontWeight: 600 }}>
+                      Rocinante
+                    </option>
+                    <option value="canterbury" style={{ background: '#1a1a2e', color: 'white' }}>
+                      Canterbury
+                    </option>
+                  </optgroup>
+                </select>
+
+                <ChevronDown
+                  size={14}
+                  strokeWidth={2.5}
+                  style={{
+                    color: '#5eead4',
+                    flexShrink: 0
+                  }}
+                />
+              </div>
+
+              {/* Split button - Up/Down */}
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 1,
+                flexShrink: 0
+              }}>
+                {/* Up button */}
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); cycleShipPreset(-1) }}
+                  disabled={selectedShipKey === SHIP_PRESETS[0].key}
+                  title="Previous ship"
+                  aria-label="Previous ship preset"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: 28,
+                    height: 19,
+                    borderRadius: '4px 4px 0 0',
+                    background: selectedShipKey === SHIP_PRESETS[0].key
+                      ? 'rgba(45, 212, 191, 0.05)'
+                      : 'rgba(45, 212, 191, 0.15)',
+                    border: '1px solid rgba(45, 212, 191, 0.3)',
+                    borderBottom: 'none',
+                    color: selectedShipKey === SHIP_PRESETS[0].key
+                      ? 'rgba(153, 246, 228, 0.3)'
+                      : '#99f6e4',
+                    cursor: selectedShipKey === SHIP_PRESETS[0].key ? 'not-allowed' : 'pointer',
+                    transition: 'all 0.2s ease',
+                    padding: 0,
+                    opacity: selectedShipKey === SHIP_PRESETS[0].key ? 0.4 : 1
+                  }}
+                  onMouseEnter={(e) => {
+                    if (selectedShipKey !== SHIP_PRESETS[0].key) {
+                      e.currentTarget.style.background = 'rgba(45, 212, 191, 0.3)'
+                      e.currentTarget.style.color = '#5eead4'
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (selectedShipKey !== SHIP_PRESETS[0].key) {
+                      e.currentTarget.style.background = 'rgba(45, 212, 191, 0.15)'
+                      e.currentTarget.style.color = '#99f6e4'
+                    }
+                  }}
+                >
+                  <ChevronLeft size={12} strokeWidth={2.5} style={{ pointerEvents: 'none', transform: 'rotate(90deg)' }} />
+                </button>
+
+                {/* Down button */}
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); cycleShipPreset(1) }}
+                  disabled={selectedShipKey === SHIP_PRESETS[SHIP_PRESETS.length - 1].key}
+                  title="Next ship"
+                  aria-label="Next ship preset"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: 28,
+                    height: 19,
+                    borderRadius: '0 0 4px 4px',
+                    background: selectedShipKey === SHIP_PRESETS[SHIP_PRESETS.length - 1].key
+                      ? 'rgba(45, 212, 191, 0.05)'
+                      : 'rgba(45, 212, 191, 0.15)',
+                    border: '1px solid rgba(45, 212, 191, 0.3)',
+                    borderTop: 'none',
+                    color: selectedShipKey === SHIP_PRESETS[SHIP_PRESETS.length - 1].key
+                      ? 'rgba(153, 246, 228, 0.3)'
+                      : '#99f6e4',
+                    cursor: selectedShipKey === SHIP_PRESETS[SHIP_PRESETS.length - 1].key ? 'not-allowed' : 'pointer',
+                    transition: 'all 0.2s ease',
+                    padding: 0,
+                    opacity: selectedShipKey === SHIP_PRESETS[SHIP_PRESETS.length - 1].key ? 0.4 : 1
+                  }}
+                  onMouseEnter={(e) => {
+                    if (selectedShipKey !== SHIP_PRESETS[SHIP_PRESETS.length - 1].key) {
+                      e.currentTarget.style.background = 'rgba(45, 212, 191, 0.3)'
+                      e.currentTarget.style.color = '#5eead4'
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (selectedShipKey !== SHIP_PRESETS[SHIP_PRESETS.length - 1].key) {
+                      e.currentTarget.style.background = 'rgba(45, 212, 191, 0.15)'
+                      e.currentTarget.style.color = '#99f6e4'
+                    }
+                  }}
+                >
+                  <ChevronRight size={12} strokeWidth={2.5} style={{ pointerEvents: 'none', transform: 'rotate(90deg)' }} />
+                </button>
+              </div>
+            </div>
+            {selectedShipKey !== 'custom' && (
+              <div style={{
+                padding: '6px 10px',
+                background: 'rgba(94, 234, 212, 0.1)',
+                borderRadius: 6,
+                border: '1px solid rgba(94, 234, 212, 0.25)',
+                fontSize: 10,
+                color: '#99f6e4',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                gap: 8
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <Sparkles size={10} style={{ color: '#5eead4' }} />
+                  <span>
+                    <strong style={{ color: '#5eead4' }}>Mass:</strong> {selectedShip?.mass.toLocaleString()} t
+                  </span>
+                </div>
+                <span style={{ color: 'rgba(255,255,255,0.3)' }}>•</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <Droplet size={10} style={{ color: '#5eead4' }} />
+                  <span>
+                    <strong style={{ color: '#5eead4' }}>Fuel:</strong> {selectedShip?.fuel.toLocaleString()} t
+                  </span>
+                </div>
+                <span style={{ color: 'rgba(255,255,255,0.3)' }}>•</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <Rocket size={10} style={{ color: '#5eead4' }} />
+                  <span>
+                    <strong style={{ color: '#5eead4' }}>Engine:</strong> {ENGINE_PRESETS.find(p => p.key === selectedShip?.engineKey)?.name}
+                  </span>
+                </div>
+              </div>
+            )}
+            {selectedShipKey === 'custom' && (
+              <div style={{
+                fontSize: 10,
+                color: 'rgba(255,255,255,0.5)',
+                fontStyle: 'italic',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 4,
+                padding: '2px 0'
+              }}>
+                <Settings size={10} style={{ color: 'rgba(255,255,255,0.5)' }} />
+                Adjust fields below or pick a ship preset
+              </div>
+            )}
+          </label>
+
           <Field
             label="Mass"
             unit="tons"
