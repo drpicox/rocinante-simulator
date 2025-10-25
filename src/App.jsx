@@ -6,6 +6,7 @@ import { stars } from './data/spaceData'
 import { Star } from './components/Star'
 import { SolarSystem } from './components/SolarSystem'
 import { Starfield } from './components/Starfield'
+import { NebulaField } from './components/NebulaField'
 import { EffectComposer, Bloom } from '@react-three/postprocessing'
 import './App.css'
 import DestinationPanel from './components/DestinationPanel'
@@ -22,6 +23,9 @@ function App() {
       <Canvas camera={{ position: [15, 8, 20], fov: 60, far: 200000, near: 0.1 }}>
         {/* Background starfield - custom component that stays far away */}
         <Starfield count={5000} />
+
+        {/* Nebula field - colorful nebulae in the background */}
+        <NebulaField />
 
         {/* Lights */}
         <ambientLight intensity={0.05} />
