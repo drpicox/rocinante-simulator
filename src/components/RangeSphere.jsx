@@ -12,6 +12,8 @@ export function RangeSphere() {
 
   // Calculate max range based on ship parameters
   const maxRange = useMemo(() => {
+    if (!origin?.name) return 0
+
     const rangeMeters = calculateMaxRange(
       ship.mass,
       ship.fuel,
@@ -19,17 +21,46 @@ export function RangeSphere() {
       ship.acceleration
     )
 
-    // Convert meters to the scene's scale
-    // In the solar system, 1 AU = 149,597,870,700 meters
-    // The scene uses distance * 10 for orbit radius (from positions.js)
-    // Earth is at 1 AU, so orbitRadius = 1 * 10 = 10 units
-    // Therefore: 1 unit = 149,597,870,700 / 10 = 14,959,787,070 meters
-    const AU = 149597870700 // meters
-    const sceneUnitsPerAU = 10
-    const metersPerSceneUnit = AU / sceneUnitsPerAU
+    // Distance constants
+    const AU = 149597870700 // meters in 1 AU
+    const LY = 9.461e15 // meters in 1 light-year
 
-    return rangeMeters / metersPerSceneUnit
-  }, [ship.mass, ship.fuel, ship.efficiency, ship.acceleration])
+    // Scene scales
+    const sceneUnitsPerAU = 10    // Solar system scale: 1 AU => 10 units
+    const sceneUnitsPerLY = 2000  // Star map scale: 1 LY => 2000 units
+
+    // Convert range to AU/LY
+    const rangeAU = rangeMeters / AU
+    const rangeLY = rangeMeters / LY
+
+    // Visual size if we used pure AU or pure LY scales
+    const sizeAU = rangeAU * sceneUnitsPerAU
+    const sizeLY = rangeLY * sceneUnitsPerLY
+
+    // Linear ramp mapping:
+    // - Up to 500 AU (5000 units): pure AU scale
+    // - From 500 AU to 3.5 LY: linearly ramp from 5000 -> 7000 units
+    // - Beyond 3.5 LY: pure LY scale
+
+    const startUnits = 5000                 // corresponds to 500 AU
+    const startLY = (500 * AU) / LY         // LY at 500 AU
+    const endLY = 3.5
+
+    if (sizeAU <= startUnits) {
+      return sizeAU
+    }
+
+    if (rangeLY >= endLY) {
+      return sizeLY
+    }
+
+    // Linear progress across the transition interval
+    const tRaw = (rangeLY - startLY) / (endLY - startLY)
+    const t = Math.min(1, Math.max(0, tRaw))
+
+    // Ramp strictly from 5000 -> 7000 units
+    return 5000 + 2000 * t
+  }, [origin?.name, ship.mass, ship.fuel, ship.efficiency, ship.acceleration])
 
   // Update sphere position to follow origin
   useFrame(({ clock }) => {
