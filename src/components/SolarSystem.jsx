@@ -10,6 +10,7 @@ import OriginIndicator from './OriginIndicator'
 import DestinationIndicator from './DestinationIndicator'
 import { useIsOrigin, useOriginClick } from '../utils/origin'
 import { useIsDestination } from '../features/destination/hooks.js'
+import { AsteroidBelt } from './AsteroidBelt'
 
 export function SolarSystem({ onSelect }) {
   const [showDetailed, setShowDetailed] = useState(true)
@@ -47,6 +48,9 @@ export function SolarSystem({ onSelect }) {
             <DestinationIndicator base={0.8} labelMarginTop={18} />
           )}
         </group>
+
+        {/* Asteroid Belt between Mars (~1.5 AU) and Jupiter (~5.2 AU) */}
+        <AsteroidBelt innerAU={2.2} outerAU={3.2} count={1000} sizeMin={0.001} sizeMax={0.3} color="#ff6b35" />
 
         {/* Orbits */}
         {planets.map((planet) => (
