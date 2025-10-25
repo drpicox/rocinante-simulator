@@ -1,4 +1,4 @@
-// Quick sanity check for RangeSphere size mapping (linear ramp)
+// Quick sanity check for RangeSphere size mapping (exponential ramp)
 
 const AU = 149597870700 // meters
 const LY = 9.461e15 // meters
@@ -21,7 +21,13 @@ function mapRangeMetersToUnits(rangeMeters) {
 
   const tRaw = (rangeLY - startLY) / (endLY - startLY)
   const t = Math.min(1, Math.max(0, tRaw))
-  return 5000 + 2000 * t
+
+  // Exponential ramp
+  const k = 3
+  const denom = 1 - Math.exp(-k)
+  const s = denom === 0 ? t : (1 - Math.exp(-k * t)) / denom
+
+  return 5000 + 2000 * s
 }
 
 function fmt(n) { return n.toFixed(6) }
@@ -36,6 +42,7 @@ function run() {
   cases.push(['500.1 AU  ', AUv(500.1)])
   cases.push(['501 AU    ', AUv(501)])
   cases.push(['0.1 LY    ', LYv(0.1)])
+  cases.push(['0.5 LY    ', LYv(0.5)])
   cases.push(['1.0 LY    ', LYv(1.0)])
   cases.push(['2.5 LY    ', LYv(2.5)])
   cases.push(['3.0 LY    ', LYv(3.0)])

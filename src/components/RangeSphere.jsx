@@ -58,8 +58,12 @@ export function RangeSphere() {
     const tRaw = (rangeLY - startLY) / (endLY - startLY)
     const t = Math.min(1, Math.max(0, tRaw))
 
-    // Ramp strictly from 5000 -> 7000 units
-    return 5000 + 2000 * t
+    // Exponential ramp: faster early growth
+    const k = 3 // curvature; higher means faster early growth
+    const denom = 1 - Math.exp(-k)
+    const s = denom === 0 ? t : (1 - Math.exp(-k * t)) / denom
+
+    return 5000 + 2000 * s
   }, [origin?.name, ship.mass, ship.fuel, ship.efficiency, ship.acceleration])
 
   // Update sphere position to follow origin
