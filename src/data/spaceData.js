@@ -1,12 +1,13 @@
 // Solar System Planets (distances in AU, sizes relative)
 export const planets = [
-  { name: 'Mercury', distance: 0.39, size: 0.6, color: '#8c7853', moons: [] },
-  { name: 'Venus', distance: 0.72, size: 1.2, color: '#ffc649', moons: [] },
+  { name: 'Mercury', distance: 0.39, size: 0.6, color: '#8c7853', moons: [], category: 'planet' },
+  { name: 'Venus', distance: 0.72, size: 1.2, color: '#ffc649', moons: [], category: 'planet' },
   {
     name: 'Earth',
     distance: 1.0,
     size: 1.3,
     color: '#6b93d6',
+    category: 'planet',
     moons: [
       {
         name: 'Moon',
@@ -17,21 +18,17 @@ export const planets = [
       }
     ]
   },
-  { name: 'Mars', distance: 1.52, size: 0.75, color: '#c1440e', moons: [] },
-  { name: 'Jupiter', distance: 5.2, size: 11.2, color: '#d8ca9d', moons: [] },
-  { name: 'Saturn', distance: 9.5, size: 9.4, color: '#fab27b', moons: [] },
-  { name: 'Uranus', distance: 19.2, size: 4.0, color: '#4fd0e7', moons: [] },
-  { name: 'Neptune', distance: 30.1, size: 3.9, color: '#4b70dd', moons: [] }
-];
-
-// Dwarf Planets (distances in AU, sizes relative - scaled up for visibility)
-export const dwarfPlanets = [
-  { name: 'Ceres', distance: 2.77, size: 0.9, color: '#b8b8b8', type: 'dwarf' },
-  { name: 'Vesta', distance: 2.36, size: 0.7, color: '#a89968', type: 'dwarf' },
-  { name: 'Pluto', distance: 39.5, size: 2.0, color: '#dcc7aa', type: 'dwarf' },
-  { name: 'Haumea', distance: 43.3, size: 1.8, color: '#c0c0c0', type: 'dwarf' },
-  { name: 'Makemake', distance: 45.8, size: 1.8, color: '#d4a373', type: 'dwarf' },
-  { name: 'Eris', distance: 67.7, size: 2.0, color: '#e8e8e8', type: 'dwarf' }
+  { name: 'Mars', distance: 1.52, size: 0.75, color: '#c1440e', moons: [], category: 'planet' },
+  { name: 'Vesta', distance: 2.36, size: 0.7, color: '#a89968', moons: [], category: 'dwarf' },
+  { name: 'Ceres', distance: 2.77, size: 0.9, color: '#b8b8b8', moons: [], category: 'dwarf' },
+  { name: 'Jupiter', distance: 5.2, size: 11.2, color: '#d8ca9d', moons: [], category: 'planet' },
+  { name: 'Saturn', distance: 9.5, size: 9.4, color: '#fab27b', moons: [], category: 'planet' },
+  { name: 'Uranus', distance: 19.2, size: 4.0, color: '#4fd0e7', moons: [], category: 'planet' },
+  { name: 'Neptune', distance: 30.1, size: 3.9, color: '#4b70dd', moons: [], category: 'planet' },
+  { name: 'Pluto', distance: 39.5, size: 2.0, color: '#dcc7aa', moons: [], category: 'dwarf' },
+  { name: 'Haumea', distance: 43.3, size: 1.8, color: '#c0c0c0', moons: [], category: 'dwarf' },
+  { name: 'Makemake', distance: 45.8, size: 1.8, color: '#d4a373', moons: [], category: 'dwarf' },
+  { name: 'Eris', distance: 67.7, size: 2.0, color: '#e8e8e8', moons: [], category: 'dwarf' }
 ];
 
 // 30 Closest Stars to the Sun (distances in light years, positions in 3D space)
@@ -398,3 +395,4 @@ export const stars = [
     facts: 'Binary red dwarf system. Very close binary pair orbiting every 16.6 years. Variable star.'
   },
 ];
+
