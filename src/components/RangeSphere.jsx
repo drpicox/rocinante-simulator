@@ -37,13 +37,13 @@ export function RangeSphere() {
     const sizeAU = rangeAU * sceneUnitsPerAU
     const sizeLY = rangeLY * sceneUnitsPerLY
 
-    // Linear ramp mapping:
-    // - Up to 500 AU (5000 units): pure AU scale
-    // - From 500 AU to 3.5 LY: linearly ramp from 5000 -> 7000 units
+    // Exponential ramp mapping:
+    // - Up to 100 AU (1000 units): pure AU scale
+    // - From 100 AU to 3.5 LY: exponential ramp from 1000 -> 7000 units
     // - Beyond 3.5 LY: pure LY scale
 
-    const startUnits = 5000                 // corresponds to 500 AU
-    const startLY = (500 * AU) / LY         // LY at 500 AU
+    const startUnits = 1000                 // corresponds to 100 AU
+    const startLY = (100 * AU) / LY         // LY at 100 AU
     const endLY = 3.5
 
     if (sizeAU <= startUnits) {
@@ -54,7 +54,7 @@ export function RangeSphere() {
       return sizeLY
     }
 
-    // Linear progress across the transition interval
+    // Progress across the transition interval
     const tRaw = (rangeLY - startLY) / (endLY - startLY)
     const t = Math.min(1, Math.max(0, tRaw))
 
@@ -63,7 +63,8 @@ export function RangeSphere() {
     const denom = 1 - Math.exp(-k)
     const s = denom === 0 ? t : (1 - Math.exp(-k * t)) / denom
 
-    return 5000 + 2000 * s
+    // Ramp from 1000 -> 7000 units across the interval
+    return 1000 + 6000 * s
   }, [origin?.name, ship.mass, ship.fuel, ship.efficiency, ship.acceleration])
 
   // Update sphere position to follow origin

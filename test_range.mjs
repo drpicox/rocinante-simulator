@@ -1,4 +1,4 @@
-// Quick sanity check for RangeSphere size mapping (exponential ramp)
+// Quick sanity check for RangeSphere size mapping (exponential ramp starting at 100 AU)
 
 const AU = 149597870700 // meters
 const LY = 9.461e15 // meters
@@ -12,8 +12,8 @@ function mapRangeMetersToUnits(rangeMeters) {
   const sizeAU = rangeAU * sceneUnitsPerAU
   const sizeLY = rangeLY * sceneUnitsPerLY
 
-  const startUnits = 5000 // 500 AU
-  const startLY = (500 * AU) / LY
+  const startUnits = 1000 // 100 AU
+  const startLY = (100 * AU) / LY
   const endLY = 3.5
 
   if (sizeAU <= startUnits) return sizeAU
@@ -27,7 +27,7 @@ function mapRangeMetersToUnits(rangeMeters) {
   const denom = 1 - Math.exp(-k)
   const s = denom === 0 ? t : (1 - Math.exp(-k * t)) / denom
 
-  return 5000 + 2000 * s
+  return 1000 + 6000 * s
 }
 
 function fmt(n) { return n.toFixed(6) }
@@ -37,11 +37,17 @@ function run() {
   const AUv = (n) => n * AU
   const LYv = (n) => n * LY
 
-  cases.push(['499 AU    ', AUv(499)])
+  // Around 100 AU
+  cases.push(['99 AU     ', AUv(99)])
+  cases.push(['100 AU    ', AUv(100)])
+  cases.push(['101 AU    ', AUv(101)])
+
+  // Mid-range checks
+  cases.push(['200 AU    ', AUv(200)])
+  cases.push(['300 AU    ', AUv(300)])
   cases.push(['500 AU    ', AUv(500)])
-  cases.push(['500.1 AU  ', AUv(500.1)])
-  cases.push(['501 AU    ', AUv(501)])
-  cases.push(['0.1 LY    ', LYv(0.1)])
+
+  // LY checks
   cases.push(['0.5 LY    ', LYv(0.5)])
   cases.push(['1.0 LY    ', LYv(1.0)])
   cases.push(['2.5 LY    ', LYv(2.5)])
