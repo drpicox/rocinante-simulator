@@ -1,7 +1,7 @@
 import { Sphere } from '@react-three/drei'
 import { useState, useRef } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
-import { planets } from '../data/spaceData'
+import { planets, dwarfPlanets } from '../data/spaceData'
 import { Planet } from './Planet'
 import { Star } from './Star'
 import { OrbitRing } from './OrbitRing'
@@ -57,6 +57,11 @@ export function SolarSystem({ onSelect }) {
           <OrbitRing key={`${planet.name}-orbit`} radius={planet.distance * 10} />
         ))}
 
+        {/* Dwarf Planet Orbits */}
+        {dwarfPlanets.map((dwarf) => (
+          <OrbitRing key={`${dwarf.name}-orbit`} radius={dwarf.distance * 10} />
+        ))}
+
         {/* Planets */}
         {planets.map((planet) => (
           <CelestialBody key={planet.name} orbitRadius={planet.distance * 10} orbitSpeed={0.1 / planet.distance}>
@@ -74,6 +79,25 @@ export function SolarSystem({ onSelect }) {
                     ...moon,
                     onClick: () => onSelect(moon.name)
                   }))}
+                />
+              )
+            }}
+          </CelestialBody>
+        ))}
+
+        {/* Dwarf Planets */}
+        {dwarfPlanets.map((dwarf) => (
+          <CelestialBody key={dwarf.name} orbitRadius={dwarf.distance * 10} orbitSpeed={0.1 / dwarf.distance}>
+            {(bodyRef) => {
+              planetRefs.current[dwarf.name] = bodyRef
+              return (
+                <Planet
+                  ref={bodyRef}
+                  size={dwarf.size}
+                  color={dwarf.color}
+                  name={dwarf.name}
+                  onClick={() => onSelect(dwarf.name)}
+                  labelsVisible={false}
                 />
               )
             }}
