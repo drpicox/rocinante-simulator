@@ -6,6 +6,7 @@ import { planets, stars } from '../data/spaceData'
 import { selectOrigin } from '../features/origin/originSlice'
 import { selectTravelDistance, computeDistance } from '../features/travel/travelSlice'
 import { calculateTravel, formatTime, formatMass } from '../utils/travel'
+import { LCARS_COLORS, LCARS_FONTS, LCARS_RADIUS } from '../styles/lcars'
 
 export default function DestinationPanel() {
   const destination = useSelector(selectDestination)
@@ -104,89 +105,122 @@ export default function DestinationPanel() {
       position: 'absolute',
       bottom: 20,
       left: 20,
-      background: isExpanded
-        ? 'linear-gradient(135deg, rgba(20, 20, 40, 0.95), rgba(40, 20, 60, 0.92))'
-        : 'linear-gradient(135deg, rgba(20, 20, 40, 0.85), rgba(40, 20, 60, 0.82))',
-      color: 'white',
-      padding: isExpanded ? '20px' : '12px 16px',
-      borderRadius: '12px',
+      background: 'linear-gradient(135deg, rgba(17, 17, 17, 0.95), rgba(34, 34, 34, 0.92))',
+      color: LCARS_COLORS.textPrimary,
+      padding: isExpanded ? '0' : '12px 16px',
+      borderRadius: LCARS_RADIUS.large,
       maxWidth: isExpanded ? '380px' : '280px',
-      backdropFilter: 'blur(15px)',
-      border: '1px solid rgba(139, 92, 246, 0.3)',
-      boxShadow: isExpanded
-        ? '0 8px 32px rgba(139, 92, 246, 0.2), 0 0 0 1px rgba(139, 92, 246, 0.1) inset'
-        : '0 4px 16px rgba(139, 92, 246, 0.15)',
+      backdropFilter: 'blur(10px)',
+      border: `3px solid ${LCARS_COLORS.purple}`,
+      boxShadow: `0 0 20px rgba(204, 153, 204, 0.4), inset 0 0 20px rgba(0, 0, 0, 0.5)`,
       transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-      minWidth: '280px'
+      minWidth: '280px',
+      fontFamily: LCARS_FONTS.primary,
+      overflow: 'hidden'
     }}>
-      {/* Toggle Button */}
-      <button
-        onClick={togglePanel}
-        style={{
-          width: '100%',
-          background: 'transparent',
-          border: 'none',
-          color: 'white',
-          cursor: 'pointer',
-          padding: 0,
-          textAlign: 'left',
+      {/* LCARS Header Bar */}
+      {isExpanded && (
+        <div style={{
+          background: LCARS_COLORS.purple,
+          padding: '12px 20px',
           display: 'flex',
-          justifyContent: 'space-between',
           alignItems: 'center',
-          marginBottom: isExpanded && hasContent ? '12px' : '0'
-        }}
-        aria-label={isExpanded ? 'Collapse details' : 'Expand details'}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <span style={{
-            fontSize: '20px',
-            transition: 'transform 0.3s ease',
-            transform: isExpanded ? 'rotate(0deg)' : 'rotate(-90deg)',
-            display: 'inline-block',
-            color: '#a78bfa'
-          }}>▼</span>
-          <h3 style={{
-            margin: 0,
-            fontSize: isExpanded ? '18px' : '16px',
-            fontWeight: '600',
-            background: 'linear-gradient(135deg, #a78bfa, #ec4899)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-            transition: 'font-size 0.3s ease'
-          }}>
-            {hasContent ? name : 'Target'}
-          </h3>
-        </div>
-        {hasContent && (
-          <button
-            onClick={(e) => {
-              e.stopPropagation()
-              dispatch(clearDestination())
-            }}
-            style={{
-              background: 'rgba(139, 92, 246, 0.2)',
-              border: '1px solid rgba(139, 92, 246, 0.3)',
-              borderRadius: '6px',
-              color: '#a78bfa',
+          justifyContent: 'space-between',
+          borderRadius: `${LCARS_RADIUS.large} ${LCARS_RADIUS.large} 0 0`,
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{
+              width: '40px',
+              height: '40px',
+              background: LCARS_COLORS.black,
+              borderRadius: LCARS_RADIUS.pill,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '20px'
+            }}>▼</div>
+            <h3 style={{
+              margin: 0,
               fontSize: '18px',
-              cursor: 'pointer',
-              padding: '4px 10px',
-              transition: 'all 0.2s ease',
-              fontWeight: 'bold'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(139, 92, 246, 0.35)'
-              e.currentTarget.style.color = '#c4b5fd'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'rgba(139, 92, 246, 0.2)'
-              e.currentTarget.style.color = '#a78bfa'
-            }}
-            aria-label="Close details"
-          >×</button>
-        )}
-      </button>
+              fontWeight: LCARS_FONTS.weight.bold,
+              color: LCARS_COLORS.black,
+              textTransform: 'uppercase',
+              letterSpacing: '2px'
+            }}>
+              {hasContent ? name : 'Target'}
+            </h3>
+          </div>
+          {hasContent && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                dispatch(clearDestination())
+              }}
+              style={{
+                background: LCARS_COLORS.black,
+                border: 'none',
+                borderRadius: LCARS_RADIUS.pill,
+                color: LCARS_COLORS.purple,
+                fontSize: '20px',
+                cursor: 'pointer',
+                width: '32px',
+                height: '32px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.2s ease',
+                fontWeight: 'bold'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = LCARS_COLORS.orange
+                e.currentTarget.style.color = LCARS_COLORS.black
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = LCARS_COLORS.black
+                e.currentTarget.style.color = LCARS_COLORS.purple
+              }}
+              aria-label="Close details"
+            >×</button>
+          )}
+        </div>
+      )}
+      
+      {/* Toggle Button for collapsed state */}
+      {!isExpanded && (
+        <button
+          onClick={togglePanel}
+          style={{
+            width: '100%',
+            background: 'transparent',
+            border: 'none',
+            color: LCARS_COLORS.purple,
+            cursor: 'pointer',
+            padding: 0,
+            textAlign: 'left',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+          aria-label={isExpanded ? 'Collapse details' : 'Expand details'}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span style={{
+              fontSize: '20px',
+              color: LCARS_COLORS.purple
+            }}>▶</span>
+            <h3 style={{
+              margin: 0,
+              fontSize: '16px',
+              fontWeight: LCARS_FONTS.weight.bold,
+              color: LCARS_COLORS.purple,
+              textTransform: 'uppercase',
+              letterSpacing: '2px'
+            }}>
+              {hasContent ? name : 'Target'}
+            </h3>
+          </div>
+        </button>
+      )}
 
       {/* Expandable Content */}
       <div style={{
@@ -194,50 +228,81 @@ export default function DestinationPanel() {
         opacity: isExpanded ? 1 : 0,
         overflow: isExpanded ? 'auto' : 'hidden',
         transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-        transformOrigin: 'top'
+        transformOrigin: 'top',
+        padding: isExpanded ? '20px' : '0'
       }}>
         {!hasContent ? (
           <div style={{
             textAlign: 'center',
             padding: '20px 0',
-            color: 'rgba(167, 139, 250, 0.7)',
+            color: LCARS_COLORS.purple,
             fontStyle: 'italic'
           }}>
             <p style={{ margin: '8px 0', fontSize: '32px' }}>✨</p>
-            <p style={{ margin: '8px 0' }}>Click on a celestial object to view details</p>
+            <p style={{ margin: '8px 0', textTransform: 'uppercase', letterSpacing: '1px' }}>
+              Click on a celestial object to view details
+            </p>
           </div>
         ) : (
-          <div style={{ paddingTop: '8px' }}>
+          <div>
+            {/* LCARS Divider */}
+            <div style={{
+              height: '3px',
+              background: LCARS_COLORS.purple,
+              borderRadius: LCARS_RADIUS.small,
+              margin: '0 0 16px 0'
+            }} />
+            
             <div style={{
               padding: '12px',
-              background: 'rgba(139, 92, 246, 0.08)',
-              borderRadius: '8px',
-              border: '1px solid rgba(139, 92, 246, 0.15)',
+              background: 'rgba(0, 0, 0, 0.4)',
+              borderRadius: LCARS_RADIUS.medium,
+              border: `2px solid ${LCARS_COLORS.purpleLight}`,
               marginBottom: '12px'
             }}>
               <p style={{ margin: '5px 0' }}>
-                <strong style={{ color: '#c4b5fd' }}>Type:</strong>{' '}
-                <span style={{ color: '#e9d5ff' }}>{type}</span>
+                <strong style={{ 
+                  color: LCARS_COLORS.orange,
+                  textTransform: 'uppercase',
+                  letterSpacing: '1px',
+                  fontSize: '11px'
+                }}>Type:</strong>{' '}
+                <span style={{ color: LCARS_COLORS.textPrimary }}>{type}</span>
               </p>
               {tripDisplay && (
                 <p style={{ margin: '5px 0' }}>
-                  <strong style={{ color: '#c4b5fd' }}>Trip distance:</strong>{' '}
-                  <span style={{ color: '#e9d5ff' }}>{tripDisplay}</span>
+                  <strong style={{ 
+                    color: LCARS_COLORS.orange,
+                    textTransform: 'uppercase',
+                    letterSpacing: '1px',
+                    fontSize: '11px'
+                  }}>Trip distance:</strong>{' '}
+                  <span style={{ color: LCARS_COLORS.textPrimary }}>{tripDisplay}</span>
                 </p>
               )}
               <p style={{ margin: '5px 0' }}>
-                <strong style={{ color: '#c4b5fd' }}>Distance:</strong>{' '}
-                <span style={{ color: '#e9d5ff' }}>{distance}</span>
+                <strong style={{ 
+                  color: LCARS_COLORS.orange,
+                  textTransform: 'uppercase',
+                  letterSpacing: '1px',
+                  fontSize: '11px'
+                }}>Distance:</strong>{' '}
+                <span style={{ color: LCARS_COLORS.textPrimary }}>{distance}</span>
               </p>
 
               {exoplanets !== undefined && (
                 <>
                   <p style={{ margin: '5px 0' }}>
-                    <strong style={{ color: '#c4b5fd' }}>Exoplanets:</strong>{' '}
-                    <span style={{ color: '#e9d5ff' }}>{exoplanets}</span>
+                    <strong style={{ 
+                      color: LCARS_COLORS.orange,
+                      textTransform: 'uppercase',
+                      letterSpacing: '1px',
+                      fontSize: '11px'
+                    }}>Exoplanets:</strong>{' '}
+                    <span style={{ color: LCARS_COLORS.textPrimary }}>{exoplanets}</span>
                     {habitableZonePlanets > 0 && (
                       <span style={{
-                        color: '#4ade80',
+                        color: LCARS_COLORS.success,
                         marginLeft: '8px',
                         fontWeight: '600'
                       }}>
@@ -247,9 +312,14 @@ export default function DestinationPanel() {
                   </p>
                   {motion && (
                     <p style={{ margin: '5px 0' }}>
-                      <strong style={{ color: '#c4b5fd' }}>Motion:</strong>{' '}
+                      <strong style={{ 
+                        color: LCARS_COLORS.orange,
+                        textTransform: 'uppercase',
+                        letterSpacing: '1px',
+                        fontSize: '11px'
+                      }}>Motion:</strong>{' '}
                       <span style={{
-                        color: motion === 'approaching' ? '#60a5fa' : '#fb923c',
+                        color: motion === 'approaching' ? LCARS_COLORS.blueLight : LCARS_COLORS.orangeBright,
                         fontWeight: '600'
                       }}>
                         {motion === 'approaching' ? '→ Approaching' : '← Receding'}
@@ -260,11 +330,11 @@ export default function DestinationPanel() {
                     <p style={{
                       margin: '8px 0 0 0',
                       fontSize: '0.9em',
-                      color: '#fbbf24',
+                      color: LCARS_COLORS.black,
                       padding: '8px',
-                      background: 'rgba(251, 191, 36, 0.1)',
-                      borderRadius: '6px',
-                      borderLeft: '3px solid #fbbf24'
+                      background: LCARS_COLORS.orangeBright,
+                      borderRadius: LCARS_RADIUS.medium,
+                      fontWeight: '600'
                     }}>
                       <strong>Closest approach:</strong> {closestApproach}
                     </p>
@@ -274,14 +344,14 @@ export default function DestinationPanel() {
             </div>
 
             <p style={{
-              margin: '0',
+              margin: '0 0 12px 0',
               lineHeight: '1.5',
-              color: '#e9d5ff',
+              color: LCARS_COLORS.textPrimary,
               fontSize: '14px',
               padding: '12px',
-              background: 'rgba(0, 0, 0, 0.2)',
-              borderRadius: '8px',
-              borderLeft: '3px solid rgba(167, 139, 250, 0.5)'
+              background: 'rgba(0, 0, 0, 0.3)',
+              borderRadius: LCARS_RADIUS.medium,
+              borderLeft: `4px solid ${LCARS_COLORS.purple}`
             }}>
               {description}
             </p>
@@ -289,47 +359,68 @@ export default function DestinationPanel() {
             {/* Travel Information */}
             {travelInfo && (
               <div style={{
-                marginTop: '12px',
                 padding: '12px',
-                background: 'rgba(236, 72, 153, 0.08)',
-                borderRadius: '8px',
-                border: '1px solid rgba(236, 72, 153, 0.15)',
+                background: 'rgba(0, 0, 0, 0.4)',
+                borderRadius: LCARS_RADIUS.medium,
+                border: `2px solid ${LCARS_COLORS.pink}`,
               }}>
                 <h4 style={{
                   margin: '0 0 8px 0',
                   fontSize: '15px',
-                  fontWeight: '600',
-                  color: '#f9a8d4'
+                  fontWeight: LCARS_FONTS.weight.bold,
+                  color: LCARS_COLORS.pink,
+                  textTransform: 'uppercase',
+                  letterSpacing: '2px'
                 }}>
                   🚀 Travel Profile
                 </h4>
                 <div style={{ fontSize: '13px' }}>
                   <p style={{ margin: '4px 0' }}>
-                    <strong style={{ color: '#fbb6ce' }}>Observer time:</strong>{' '}
-                    <span style={{ color: '#fce7f3' }}>{formatTime(travelInfo.observerTime)}</span>
+                    <strong style={{ 
+                      color: LCARS_COLORS.orange,
+                      textTransform: 'uppercase',
+                      letterSpacing: '1px',
+                      fontSize: '11px'
+                    }}>Observer time:</strong>{' '}
+                    <span style={{ color: LCARS_COLORS.textPrimary }}>{formatTime(travelInfo.observerTime)}</span>
                   </p>
                   <p style={{ margin: '4px 0' }}>
-                    <strong style={{ color: '#fbb6ce' }}>Ship time:</strong>{' '}
-                    <span style={{ color: '#fce7f3' }}>{formatTime(travelInfo.shipTime)}</span>
+                    <strong style={{ 
+                      color: LCARS_COLORS.orange,
+                      textTransform: 'uppercase',
+                      letterSpacing: '1px',
+                      fontSize: '11px'
+                    }}>Ship time:</strong>{' '}
+                    <span style={{ color: LCARS_COLORS.textPrimary }}>{formatTime(travelInfo.shipTime)}</span>
                   </p>
                   <p style={{ margin: '4px 0' }}>
-                    <strong style={{ color: '#fbb6ce' }}>Fuel consumed:</strong>{' '}
-                    <span style={{ color: '#fce7f3' }}>{formatMass(travelInfo.fuelConsumed)}</span>
+                    <strong style={{ 
+                      color: LCARS_COLORS.orange,
+                      textTransform: 'uppercase',
+                      letterSpacing: '1px',
+                      fontSize: '11px'
+                    }}>Fuel consumed:</strong>{' '}
+                    <span style={{ color: LCARS_COLORS.textPrimary }}>{formatMass(travelInfo.fuelConsumed)}</span>
                   </p>
                   {!travelInfo.hasEnoughFuel && travelInfo.coastTime > 0 && (
                     <>
                       <p style={{ margin: '4px 0' }}>
-                        <strong style={{ color: '#fbb6ce' }}>Coast time:</strong>{' '}
-                        <span style={{ color: '#fce7f3' }}>{formatTime(travelInfo.coastTime)}</span>
+                        <strong style={{ 
+                          color: LCARS_COLORS.orange,
+                          textTransform: 'uppercase',
+                          letterSpacing: '1px',
+                          fontSize: '11px'
+                        }}>Coast time:</strong>{' '}
+                        <span style={{ color: LCARS_COLORS.textPrimary }}>{formatTime(travelInfo.coastTime)}</span>
                       </p>
                       <p style={{
                         margin: '8px 0 0 0',
                         fontSize: '0.85em',
-                        color: '#fbbf24',
+                        color: LCARS_COLORS.black,
                         padding: '6px',
-                        background: 'rgba(251, 191, 36, 0.1)',
-                        borderRadius: '4px',
-                        borderLeft: '2px solid #fbbf24'
+                        background: LCARS_COLORS.orangeBright,
+                        borderRadius: LCARS_RADIUS.small,
+                        fontWeight: '600'
                       }}>
                         ⚠️ Insufficient fuel for constant acceleration
                       </p>
@@ -338,7 +429,7 @@ export default function DestinationPanel() {
                   <p style={{
                     margin: '8px 0 0 0',
                     fontSize: '11px',
-                    color: 'rgba(167, 139, 250, 0.6)',
+                    color: LCARS_COLORS.purple,
                     textAlign: 'right',
                     fontStyle: 'italic'
                   }}>
@@ -348,17 +439,17 @@ export default function DestinationPanel() {
                       target="_blank"
                       rel="noopener noreferrer"
                       style={{
-                        color: '#a78bfa',
+                        color: LCARS_COLORS.blueLight,
                         textDecoration: 'none',
-                        borderBottom: '1px dotted rgba(167, 139, 250, 0.4)',
+                        borderBottom: `1px dotted ${LCARS_COLORS.blueLight}`,
                         transition: 'all 0.2s ease'
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.color = '#c4b5fd'
+                        e.currentTarget.style.color = LCARS_COLORS.blue
                         e.currentTarget.style.borderBottomStyle = 'solid'
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.color = '#a78bfa'
+                        e.currentTarget.style.color = LCARS_COLORS.blueLight
                         e.currentTarget.style.borderBottomStyle = 'dotted'
                       }}
                     >
@@ -371,6 +462,34 @@ export default function DestinationPanel() {
           </div>
         )}
       </div>
+      
+      {/* Bottom expand/collapse button */}
+      {isExpanded && (
+        <div style={{
+          background: LCARS_COLORS.purple,
+          padding: '8px',
+          borderRadius: `0 0 ${LCARS_RADIUS.large} ${LCARS_RADIUS.large}`,
+          display: 'flex',
+          justifyContent: 'center',
+          cursor: 'pointer',
+          transition: 'all 0.2s ease'
+        }}
+        onClick={togglePanel}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = LCARS_COLORS.purpleLight
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = LCARS_COLORS.purple
+        }}
+        >
+          <div style={{
+            width: '60px',
+            height: '4px',
+            background: LCARS_COLORS.black,
+            borderRadius: LCARS_RADIUS.pill,
+          }} />
+        </div>
+      )}
     </div>
   )
 }

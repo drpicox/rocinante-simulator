@@ -3,6 +3,7 @@ import React, { useState, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setMass, setFuel, setEfficiency, setAcceleration, setShowRange } from '../features/ship/shipSlice'
 import { calculateMaxRange, formatRange } from '../utils/range'
+import { LCARS_COLORS, LCARS_FONTS, LCARS_RADIUS } from '../styles/lcars'
 import {
   Rocket,
   Droplet,
@@ -82,8 +83,6 @@ export default function ShipPanel() {
   const { mass, fuel, efficiency, acceleration, showRange } = useSelector((state) => state.ship)
   const [isExpanded, setIsExpanded] = useState(true)
 
-  const headerGradient = 'linear-gradient(135deg, #34d399, #06b6d4)'
-
   const selectedPresetKey = findPresetKey(Number(efficiency), Number(acceleration))
   const selectedPreset = ENGINE_PRESETS.find(p => p.key === selectedPresetKey)
   const SelectedIcon = selectedPreset?.icon || Settings
@@ -147,74 +146,112 @@ export default function ShipPanel() {
       bottom: 20,
       right: 20,
       zIndex: 1000,
-      background: isExpanded
-        ? 'linear-gradient(135deg, rgba(8, 28, 36, 0.95), rgba(9, 50, 44, 0.92))'
-        : 'linear-gradient(135deg, rgba(8, 28, 36, 0.85), rgba(9, 50, 44, 0.82))',
-      color: 'white',
-      padding: isExpanded ? '20px' : '12px 16px',
-      borderRadius: '12px',
+      background: 'linear-gradient(135deg, rgba(17, 17, 17, 0.95), rgba(34, 34, 34, 0.92))',
+      color: LCARS_COLORS.textPrimary,
+      padding: isExpanded ? '0' : '12px 16px',
+      borderRadius: LCARS_RADIUS.large,
       maxWidth: isExpanded ? '380px' : '280px',
-      backdropFilter: 'blur(15px)',
-      border: '1px solid rgba(45, 212, 191, 0.35)',
-      boxShadow: isExpanded
-        ? '0 8px 32px rgba(45, 212, 191, 0.22), 0 0 0 1px rgba(45, 212, 191, 0.1) inset'
-        : '0 4px 16px rgba(45, 212, 191, 0.18)',
+      backdropFilter: 'blur(10px)',
+      border: `3px solid ${LCARS_COLORS.orange}`,
+      boxShadow: `0 0 20px rgba(255, 153, 102, 0.4), inset 0 0 20px rgba(0, 0, 0, 0.5)`,
       transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-      minWidth: '280px'
+      minWidth: '280px',
+      fontFamily: LCARS_FONTS.primary,
+      overflow: 'hidden'
     }}>
-      <button
-        onClick={() => setIsExpanded((v) => !v)}
-        style={{
-          width: '100%',
-          background: 'transparent',
-          border: 'none',
-          color: 'white',
-          cursor: 'pointer',
-          padding: 0,
-          textAlign: 'left',
+      {/* LCARS Header Bar */}
+      {isExpanded && (
+        <div style={{
+          background: LCARS_COLORS.orange,
+          padding: '12px 20px',
           display: 'flex',
-          justifyContent: 'space-between',
           alignItems: 'center',
-          marginBottom: isExpanded ? '12px' : 0
-        }}
-        aria-label={isExpanded ? 'Collapse ship panel' : 'Expand ship panel'}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <span style={{
-            fontSize: '20px',
-            transition: 'transform 0.3s ease',
-            transform: isExpanded ? 'rotate(0deg)' : 'rotate(-90deg)',
-            display: 'inline-block',
-            color: '#5eead4'
-          }}>▼</span>
-          <h3 style={{
-            margin: 0,
-            fontSize: isExpanded ? '18px' : '16px',
-            fontWeight: 600,
-            background: headerGradient,
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-            transition: 'font-size 0.3s ease'
-          }}>{selectedShip?.name ? `${selectedShip?.name}` : 'Ship Configuration'}</h3>
+          justifyContent: 'space-between',
+          borderRadius: `${LCARS_RADIUS.large} ${LCARS_RADIUS.large} 0 0`,
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{
+              width: '40px',
+              height: '40px',
+              background: LCARS_COLORS.black,
+              borderRadius: LCARS_RADIUS.pill,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '20px'
+            }}>▼</div>
+            <h3 style={{
+              margin: 0,
+              fontSize: '18px',
+              fontWeight: LCARS_FONTS.weight.bold,
+              color: LCARS_COLORS.black,
+              textTransform: 'uppercase',
+              letterSpacing: '2px'
+            }}>
+              {selectedShip?.name ? `${selectedShip?.name}` : 'Ship Configuration'}
+            </h3>
+          </div>
         </div>
-      </button>
+      )}
+      
+      {/* Toggle Button for collapsed state */}
+      {!isExpanded && (
+        <button
+          onClick={() => setIsExpanded((v) => !v)}
+          style={{
+            width: '100%',
+            background: 'transparent',
+            border: 'none',
+            color: LCARS_COLORS.orange,
+            cursor: 'pointer',
+            padding: 0,
+            textAlign: 'left',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+          aria-label={isExpanded ? 'Collapse ship panel' : 'Expand ship panel'}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span style={{
+              fontSize: '20px',
+              color: LCARS_COLORS.orange
+            }}>▶</span>
+            <h3 style={{
+              margin: 0,
+              fontSize: '16px',
+              fontWeight: LCARS_FONTS.weight.bold,
+              color: LCARS_COLORS.orange,
+              textTransform: 'uppercase',
+              letterSpacing: '2px'
+            }}>{selectedShip?.name ? `${selectedShip?.name}` : 'Ship Configuration'}</h3>
+          </div>
+        </button>
+      )}
 
       <div style={{
         maxHeight: isExpanded ? '600px' : 0,
         opacity: isExpanded ? 1 : 0,
         overflow: isExpanded ? 'auto' : 'hidden',
         transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-        paddingRight: isExpanded ? '4px' : 0
+        padding: isExpanded ? '20px' : 0
       }}>
+        {/* LCARS Divider */}
+        <div style={{
+          height: '3px',
+          background: LCARS_COLORS.orange,
+          borderRadius: LCARS_RADIUS.small,
+          margin: '0 0 16px 0'
+        }} />
+        
         <div style={{ display: 'grid', gap: '12px' }}>
           {/* Ship preset selector */}
           <label style={{ display: 'grid', gap: 6 }}>
             <span style={{
-              fontSize: 12,
-              color: '#99f6e4',
-              letterSpacing: 0.5,
-              fontWeight: 600,
+              fontSize: 11,
+              color: LCARS_COLORS.orange,
+              letterSpacing: 1.5,
+              fontWeight: LCARS_FONTS.weight.semibold,
               textTransform: 'uppercase',
               display: 'flex',
               alignItems: 'center',
@@ -231,28 +268,28 @@ export default function ShipPanel() {
                 alignItems: 'center',
                 gap: 6,
                 padding: '10px 12px',
-                borderRadius: 8,
-                background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.12), rgba(16, 185, 129, 0.12))',
-                border: '1px solid rgba(45, 212, 191, 0.4)',
-                boxShadow: '0 2px 12px rgba(45, 212, 191, 0.15)',
+                borderRadius: LCARS_RADIUS.medium,
+                background: LCARS_COLORS.black,
+                border: `2px solid ${LCARS_COLORS.orange}`,
+                boxShadow: `0 0 10px rgba(255, 153, 102, 0.3)`,
                 transition: 'all 0.2s ease',
                 cursor: 'pointer',
                 flex: 1
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'linear-gradient(135deg, rgba(6, 182, 212, 0.18), rgba(16, 185, 129, 0.18))'
-                e.currentTarget.style.borderColor = 'rgba(45, 212, 191, 0.5)'
+                e.currentTarget.style.borderColor = LCARS_COLORS.orangeLight
+                e.currentTarget.style.boxShadow = `0 0 15px rgba(255, 204, 153, 0.5)`
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'linear-gradient(135deg, rgba(6, 182, 212, 0.12), rgba(16, 185, 129, 0.12))'
-                e.currentTarget.style.borderColor = 'rgba(45, 212, 191, 0.4)'
+                e.currentTarget.style.borderColor = LCARS_COLORS.orange
+                e.currentTarget.style.boxShadow = `0 0 10px rgba(255, 153, 102, 0.3)`
               }}
               >
                 <SelectedShipIcon
                   size={16}
                   strokeWidth={2}
                   style={{
-                    color: selectedShipKey === 'custom' ? 'rgba(255,255,255,0.5)' : '#5eead4',
+                    color: selectedShipKey === 'custom' ? LCARS_COLORS.textSecondary : LCARS_COLORS.orange,
                     flexShrink: 0
                   }}
                 />
@@ -263,10 +300,10 @@ export default function ShipPanel() {
                     flex: 1,
                     background: 'transparent',
                     border: 'none',
-                    color: selectedShipKey === 'custom' ? 'rgba(255,255,255,0.7)' : '#5eead4',
+                    color: selectedShipKey === 'custom' ? LCARS_COLORS.textSecondary : LCARS_COLORS.textPrimary,
                     outline: 'none',
                     fontSize: 13,
-                    fontWeight: selectedShipKey === 'custom' ? 400 : 600,
+                    fontWeight: selectedShipKey === 'custom' ? LCARS_FONTS.weight.normal : LCARS_FONTS.weight.semibold,
                     cursor: 'pointer',
                     appearance: 'none',
                     WebkitAppearance: 'none',
@@ -296,7 +333,7 @@ export default function ShipPanel() {
                   size={14}
                   strokeWidth={2.5}
                   style={{
-                    color: '#5eead4',
+                    color: LCARS_COLORS.orange,
                     flexShrink: 0
                   }}
                 />
@@ -324,13 +361,12 @@ export default function ShipPanel() {
                     height: 19,
                     borderRadius: '4px 4px 0 0',
                     background: selectedShipKey === SHIP_PRESETS[0].key
-                      ? 'rgba(45, 212, 191, 0.05)'
-                      : 'rgba(45, 212, 191, 0.15)',
-                    border: '1px solid rgba(45, 212, 191, 0.3)',
-                    borderBottom: 'none',
+                      ? 'rgba(0, 0, 0, 0.3)'
+                      : LCARS_COLORS.orange,
+                    border: 'none',
                     color: selectedShipKey === SHIP_PRESETS[0].key
-                      ? 'rgba(153, 246, 228, 0.3)'
-                      : '#99f6e4',
+                      ? 'rgba(255, 153, 102, 0.3)'
+                      : LCARS_COLORS.black,
                     cursor: selectedShipKey === SHIP_PRESETS[0].key ? 'not-allowed' : 'pointer',
                     transition: 'all 0.2s ease',
                     padding: 0,
@@ -338,14 +374,12 @@ export default function ShipPanel() {
                   }}
                   onMouseEnter={(e) => {
                     if (selectedShipKey !== SHIP_PRESETS[0].key) {
-                      e.currentTarget.style.background = 'rgba(45, 212, 191, 0.3)'
-                      e.currentTarget.style.color = '#5eead4'
+                      e.currentTarget.style.background = LCARS_COLORS.orangeLight
                     }
                   }}
                   onMouseLeave={(e) => {
                     if (selectedShipKey !== SHIP_PRESETS[0].key) {
-                      e.currentTarget.style.background = 'rgba(45, 212, 191, 0.15)'
-                      e.currentTarget.style.color = '#99f6e4'
+                      e.currentTarget.style.background = LCARS_COLORS.orange
                     }
                   }}
                 >
@@ -367,13 +401,12 @@ export default function ShipPanel() {
                     height: 19,
                     borderRadius: '0 0 4px 4px',
                     background: selectedShipKey === SHIP_PRESETS[SHIP_PRESETS.length - 1].key
-                      ? 'rgba(45, 212, 191, 0.05)'
-                      : 'rgba(45, 212, 191, 0.15)',
-                    border: '1px solid rgba(45, 212, 191, 0.3)',
-                    borderTop: 'none',
+                      ? 'rgba(0, 0, 0, 0.3)'
+                      : LCARS_COLORS.orange,
+                    border: 'none',
                     color: selectedShipKey === SHIP_PRESETS[SHIP_PRESETS.length - 1].key
-                      ? 'rgba(153, 246, 228, 0.3)'
-                      : '#99f6e4',
+                      ? 'rgba(255, 153, 102, 0.3)'
+                      : LCARS_COLORS.black,
                     cursor: selectedShipKey === SHIP_PRESETS[SHIP_PRESETS.length - 1].key ? 'not-allowed' : 'pointer',
                     transition: 'all 0.2s ease',
                     padding: 0,
@@ -381,14 +414,12 @@ export default function ShipPanel() {
                   }}
                   onMouseEnter={(e) => {
                     if (selectedShipKey !== SHIP_PRESETS[SHIP_PRESETS.length - 1].key) {
-                      e.currentTarget.style.background = 'rgba(45, 212, 191, 0.3)'
-                      e.currentTarget.style.color = '#5eead4'
+                      e.currentTarget.style.background = LCARS_COLORS.orangeLight
                     }
                   }}
                   onMouseLeave={(e) => {
                     if (selectedShipKey !== SHIP_PRESETS[SHIP_PRESETS.length - 1].key) {
-                      e.currentTarget.style.background = 'rgba(45, 212, 191, 0.15)'
-                      e.currentTarget.style.color = '#99f6e4'
+                      e.currentTarget.style.background = LCARS_COLORS.orange
                     }
                   }}
                 >
@@ -399,34 +430,34 @@ export default function ShipPanel() {
             {selectedShipKey !== 'custom' && (
               <div style={{
                 padding: '6px 10px',
-                background: 'rgba(94, 234, 212, 0.1)',
-                borderRadius: 6,
-                border: '1px solid rgba(94, 234, 212, 0.25)',
+                background: 'rgba(255, 153, 102, 0.15)',
+                borderRadius: LCARS_RADIUS.small,
+                border: `1px solid ${LCARS_COLORS.orange}`,
                 fontSize: 10,
-                color: '#99f6e4',
+                color: LCARS_COLORS.textPrimary,
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 gap: 8
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                  <Sparkles size={10} style={{ color: '#5eead4' }} />
+                  <Sparkles size={10} style={{ color: LCARS_COLORS.orange }} />
                   <span>
-                    <strong style={{ color: '#5eead4' }}>Mass:</strong> {selectedShip?.mass.toLocaleString()} t
+                    <strong style={{ color: LCARS_COLORS.orange }}>Mass:</strong> {selectedShip?.mass.toLocaleString()} t
                   </span>
                 </div>
-                <span style={{ color: 'rgba(255,255,255,0.3)' }}>•</span>
+                <span style={{ color: LCARS_COLORS.orange }}>•</span>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                  <Droplet size={10} style={{ color: '#5eead4' }} />
+                  <Droplet size={10} style={{ color: LCARS_COLORS.orange }} />
                   <span>
-                    <strong style={{ color: '#5eead4' }}>Fuel:</strong> {selectedShip?.fuel.toLocaleString()} t
+                    <strong style={{ color: LCARS_COLORS.orange }}>Fuel:</strong> {selectedShip?.fuel.toLocaleString()} t
                   </span>
                 </div>
-                <span style={{ color: 'rgba(255,255,255,0.3)' }}>•</span>
+                <span style={{ color: LCARS_COLORS.orange }}>•</span>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                  <Rocket size={10} style={{ color: '#5eead4' }} />
+                  <Rocket size={10} style={{ color: LCARS_COLORS.orange }} />
                   <span>
-                    <strong style={{ color: '#5eead4' }}>Engine:</strong> {ENGINE_PRESETS.find(p => p.key === selectedShip?.engineKey)?.name}
+                    <strong style={{ color: LCARS_COLORS.orange }}>Engine:</strong> {ENGINE_PRESETS.find(p => p.key === selectedShip?.engineKey)?.name}
                   </span>
                 </div>
               </div>
@@ -434,7 +465,7 @@ export default function ShipPanel() {
             {selectedShipKey === 'custom' && (
               <div style={{
                 fontSize: 10,
-                color: 'rgba(255,255,255,0.5)',
+                color: LCARS_COLORS.textSecondary,
                 fontStyle: 'italic',
                 display: 'flex',
                 alignItems: 'center',
@@ -455,7 +486,6 @@ export default function ShipPanel() {
             max={1000000000}
             step={1}
             onChange={(v) => dispatch(setMass(v))}
-            accent="rgba(45, 212, 191, 0.5)"
             discrete
           />
           <Field
@@ -466,17 +496,16 @@ export default function ShipPanel() {
             max={1000000000}
             step={1}
             onChange={(v) => dispatch(setFuel(v))}
-            accent="rgba(45, 212, 191, 0.5)"
             discrete
           />
 
           {/* Engine preset selector */}
           <label style={{ display: 'grid', gap: 6 }}>
             <span style={{
-              fontSize: 12,
-              color: '#99f6e4',
-              letterSpacing: 0.5,
-              fontWeight: 600,
+              fontSize: 11,
+              color: LCARS_COLORS.orange,
+              letterSpacing: 1.5,
+              fontWeight: LCARS_FONTS.weight.semibold,
               textTransform: 'uppercase',
               display: 'flex',
               alignItems: 'center',
@@ -493,28 +522,28 @@ export default function ShipPanel() {
                 alignItems: 'center',
                 gap: 6,
                 padding: '10px 12px',
-                borderRadius: 8,
-                background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.12), rgba(16, 185, 129, 0.12))',
-                border: '1px solid rgba(45, 212, 191, 0.4)',
-                boxShadow: '0 2px 12px rgba(45, 212, 191, 0.15)',
+                borderRadius: LCARS_RADIUS.medium,
+                background: LCARS_COLORS.black,
+                border: `2px solid ${LCARS_COLORS.orange}`,
+                boxShadow: `0 0 10px rgba(255, 153, 102, 0.3)`,
                 transition: 'all 0.2s ease',
                 cursor: 'pointer',
                 flex: 1
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'linear-gradient(135deg, rgba(6, 182, 212, 0.18), rgba(16, 185, 129, 0.18))'
-                e.currentTarget.style.borderColor = 'rgba(45, 212, 191, 0.5)'
+                e.currentTarget.style.borderColor = LCARS_COLORS.orangeLight
+                e.currentTarget.style.boxShadow = `0 0 15px rgba(255, 204, 153, 0.5)`
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'linear-gradient(135deg, rgba(6, 182, 212, 0.12), rgba(16, 185, 129, 0.12))'
-                e.currentTarget.style.borderColor = 'rgba(45, 212, 191, 0.4)'
+                e.currentTarget.style.borderColor = LCARS_COLORS.orange
+                e.currentTarget.style.boxShadow = `0 0 10px rgba(255, 153, 102, 0.3)`
               }}
               >
                 <SelectedIcon
                   size={16}
                   strokeWidth={2}
                   style={{
-                    color: selectedPresetKey === 'custom' ? 'rgba(255,255,255,0.5)' : '#5eead4',
+                    color: selectedPresetKey === 'custom' ? LCARS_COLORS.textSecondary : LCARS_COLORS.orange,
                     flexShrink: 0
                   }}
                 />
@@ -525,15 +554,16 @@ export default function ShipPanel() {
                     flex: 1,
                     background: 'transparent',
                     border: 'none',
-                    color: selectedPresetKey === 'custom' ? 'rgba(255,255,255,0.7)' : '#5eead4',
+                    color: selectedPresetKey === 'custom' ? LCARS_COLORS.textSecondary : LCARS_COLORS.textPrimary,
                     outline: 'none',
                     fontSize: 13,
-                    fontWeight: selectedPresetKey === 'custom' ? 400 : 600,
+                    fontWeight: selectedPresetKey === 'custom' ? LCARS_FONTS.weight.normal : LCARS_FONTS.weight.semibold,
                     cursor: 'pointer',
                     appearance: 'none',
                     WebkitAppearance: 'none',
                     MozAppearance: 'none',
-                    paddingRight: 0
+                    paddingRight: 0,
+                    fontFamily: LCARS_FONTS.primary
                   }}
                   aria-label="Engine preset selector"
                 >
@@ -605,7 +635,7 @@ export default function ShipPanel() {
                   size={14}
                   strokeWidth={2.5}
                   style={{
-                    color: '#5eead4',
+                    color: LCARS_COLORS.orange,
                     flexShrink: 0
                   }}
                 />
@@ -633,13 +663,12 @@ export default function ShipPanel() {
                     height: 19,
                     borderRadius: '4px 4px 0 0',
                     background: selectedPresetKey === ENGINE_PRESETS[0].key
-                      ? 'rgba(45, 212, 191, 0.05)'
-                      : 'rgba(45, 212, 191, 0.15)',
-                    border: '1px solid rgba(45, 212, 191, 0.3)',
-                    borderBottom: 'none',
+                      ? 'rgba(0, 0, 0, 0.3)'
+                      : LCARS_COLORS.orange,
+                    border: 'none',
                     color: selectedPresetKey === ENGINE_PRESETS[0].key
-                      ? 'rgba(153, 246, 228, 0.3)'
-                      : '#99f6e4',
+                      ? 'rgba(255, 153, 102, 0.3)'
+                      : LCARS_COLORS.black,
                     cursor: selectedPresetKey === ENGINE_PRESETS[0].key ? 'not-allowed' : 'pointer',
                     transition: 'all 0.2s ease',
                     padding: 0,
@@ -647,14 +676,12 @@ export default function ShipPanel() {
                   }}
                   onMouseEnter={(e) => {
                     if (selectedPresetKey !== ENGINE_PRESETS[0].key) {
-                      e.currentTarget.style.background = 'rgba(45, 212, 191, 0.3)'
-                      e.currentTarget.style.color = '#5eead4'
+                      e.currentTarget.style.background = LCARS_COLORS.orangeLight
                     }
                   }}
                   onMouseLeave={(e) => {
                     if (selectedPresetKey !== ENGINE_PRESETS[0].key) {
-                      e.currentTarget.style.background = 'rgba(45, 212, 191, 0.15)'
-                      e.currentTarget.style.color = '#99f6e4'
+                      e.currentTarget.style.background = LCARS_COLORS.orange
                     }
                   }}
                 >
@@ -676,13 +703,12 @@ export default function ShipPanel() {
                     height: 19,
                     borderRadius: '0 0 4px 4px',
                     background: selectedPresetKey === ENGINE_PRESETS[ENGINE_PRESETS.length - 1].key
-                      ? 'rgba(45, 212, 191, 0.05)'
-                      : 'rgba(45, 212, 191, 0.15)',
-                    border: '1px solid rgba(45, 212, 191, 0.3)',
-                    borderTop: 'none',
+                      ? 'rgba(0, 0, 0, 0.3)'
+                      : LCARS_COLORS.orange,
+                    border: 'none',
                     color: selectedPresetKey === ENGINE_PRESETS[ENGINE_PRESETS.length - 1].key
-                      ? 'rgba(153, 246, 228, 0.3)'
-                      : '#99f6e4',
+                      ? 'rgba(255, 153, 102, 0.3)'
+                      : LCARS_COLORS.black,
                     cursor: selectedPresetKey === ENGINE_PRESETS[ENGINE_PRESETS.length - 1].key ? 'not-allowed' : 'pointer',
                     transition: 'all 0.2s ease',
                     padding: 0,
@@ -690,14 +716,12 @@ export default function ShipPanel() {
                   }}
                   onMouseEnter={(e) => {
                     if (selectedPresetKey !== ENGINE_PRESETS[ENGINE_PRESETS.length - 1].key) {
-                      e.currentTarget.style.background = 'rgba(45, 212, 191, 0.3)'
-                      e.currentTarget.style.color = '#5eead4'
+                      e.currentTarget.style.background = LCARS_COLORS.orangeLight
                     }
                   }}
                   onMouseLeave={(e) => {
                     if (selectedPresetKey !== ENGINE_PRESETS[ENGINE_PRESETS.length - 1].key) {
-                      e.currentTarget.style.background = 'rgba(45, 212, 191, 0.15)'
-                      e.currentTarget.style.color = '#99f6e4'
+                      e.currentTarget.style.background = LCARS_COLORS.orange
                     }
                   }}
                 >
@@ -708,27 +732,27 @@ export default function ShipPanel() {
             {selectedPresetKey !== 'custom' && (
               <div style={{
                 padding: '6px 10px',
-                background: 'rgba(94, 234, 212, 0.1)',
-                borderRadius: 6,
-                border: '1px solid rgba(94, 234, 212, 0.25)',
+                background: 'rgba(255, 153, 102, 0.15)',
+                borderRadius: LCARS_RADIUS.small,
+                border: `1px solid ${LCARS_COLORS.orange}`,
                 fontSize: 10,
-                color: '#99f6e4',
+                color: LCARS_COLORS.textPrimary,
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 gap: 8
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                  <Sparkles size={10} style={{ color: '#5eead4' }} />
+                  <Sparkles size={10} style={{ color: LCARS_COLORS.orange }} />
                   <span>
-                    <strong style={{ color: '#5eead4' }}>η:</strong> {selectedPreset?.efficiency}%
+                    <strong style={{ color: LCARS_COLORS.orange }}>η:</strong> {selectedPreset?.efficiency}%
                   </span>
                 </div>
-                <span style={{ color: 'rgba(255,255,255,0.3)' }}>•</span>
+                <span style={{ color: LCARS_COLORS.orange }}>•</span>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                  <Rocket size={10} style={{ color: '#5eead4' }} />
+                  <Rocket size={10} style={{ color: LCARS_COLORS.orange }} />
                   <span>
-                    <strong style={{ color: '#5eead4' }}>a:</strong> {selectedPreset?.acceleration}g
+                    <strong style={{ color: LCARS_COLORS.orange }}>a:</strong> {selectedPreset?.acceleration}g
                   </span>
                 </div>
               </div>
@@ -736,14 +760,14 @@ export default function ShipPanel() {
             {selectedPresetKey === 'custom' && (
               <div style={{
                 fontSize: 10,
-                color: 'rgba(255,255,255,0.5)',
+                color: LCARS_COLORS.textSecondary,
                 fontStyle: 'italic',
                 display: 'flex',
                 alignItems: 'center',
                 gap: 4,
                 padding: '2px 0'
               }}>
-                <Settings size={10} style={{ color: 'rgba(255,255,255,0.5)' }} />
+                <Settings size={10} style={{ color: LCARS_COLORS.textSecondary }} />
                 Adjust sliders below to configure your custom engine
               </div>
             )}
@@ -757,7 +781,6 @@ export default function ShipPanel() {
             max={100}
             step="any"
             onChange={(v) => dispatch(setEfficiency(v))}
-            accent="rgba(16, 185, 129, 0.55)"
             discrete
           />
           <Field
@@ -768,7 +791,6 @@ export default function ShipPanel() {
             max={10}
             step="any"
             onChange={(v) => dispatch(setAcceleration(v))}
-            accent="rgba(59, 130, 246, 0.5)"
             discrete
           />
 
@@ -779,26 +801,26 @@ export default function ShipPanel() {
             justifyContent: 'space-between',
             gap: 8,
             padding: '10px 12px',
-            borderRadius: 8,
-            background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.12), rgba(16, 185, 129, 0.12))',
-            border: '1px solid rgba(45, 212, 191, 0.4)',
+            borderRadius: LCARS_RADIUS.medium,
+            background: LCARS_COLORS.black,
+            border: `2px solid ${LCARS_COLORS.orange}`,
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1 }}>
-              <CircleDot size={16} strokeWidth={2.5} style={{ color: '#5eead4', flexShrink: 0 }} />
+              <CircleDot size={16} strokeWidth={2.5} style={{ color: LCARS_COLORS.orange, flexShrink: 0 }} />
               <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                 <span style={{
-                  fontSize: 10,
-                  color: '#99f6e4',
-                  letterSpacing: 0.5,
-                  fontWeight: 600,
+                  fontSize: 11,
+                  color: LCARS_COLORS.orange,
+                  letterSpacing: 1.5,
+                  fontWeight: LCARS_FONTS.weight.semibold,
                   textTransform: 'uppercase',
                 }}>
                   Max Range
                 </span>
                 <span style={{
                   fontSize: 16,
-                  color: '#5eead4',
-                  fontWeight: 700,
+                  color: LCARS_COLORS.textPrimary,
+                  fontWeight: LCARS_FONTS.weight.bold,
                   letterSpacing: 0.3,
                 }}>
                   {formattedRange}
@@ -814,27 +836,25 @@ export default function ShipPanel() {
                 justifyContent: 'center',
                 width: 32,
                 height: 32,
-                borderRadius: 6,
-                background: showRange ? 'rgba(45, 212, 191, 0.25)' : 'rgba(255, 255, 255, 0.1)',
-                border: showRange ? '2px solid rgba(45, 212, 191, 0.6)' : '2px solid rgba(255, 255, 255, 0.2)',
+                borderRadius: LCARS_RADIUS.small,
+                background: showRange ? LCARS_COLORS.orange : 'rgba(255, 255, 255, 0.1)',
+                border: 'none',
                 cursor: 'pointer',
                 transition: 'all 0.2s ease',
                 flexShrink: 0
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = showRange ? 'rgba(45, 212, 191, 0.35)' : 'rgba(255, 255, 255, 0.15)'
-                e.currentTarget.style.borderColor = showRange ? 'rgba(45, 212, 191, 0.8)' : 'rgba(255, 255, 255, 0.3)'
+                e.currentTarget.style.background = showRange ? LCARS_COLORS.orangeLight : 'rgba(255, 255, 255, 0.2)'
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = showRange ? 'rgba(45, 212, 191, 0.25)' : 'rgba(255, 255, 255, 0.1)'
-                e.currentTarget.style.borderColor = showRange ? 'rgba(45, 212, 191, 0.6)' : 'rgba(255, 255, 255, 0.2)'
+                e.currentTarget.style.background = showRange ? LCARS_COLORS.orange : 'rgba(255, 255, 255, 0.1)'
               }}
               aria-label={showRange ? "Hide range sphere" : "Show range sphere"}
             >
               {showRange ? (
-                <Eye size={18} strokeWidth={2.5} style={{ color: '#34d399' }} />
+                <Eye size={18} strokeWidth={2.5} style={{ color: LCARS_COLORS.black }} />
               ) : (
-                <EyeOff size={18} strokeWidth={2.5} style={{ color: '#ffffff', opacity: 0.7 }} />
+                <EyeOff size={18} strokeWidth={2.5} style={{ color: LCARS_COLORS.textPrimary, opacity: 0.7 }} />
               )}
             </button>
           </div>
@@ -843,20 +863,48 @@ export default function ShipPanel() {
         <div style={{
           marginTop: '14px',
           padding: '10px 12px',
-          background: 'rgba(45, 212, 191, 0.08)',
-          borderRadius: '8px',
-          border: '1px solid rgba(45, 212, 191, 0.15)'
+          background: 'rgba(255, 153, 102, 0.1)',
+          borderRadius: LCARS_RADIUS.medium,
+          border: `1px solid ${LCARS_COLORS.orange}`
         }}>
-          <p style={{ margin: 0, fontSize: '12px', color: 'rgba(255,255,255,0.75)' }}>
+          <p style={{ margin: 0, fontSize: '12px', color: LCARS_COLORS.textPrimary }}>
             Tip: Efficiency is the % of fuel mass converted into thrust energy (E = m c^2). 100% ⇒ all fuel mass becomes thrust energy; 50% ⇒ half becomes energy, the rest is discarded.
           </p>
         </div>
       </div>
+      
+      {/* Bottom expand/collapse button */}
+      {isExpanded && (
+        <div style={{
+          background: LCARS_COLORS.orange,
+          padding: '8px',
+          borderRadius: `0 0 ${LCARS_RADIUS.large} ${LCARS_RADIUS.large}`,
+          display: 'flex',
+          justifyContent: 'center',
+          cursor: 'pointer',
+          transition: 'all 0.2s ease'
+        }}
+        onClick={() => setIsExpanded(false)}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = LCARS_COLORS.orangeLight
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = LCARS_COLORS.orange
+        }}
+        >
+          <div style={{
+            width: '60px',
+            height: '4px',
+            background: LCARS_COLORS.black,
+            borderRadius: LCARS_RADIUS.pill,
+          }} />
+        </div>
+      )}
     </div>
   )
 }
 
-function Field({ label, unit, value, min, max, step, onChange, accent, discrete = false }) {
+function Field({ label, unit, value, min, max, step, onChange, discrete = false }) {
   // Helpers for discrete, quasi-logarithmic steps like: 0, 1..9, 10..90, 100..900, ... including sub-1 decades
   const generateLogSteps = (minVal, maxVal, includeZero = false) => {
     const vals = []
@@ -892,9 +940,11 @@ function Field({ label, unit, value, min, max, step, onChange, accent, discrete 
   return (
     <label style={{ display: 'grid', gap: 6 }}>
       <span style={{
-        fontSize: 12,
-        color: '#99f6e4',
-        letterSpacing: 0.3
+        fontSize: 11,
+        color: LCARS_COLORS.orange,
+        letterSpacing: 1.5,
+        fontWeight: LCARS_FONTS.weight.semibold,
+        textTransform: 'uppercase'
       }}>{label}</span>
 
       <div style={{
@@ -902,9 +952,9 @@ function Field({ label, unit, value, min, max, step, onChange, accent, discrete 
         alignItems: 'center',
         gap: 8,
         padding: 8,
-        borderRadius: 8,
-        background: 'rgba(0,0,0,0.25)',
-        border: `1px solid ${accent}`
+        borderRadius: LCARS_RADIUS.medium,
+        background: LCARS_COLORS.black,
+        border: `2px solid ${LCARS_COLORS.orange}`
       }}>
         <input
           type="number"
@@ -918,19 +968,21 @@ function Field({ label, unit, value, min, max, step, onChange, accent, discrete 
             flex: 1,
             background: 'transparent',
             border: 'none',
-            color: 'white',
+            color: LCARS_COLORS.textPrimary,
             outline: 'none',
-            fontSize: 14
+            fontSize: 14,
+            fontFamily: LCARS_FONTS.primary
           }}
           aria-label={`${label} (${unit})`}
         />
         <span style={{
-          color: 'rgba(255,255,255,0.7)',
+          color: LCARS_COLORS.orange,
           fontSize: 13,
-          borderLeft: '1px solid rgba(255,255,255,0.12)',
+          borderLeft: `1px solid ${LCARS_COLORS.orange}`,
           paddingLeft: 8,
           minWidth: 28,
-          textAlign: 'center'
+          textAlign: 'center',
+          fontWeight: LCARS_FONTS.weight.semibold
         }}>{unit}</span>
       </div>
 
@@ -944,8 +996,8 @@ function Field({ label, unit, value, min, max, step, onChange, accent, discrete 
           onChange={(e) => onChange(allowedValues[Number(e.target.value)])}
           style={{
             width: '100%',
-            accentColor: '#34d399',
-            filter: 'drop-shadow(0 0 6px rgba(45, 212, 191, 0.25))'
+            accentColor: LCARS_COLORS.orange,
+            filter: `drop-shadow(0 0 6px ${LCARS_COLORS.orange})`
           }}
           aria-label={`${label} slider (discrete)`}
         />
@@ -959,8 +1011,8 @@ function Field({ label, unit, value, min, max, step, onChange, accent, discrete 
           onChange={(e) => onChange(e.target.value)}
           style={{
             width: '100%',
-            accentColor: '#34d399',
-            filter: 'drop-shadow(0 0 6px rgba(45, 212, 191, 0.25))'
+            accentColor: LCARS_COLORS.orange,
+            filter: `drop-shadow(0 0 6px ${LCARS_COLORS.orange})`
           }}
           aria-label={`${label} slider`}
         />
